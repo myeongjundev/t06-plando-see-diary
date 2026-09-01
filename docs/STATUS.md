@@ -173,10 +173,13 @@ Evidence: `npm run build` passed; `python -m pytest backend/tests -q` passed 53
 tests; dev server checked in light and dark at 1280px with computed styles verified
 (`.priority` text-transform `none`, tokens resolving, no horizontal overflow).
 
-Remaining design work needs markup changes and is not started: plan-card
-estimate-vs-actual gauge, empty state for `.plan-list`, signed variance and
-evidence counts on See metric cards, step navigation in `TaskPanel`. Run the
+Remaining design work needs markup changes. Step navigation and the plan-list
+empty state landed in `92a1156`; still open are the plan-card estimate-vs-actual
+gauge and signed variance plus evidence counts on the See metric cards. Run the
 acceptance suite before and after each of those.
+
+Direction rationale, the four sketched candidates, sketch links, the token summary
+and the list of screen elements design must not touch are in `docs/DESIGN.md`.
 
 ## Working tree
 
