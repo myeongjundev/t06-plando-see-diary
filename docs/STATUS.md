@@ -4,7 +4,7 @@ Updated: 2026-09-01 KST
 
 ## Phase
 
-**PREPARATION — waiting for the official T06 assignment**
+**IMPLEMENTATION — official requirements reconciled; contract baseline next**
 
 ## Completed
 
@@ -16,18 +16,23 @@ Updated: 2026-09-01 KST
 - Codex skill `t06-diary-workflow` scaffolded.
 - Local Git repository initialized on `main`.
 - Preparation baseline committed as `303012b429234866e2f79e35568475537a094f2b`.
+- Official assignment source saved as `docs/source/T06-OFFICIAL-ASSIGNMENT.md`.
+- Official requirements reconciled on 2026-09-01.
+- All 44 official acceptance IDs fixed with observable inputs and expectations.
+- React + Flask + PostgreSQL architecture activated.
+- Initial real-use subject fixed as `T06 프로젝트 완주`, measured in minutes.
 
 ## Not started
 
-- Official requirement reconciliation
-- Diary subject and unit selection
-- Five-day observation clock
-- Application code, database, tests, deployment
+- Data contract and application skeleton
+- Card 1 plan history implementation
+- Cards 2–5 implementation
+- Server database deployment and public verification
 
 ## Next action
 
-When T06 officially opens, save the latest assignment and reconcile it against
-`docs/REQUIREMENTS.md`. Do not create application code before that check.
+Create `contracts/pds-schema-v2.json`, scaffold the React and Flask applications,
+and implement the Card 1 plan/history slice against T06-C04–T06-C08.
 
 ## Working tree
 

@@ -1,38 +1,43 @@
-# T06 준비 작업 · 플랜두씨 다이어리 1
+# T06 · 플랜두씨 다이어리 1
 
-상태: **공식 과제 공개 전 준비 초안**
+상태: **공식 요구사항 확정 · 구현 시작**
 
-이 폴더는 강사가 미리 공개한 T06 자료를 분석하고, 공식 과제가 열렸을 때 바로
-착수할 수 있도록 요구사항·검사·Flask 구조를 준비하는 곳이다. 사전안과 전체 과정
-개요 사이에 범위 차이가 있으므로 공식 카드가 공개되기 전에는 구현과 배포를
-시작하지 않는다.
+계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)를 하나의 흐름으로 연결하는
+공개 다이어리입니다. React 화면, Flask API, PostgreSQL 서버 데이터베이스로
+구성하며 T06에서는 인증을 구현하지 않습니다.
 
-## 현재 확인된 핵심
+## 확정 기능
 
-- 합성 기록의 생성·조회·수정·삭제
-- 새로고침 뒤 유지
-- JSON 내보내기·복원·전체 삭제
-- 손상 파일의 원자적 거부
-- v1 → v2 한 번만 실행되는 자료 변환
-- 월요일·일요일 경계와 잘못된 값 처리
-- 서로 다른 실제 날짜 5일 사용
-- 공개 화면과 제출물의 개인정보·비밀값 0건
-- 30초 검증 안내 4항목과 AI·내 판단 3줄
+- 기간·우선순위·성공 기준·예상 시간이 있는 계획과 수정 이력
+- 계획에 연결된 할 일 CRUD·완료·되돌리기·검색·필터·고정 정렬
+- 시작·종료·실제 시간·막힌 이유를 담는 실행 기록
+- 중복 완료 요청을 데이터베이스 제약으로 한 번만 반영
+- 계획·완료·지연·막힘·예상·실제·차이 집계와 근거 기록 이동
+- 돌아보기의 개선점 한 줄을 다음 계획으로 전달
+- 서버 DB 영구 저장과 전체 JSON 내보내기
+- 공개 안내, XSS 방어, 비밀값 비노출
 
-## 문서
+## 기술 구성
 
-- `docs/T06-PRELIMINARY-ANALYSIS.md` — 사전안 요구사항과 충돌 항목
-- `docs/T06-ACCEPTANCE-MATRIX.md` — 카드별 구현·검사·증거 준비표
-- `docs/FLASK-ARCHITECTURE-DRAFT.md` — 공식 공개 뒤 선택할 Flask 구조 초안
+- Frontend: React + Vite + TypeScript
+- Backend: Flask + SQLAlchemy + Alembic
+- Database: PostgreSQL
+- Test: Pytest, frontend unit tests, browser acceptance checks
+- Timezone: UTC 저장, `Asia/Seoul` 표시·날짜 판정
+- Duration unit: minutes
 
-## 착수 금지 항목
+## 기준 문서
 
-공식 과제가 열리기 전에는 다음을 확정하지 않는다.
+- `docs/source/T06-OFFICIAL-ASSIGNMENT.md` — 공식 과제 원문
+- `docs/REQUIREMENTS.md` — 확정 요구사항
+- `docs/T06-ACCEPTANCE-MATRIX.md` — 고정 검사 44개
+- `docs/FLASK-ARCHITECTURE.md` — 구현 구조
+- `contracts/pds-schema-v2.json` — 데이터 계약
+- `docs/STATUS.md` — 현재 상태와 다음 행동
 
-- 계획시간 5~6시간 또는 8~10시간
-- 서버 DB 필수 여부
-- Plan → Do → See 전체 범위
-- `contracts/pds-schema-v2.json` 필수 여부
-- 실제 기록 5일의 시작일
-- 배포 서비스와 데이터 보존 방식
+## 공개 데이터 주의
+
+T06에는 로그인이 없습니다. 배포 화면에는 남이 봐도 괜찮은 실제 작업 기록만
+입력하고, 저장소·테스트·제출 증거에는 합성 자료만 사용합니다. 인증은 T07에서
+추가합니다.
 
