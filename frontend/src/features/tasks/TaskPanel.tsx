@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import ExecutionPanel from "./ExecutionPanel";
 import type { Plan, Priority } from "../../api/plans";
 import {
@@ -28,12 +28,12 @@ const EMPTY_TASK: TaskInput = {
 };
 
 interface Props {
-  plans: Plan[];
+  plan?: Plan;
   onDataChange: () => void;
 }
 
-export default function TaskPanel({ plans, onDataChange }: Props) {
-  const [planId, setPlanId] = useState("");
+export default function TaskPanel({ plan, onDataChange }: Props) {
+  const planId = plan?.id ?? "";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [form, setForm] = useState<TaskInput>(EMPTY_TASK);
   const [tagText, setTagText] = useState("");
@@ -46,12 +46,6 @@ export default function TaskPanel({ plans, onDataChange }: Props) {
   const [changingIds, setChangingIds] = useState<string[]>([]);
   const inFlight = useRef(new Set<string>());
   const refreshVersion = useRef(0);
-
-  useEffect(() => {
-    if (!planId && plans[0]) setPlanId(plans[0].id);
-  }, [planId, plans]);
-
-  const selectedPlan = useMemo(() => plans.find((plan) => plan.id === planId), [planId, plans]);
 
   async function refresh(currentPlanId = planId, currentFilters = filters) {
     const version = ++refreshVersion.current;
@@ -149,21 +143,17 @@ export default function TaskPanel({ plans, onDataChange }: Props) {
   }
 
   return (
-    <section className="panel task-panel">
+    <section className="panel task-panel flow-section" id="do-step" tabIndex={-1} aria-label="Do 할 일과 실행">
       <div className="section-heading">
-        <div><span>02</span><h2>Tasks · 할 일 다루기</h2></div>
-        <p>찾고, 걸러 보고, 같은 기준으로 정렬합니다.</p>
+        <div><span>02</span><h2>Do · 할 일과 실행</h2></div>
+        <p>할 일을 정하고, 실행 시간과 막힌 이유를 기록합니다.</p>
       </div>
 
-      {plans.length === 0 ? (
+      {!plan ? (
         <p className="empty">먼저 계획을 하나 저장하세요.</p>
       ) : (
         <>
-          <label>할 일을 연결할 계획
-            <select value={planId} onChange={(event) => setPlanId(event.target.value)}>
-              {plans.map((plan) => <option key={plan.id} value={plan.id}>{plan.title}</option>)}
-            </select>
-          </label>
+          <p className="selected-plan-name">현재 계획: <strong>{plan.title}</strong></p>
 
           <form className="task-form" onSubmit={submit}>
             <label>할 일<input value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} placeholder="실제로 할 일을 입력하세요" required /></label>
@@ -185,7 +175,7 @@ export default function TaskPanel({ plans, onDataChange }: Props) {
           <p className="sort-rule">정렬 기준: 우선순위(높음→보통→낮음) → 마감일 → 생성 시각 → ID</p>
           {message && <p className="message" role="status">{message}</p>}
 
-          <div className="task-list" aria-label={`${selectedPlan?.title ?? "선택한 계획"}의 할 일`}>
+          <div className="task-list" aria-label={`${plan.title}의 할 일`}>
             {tasks.length === 0 && <p className="empty">조건에 맞는 할 일이 없습니다.</p>}
             {tasks.map((task) => (
               <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
@@ -197,8 +187,8 @@ export default function TaskPanel({ plans, onDataChange }: Props) {
                   <div className="actions"><button onClick={() => beginEdit(task)}>내용 수정</button><button className="danger" onClick={() => setPendingDeleteId(task.id)}>삭제</button></div>
                   {editingId === task.id && <form className="inline-edit" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
                   {pendingDeleteId === task.id && <div className="delete-check" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
-                  <ExecutionPanel task={task} onSaved={onDataChange} />
                 </div>
+                <ExecutionPanel task={task} onSaved={onDataChange} />
               </article>
             ))}
           </div>

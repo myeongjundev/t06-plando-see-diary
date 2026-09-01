@@ -31,6 +31,25 @@ function App() {
   const [message, setMessage] = useState("계획을 불러오는 중입니다.");
   const [busy, setBusy] = useState(false);
   const [dataRevision, setDataRevision] = useState(0);
+  const [selectedPlanId, setSelectedPlanId] = useState("");
+  const [showNewPlan, setShowNewPlan] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
+
+  function goToStep(id: string) {
+    requestAnimationFrame(() => {
+      const section = document.getElementById(id);
+      section?.scrollIntoView({ block: "start" });
+      section?.focus({ preventScroll: true });
+    });
+  }
+
+  function acceptPlan(plan: Plan, nextStep: string) {
+    setPlans((current) => current.some((item) => item.id === plan.id) ? current : [...current, plan]);
+    setSelectedPlanId(plan.id);
+    setShowNewPlan(false);
+    goToStep(nextStep);
+  }
 
   async function refresh() {
     try {
@@ -38,6 +57,8 @@ function App() {
       setMessage("");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "계획을 불러오지 못했습니다.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -49,9 +70,9 @@ function App() {
     event.preventDefault();
     setBusy(true);
     try {
-      await createPlan(form);
+      const plan = await createPlan(form);
       setMessage("계획을 서버 데이터베이스에 저장했습니다.");
-      await refresh();
+      acceptPlan(plan, "do-step");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "계획을 저장하지 못했습니다.");
     } finally {
@@ -112,44 +133,63 @@ function App() {
         지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요
       </aside>
 
-      <section className="panel">
+      <div className="workflow-bar">
+        {selectedPlan && <label className="plan-picker">현재 계획
+          <select value={selectedPlan.id} onChange={(event) => setSelectedPlanId(event.target.value)}>
+            {plans.map((plan) => <option key={plan.id} value={plan.id}>{plan.title}</option>)}
+          </select>
+        </label>}
+        <nav className="step-nav" aria-label="Plan Do See 단계 이동">
+          <a href="#plan-step" aria-label="01 Plan · 계획"><span>01 Plan</span><span>계획</span></a>
+          <a href="#do-step" aria-label="02 Do · 실행"><span>02 Do</span><span>실행</span></a>
+          <a href="#see-step" aria-label="03 See · 회고"><span>03 See</span><span>회고</span></a>
+        </nav>
+      </div>
+
+      <section className="panel flow-section" id="plan-step" tabIndex={-1} aria-label="Plan 계획">
         <div className="section-heading">
-          <div><span>01</span><h2>Plan · 계획 세우기</h2></div>
-          <p>기간과 성공 기준을 먼저 정하고, 바뀐 계획도 기록으로 남깁니다.</p>
+          <div><span>01</span><h2>Plan · 계획</h2></div>
+          <p>계획을 선택해 이어가거나 새 계획을 세워 보세요.</p>
         </div>
-
-        <form onSubmit={submit}>
-          <label>계획 이름<input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required /></label>
-          <div className="grid two">
-            <label>시작일<input type="date" value={form.startDate} onChange={(event) => setForm({ ...form, startDate: event.target.value })} required /></label>
-            <label>종료일<input type="date" value={form.endDate} onChange={(event) => setForm({ ...form, endDate: event.target.value })} required /></label>
-          </div>
-          <div className="grid two">
-            <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as PlanInput["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
-            <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
-          </div>
-          <label>성공 기준<textarea value={form.successCriterion} onChange={(event) => setForm({ ...form, successCriterion: event.target.value })} required /></label>
-          <button className="primary" disabled={busy}>{busy ? "저장 중…" : "계획 저장"}</button>
-        </form>
         {message && <p className="message" role="status">{message}</p>}
-      </section>
+        <section className="plan-list" aria-label="저장된 계획">
+          {plans.map((plan) => (
+            <article className={`plan-card ${selectedPlan?.id === plan.id ? "selected" : ""}`} id={`plan-${plan.id}`} key={plan.id}>
+              <div className="plan-top"><span className={`priority ${plan.priority}`}>{plan.priority}</span><span>{plan.startDate} — {plan.endDate}</span></div>
+              <h3>{plan.title}</h3>
+              <p>{plan.successCriterion}</p>
+              <strong>{plan.estimatedMinutes}분 예상</strong>
+              {plan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{plan.carriedImprovement}</strong></p>}
+              <div className="actions"><button className="use-plan" onClick={() => { setSelectedPlanId(plan.id); goToStep("do-step"); }}>이 계획으로 실행</button><button onClick={() => beginRevise(plan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(plan.id)}>수정 이력</button></div>
+              {editingPlanId === plan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, plan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}
+              {history[plan.id] && <div className="history"><h4>처음 계획 기록</h4>{history[plan.id].length === 0 ? <p>아직 수정 이력이 없습니다.</p> : history[plan.id].map((item) => <p key={item.revisionId}>#{item.revisionNumber} · {item.estimatedMinutes}분 · {item.successCriterion}</p>)}</div>}
+            </article>
+          ))}
+        </section>
 
-      <section className="plan-list" aria-label="저장된 계획">
-        {plans.map((plan) => (
-          <article className="plan-card" id={`plan-${plan.id}`} key={plan.id}>
-            <div className="plan-top"><span className={`priority ${plan.priority}`}>{plan.priority}</span><span>{plan.startDate} — {plan.endDate}</span></div>
-            <h3>{plan.title}</h3>
-            <p>{plan.successCriterion}</p>
-            <strong>{plan.estimatedMinutes}분 예상</strong>
-            {plan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{plan.carriedImprovement}</strong></p>}
-            <div className="actions"><button onClick={() => beginRevise(plan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(plan.id)}>수정 이력</button></div>
-            {editingPlanId === plan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, plan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}
-            {history[plan.id] && <div className="history"><h4>처음 계획 기록</h4>{history[plan.id].length === 0 ? <p>아직 수정 이력이 없습니다.</p> : history[plan.id].map((item) => <p key={item.revisionId}>#{item.revisionNumber} · {item.estimatedMinutes}분 · {item.successCriterion}</p>)}</div>}
-          </article>
-        ))}
+        {!loading && plans.length === 0 && <p className="empty">첫 계획을 세워 보세요. 저장하면 할 일을 입력할 수 있습니다.</p>}
+        {plans.length > 0 && <div className="actions new-plan-action">
+          <button type="button" aria-expanded={showNewPlan} aria-controls="new-plan-form" disabled={busy} onClick={() => setShowNewPlan(!showNewPlan)}>{showNewPlan ? "새 계획 입력 닫기" : "+ 새 계획 만들기"}</button>
+        </div>}
+        {!loading && (plans.length === 0 || showNewPlan) && <section id="new-plan-form" className="new-plan-form" aria-label="새 계획 입력">
+          <h3>새 계획 세우기</h3>
+          <form onSubmit={submit}>
+            <label>계획 이름<input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required /></label>
+            <div className="grid two">
+              <label>시작일<input type="date" value={form.startDate} onChange={(event) => setForm({ ...form, startDate: event.target.value })} required /></label>
+              <label>종료일<input type="date" value={form.endDate} onChange={(event) => setForm({ ...form, endDate: event.target.value })} required /></label>
+            </div>
+            <div className="grid two">
+              <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as PlanInput["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+              <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
+            </div>
+            <label>성공 기준<textarea value={form.successCriterion} onChange={(event) => setForm({ ...form, successCriterion: event.target.value })} required /></label>
+            <button className="primary" disabled={busy}>{busy ? "저장 중…" : "계획 저장"}</button>
+          </form>
+        </section>}
       </section>
-      <TaskPanel plans={plans} onDataChange={() => setDataRevision((value) => value + 1)} />
-      <SeePanel plans={plans} revision={dataRevision} onPlanCreated={(plan) => setPlans((current) => current.some((item) => item.id === plan.id) ? current : [...current, plan])} />
+      <TaskPanel key={selectedPlan?.id ?? "empty"} plan={selectedPlan} onDataChange={() => setDataRevision((value) => value + 1)} />
+      <SeePanel plan={selectedPlan} revision={dataRevision} onPlanCreated={(plan) => acceptPlan(plan, "plan-step")} onOpenPlan={setSelectedPlanId} />
       <ExportPanel />
     </main>
   );

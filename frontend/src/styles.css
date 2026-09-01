@@ -234,6 +234,7 @@ h4 { font-size: var(--t-sm); font-weight: 700; }
 /* ── 폼 ──────────────────────────────────────────────────────────────── */
 
 form, label { display: grid; gap: var(--s2); }
+form, label, .grid > * { min-width: 0; }
 form { gap: var(--s4); }
 
 label {
@@ -248,6 +249,8 @@ label {
 
 input, textarea, select {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--r-ctl);
   background: var(--surface);
@@ -316,9 +319,12 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 .plan-card:hover { border-color: var(--accent-line); box-shadow: var(--shadow); }
+.plan-card.selected { border-color: var(--accent); }
+.plan-card { overflow-wrap: anywhere; }
 
 .plan-top {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--s3);
@@ -330,6 +336,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 /* 우선순위 — 과제 T06-C05·C15. 화면에 high / medium / low 리터럴 그대로.
    대문자 변환을 쓰지 않습니다. */
 .priority {
+  white-space: nowrap;
+  flex-shrink: 0;
   border-radius: 6px;
   padding: 3px 8px;
   font-size: var(--t-2xs);
@@ -519,6 +527,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 /* ── 실행 기록 ───────────────────────────────────────────────────────── */
 
 .execution-panel {
+  grid-column: 1 / -1;
+  min-width: 0;
   margin-top: var(--s4);
   padding-top: var(--s3);
   border-top: 1px solid var(--line);
@@ -651,6 +661,54 @@ summary:hover { color: var(--accent); }
 .source-records article strong, .reflection-list > article strong { color: var(--ink); }
 
 /* ── 반응형 ──────────────────────────────────────────────────────────── */
+
+.workflow-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  display: grid;
+  gap: var(--s2);
+}
+.plan-picker { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.plan-picker select { padding: 8px 12px; }
+.step-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
+.step-nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s2) var(--s1);
+  border-radius: var(--r-ctl);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.step-nav a:hover { text-decoration: underline; }
+.step-nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.flow-section, .plan-card { scroll-margin-top: 148px; }
+.flow-section:focus { outline: none; }
+.new-plan-action { margin-top: var(--s5); }
+.new-plan-form { margin-top: var(--s5); }
+.new-plan-form h3 { margin-bottom: var(--s4); }
+.selected-plan-name { overflow-wrap: anywhere; color: var(--ink-2); }
+.actions .use-plan { border-color: var(--accent-line); color: var(--accent); }
+.plan-list { margin-top: var(--s4); }
+
+@media (max-width: 480px) {
+  .step-nav a { flex-direction: column; }
+  .panel { padding: var(--s4); }
+  .plan-card { padding: var(--s4); }
+  .task-list .task-row { padding: var(--s3); }
+  .task-form { padding: var(--s3); }
+  input[type="datetime-local"] { padding-inline: var(--s2); font-size: var(--t-sm); }
+}
 
 @media (max-width: 820px) {
   .task-tools { grid-template-columns: 1fr 1fr; }

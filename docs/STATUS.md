@@ -8,6 +8,25 @@ Updated: 2026-09-02 KST
 
 ## Completed
 
+### 2026-09-02 — Plan/Do/See usability follow-up
+
+- Saved plans appear before the optional new-plan form. Empty accounts show the
+  first-plan form immediately after loading; saving selects the new plan and
+  moves focus to Do. The existing-plan form opens through “새 계획 만들기”.
+- One App-owned plan selection drives Do and See. Sticky anchor navigation moves
+  between mounted sections, preserving drafts during step navigation. Plan-card
+  actions, newly created follow-up plans and existing reflection links select the
+  same plan. Changing plans resets task-local state rather than carrying it over.
+- Execution forms span the full task card; form/grid children and native inputs
+  can shrink. At 320px, datetime fields remain inside their card. Priority badges
+  stay on one line, and mobile navigation labels use two consistent lines.
+- Build and 53 existing tests pass. Synthetic browser checks cover two plans,
+  matching tasks/See metrics, preserved draft during navigation, first-plan save
+  and reload, 25-minute execution save/See update, and reflection-to-next-plan
+  selection with exact carried improvement. No backend/schema/security change.
+- Implementation is ready for commit/push and public asset verification. Real-use
+  records and final submission checks remain separate.
+
 - Preliminary five-card material analyzed.
 - Conflicts with the broader course overview identified.
 - Draft acceptance matrix prepared.

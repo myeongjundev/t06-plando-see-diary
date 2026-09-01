@@ -51,7 +51,7 @@ function NextPlanForm({ plan, reflection, onCreated }: { plan: Plan; reflection:
   </form>;
 }
 
-function PlanReview({ plan, revision, onPlanCreated }: { plan: Plan; revision: number; onPlanCreated: (plan: Plan) => void }) {
+function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan; revision: number; onPlanCreated: (plan: Plan) => void; onOpenPlan: (id: string) => void }) {
   const [period, setPeriod] = useState<Period | null>(null);
   const [draftPeriod, setDraftPeriod] = useState<Period>({ periodStart: plan.startDate, periodEnd: plan.endDate });
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -125,7 +125,7 @@ function PlanReview({ plan, revision, onPlanCreated }: { plan: Plan; revision: n
       <h3>회고 기록</h3>{reflections.length === 0 && <p>아직 저장된 회고가 없습니다.</p>}
       {reflections.map((row) => <article key={row.id}>
         <p>{row.periodStart} — {row.periodEnd}</p><strong>{row.improvement}</strong>
-        {row.nextPlanId ? <p><a href={`#plan-${row.nextPlanId}`}>개선점을 담은 다음 계획 보기</a></p> : <div className="actions"><button onClick={() => setNextId(nextId === row.id ? null : row.id)}>{nextId === row.id ? "다음 계획 입력 닫기" : "이 회고로 다음 계획 만들기"}</button></div>}
+        {row.nextPlanId ? <p><a href={`#plan-${row.nextPlanId}`} onClick={() => onOpenPlan(row.nextPlanId!)}>개선점을 담은 다음 계획 보기</a></p> : <div className="actions"><button onClick={() => setNextId(nextId === row.id ? null : row.id)}>{nextId === row.id ? "다음 계획 입력 닫기" : "이 회고로 다음 계획 만들기"}</button></div>}
         {nextId === row.id && !row.nextPlanId && <NextPlanForm plan={plan} reflection={row} onCreated={(next, updated) => {
           setReflections((current) => current.map((item) => item.id === updated.id ? updated : item));
           setNextId(null); onPlanCreated(next); setMessage("개선 문장을 그대로 담은 다음 계획을 만들었습니다.");
@@ -135,14 +135,12 @@ function PlanReview({ plan, revision, onPlanCreated }: { plan: Plan; revision: n
   </>;
 }
 
-export default function SeePanel({ plans, revision, onPlanCreated }: { plans: Plan[]; revision: number; onPlanCreated: (plan: Plan) => void }) {
-  const [selectedId, setSelectedId] = useState("");
-  const plan = plans.find((item) => item.id === selectedId) ?? plans[0];
-  return <section className="panel see-panel" aria-label="See 돌아보기">
+export default function SeePanel({ plan, revision, onPlanCreated, onOpenPlan }: { plan?: Plan; revision: number; onPlanCreated: (plan: Plan) => void; onOpenPlan: (id: string) => void }) {
+  return <section className="panel see-panel flow-section" id="see-step" tabIndex={-1} aria-label="See 돌아보기">
     <div className="section-heading"><div><span>03</span><h2>See · 돌아보고 이어가기</h2></div><p>숫자의 근거를 확인하고, 개선점을 다음 계획으로 옮깁니다.</p></div>
     {!plan ? <p>먼저 계획을 저장하세요.</p> : <>
-      <label>돌아볼 계획<select value={plan.id} onChange={(e) => setSelectedId(e.target.value)}>{plans.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label>
-      <PlanReview key={plan.id} plan={plan} revision={revision} onPlanCreated={onPlanCreated} />
+      <p className="selected-plan-name">현재 계획: <strong>{plan.title}</strong></p>
+      <PlanReview key={plan.id} plan={plan} revision={revision} onPlanCreated={onPlanCreated} onOpenPlan={onOpenPlan} />
     </>}
   </section>;
 }

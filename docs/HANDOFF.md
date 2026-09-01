@@ -1,77 +1,83 @@
-# T06 handoff · reviewed design adoption
+# T06 handoff · Plan/Do/See usability
 
 ## 1. Goal
 
-Adopt the Claude design branch after fixing its font delivery and evidence
-readability findings, as approved by the user on 2026-09-02.
+Implement the user's approved first three improvements: saved plans first,
+consistent plan selection with step navigation, and mobile datetime layout.
 
 ## 2. Current state
 
-Deployed and verified: application commit
-`d9b23a077b640a6cf4e02be92c356781f52dc958` on main, public URL
-https://t06-plando-see-diary.onrender.com. Root HTML references the new
-`/assets/index-CmX_ZMf7.css`; sampled Korean/Latin WOFF2 fonts and OFL license
-return 200, /api/health reports PostgreSQL, and CSP is unchanged.
+Saved plans precede the optional create form. With no plans, creation is immediately
+available after loading. Creating a plan selects it and focuses Do. The sticky
+Plan/Do/See links navigate mounted sections; same-plan drafts survive navigation.
+App owns one plan selection, passed to both Do and See. Changing plans remounts
+TaskPanel to prevent old filters/tasks/drafts from being carried to another plan.
+Next-plan creation and existing reflection links update the shared selection.
+ExecutionPanel now spans the full card, with shrinkable native inputs and grid
+children. Mobile step labels and priority badges remain readable at 320px.
 
-Cards 1–5 remain implemented; user confirmed the existing public app renders.
-Design branch includes the CSS token layer, unchanged workflow markup, and two fixes:
-bundled Gothic A1 weights 400/500/700/800 and stronger, larger evidence labels.
-Fontsource 5.3.0 is pinned. Vite assetsInlineLimit=0 prevents small font subsets
-becoming data URLs disallowed by the existing CSP. The OFL license ships at
-/assets/fonts/Gothic-A1-OFL.txt. No backend/security policy changes.
+Previous design/font deployment is live; this usability change awaits push and
+public asset confirmation at this checkpoint. No backend/schema/CSP changes.
 
 ## 3. Run commands
 
 Repository: C:\gov\project\skt aleph\t06-plando-see-diary.
-`npm --prefix frontend run build` and
+`npm --prefix frontend run build`.
 `backend/.venv/Scripts/python.exe -m pytest backend/tests -q`.
-The ignored tmp/review_design_server.py serves the built app and synthetic records
-locally with the real Flask headers. It uses a single-threaded in-memory SQLite
-fixture; it is not a production launcher. The /review-light fixture disables the
-dark media block only for local light-palette inspection, without OS theme changes.
+Local browser verification uses ignored tmp/review_design_server.py with isolated
+synthetic SQLite records on 5173; --empty serves a separate empty fixture on 5181.
+These are single-threaded temporary review servers, not deployment launchers.
 
 ## 4. Passed acceptance IDs
 
-Build and 53 existing tests pass; no fixed expectation changed. Targeted browser
-checks retain the exact public warning, high literals, success criterion, sort
-rule and See sources (C05/C06/C15/C20/C82/C83). Synthetic totals remain
-5 tasks, 1 completed, 4 overdue, 3 blocked, 300 estimated, 150 actual, -150 variance.
-Built CSS contains zero external/data URLs; Flask returned 200 for browser-requested
-Korean and Latin font files. Source IDs and sort labels resolve to 13px in light
-and dark views. Checked text contrast is 4.63–4.84:1 on light surfaces and
-6.46–6.99:1 on dark surfaces. No document overflow at checked 1280px/375px widths.
+Build and 53 existing tests passed. Targeted synthetic UI checks:
+- Exact public warning, priority literal high, stored success criterion and sort
+  rule remain present (C05/C06/C15/C20/C82).
+- Selecting plan B shows its one task and 20-minute estimate in both Do and See;
+  plan A retains its five-task cohort (C28/C32).
+- A task draft survives Do -> See -> Do, retaining the same selected plan.
+- Empty-state plan creation selects the returned plan, closes the form and focuses
+  Do below the sticky bar. Reload preserves its dates/criterion and hides the form.
+- A 25-minute mobile execution saves and See updates to 25 actual minutes, while
+  the original estimate stays 20 (C23–C27/C32).
+- Saving a reflection and creating its next plan preserves the exact improvement,
+  selects the next plan and focuses Plan. Returning through the existing reflection
+  link also selects that plan (C33).
+- At 320px, document width is 320px; datetime fields are 228px wide, right edge 274px
+  inside their card's right edge 287px. high uses nowrap. Desktop layout also checked.
 
 ## 5. Failed or unrun acceptance IDs
 
-No failing tests; 12 pre-existing get_engine deprecation warnings.
-Actual OS light-mode switching was not tested; a local CSS fixture rendered the
-light palette. Public HTML/CSS/font/license/database checks passed after deployment.
-Public save/refresh/export, private-browser access, real-use C78–C81 and final
-user judgment lines still require completion. This is not a full 44-ID sign-off.
+No failing tests; 12 existing get_engine deprecation warnings. Browser native
+ datetime fill needed keyboard confirmation; the saved record succeeded afterward.
+Public interaction/persistence/export, private-browser access, real-use C78–C81 and
+final user judgment lines remain pending. This is not a full 44-ID certification.
+The fourth suggestion (natural-language metric interpretation) was not part of
+this first-three-improvements implementation.
 
 ## 6. Next action
 
-Continue final submission checks: deployed save/refresh/export, private-browser
-access, actual safe use records, and user-confirmed judgment/rejection text.
+Commit/push and verify the new public assets; then complete final submission checks.
 
 ## 7. Do not change
 
-Keep all 44 fixed expectations, exact public warning, unauthenticated T06 behavior,
-immutable IDs/history, units/time rules, source records and transaction semantics.
-Keep Render/Neon free and idle-capable. No secrets or real records in fixtures/Git.
+Keep all 44 fixed expectations, exact warning, no T06 authentication, immutable
+IDs/history, units/time rules, source records and transaction semantics. Keep free
+Render/Neon idle behavior. Never commit real records or credentials.
 
 ## 8. Changed files
 
-Frontend index removes external links; package/lock pins the bundled font; styles
-imports weights and improves readability; Vite prevents font inlining; public assets
-includes OFL. STATUS, DECISIONS and review/handoff docs record approval and evidence.
+App.tsx controls plan selection, creation visibility and step navigation.
+TaskPanel.tsx consumes the selected plan and moves execution forms across the card.
+SeePanel.tsx consumes that same plan and connects next-plan navigation.
+styles.css adds sticky navigation, selected-card styling and mobile layout fixes.
+STATUS/DECISIONS/HANDOFF record scope and verification.
 
 ## 9. Git state
 
-Starting HEAD 2ebb7bb on design/css-token-layer; original main was 929fb43.
-Both branches were pushed at application commit d9b23a0; main was fast-forwarded.
-This documentation-only follow-up records verified deployment and the submission
-source URL. Only ignored temporary test data/build outputs remain outside Git.
+Started at b5a056e on main. Current usability implementation and documentation are
+prepared for commit/push. Temporary scripts, databases and build outputs are ignored.
+A deployment follow-up will record the application commit and source URL.
 
 ---
 
