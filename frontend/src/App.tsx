@@ -8,6 +8,7 @@ import {
   PlanRevision,
   updatePlan,
 } from "./api/plans";
+import TaskPanel from "./features/tasks/TaskPanel";
 
 const EMPTY_PLAN: PlanInput = {
   title: "T06 프로젝트 완주",
@@ -143,6 +144,7 @@ function App() {
           </article>
         ))}
       </section>
+      <TaskPanel plans={plans} />
     </main>
   );
 }
