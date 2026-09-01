@@ -16,8 +16,11 @@ Next-plan creation and existing reflection links update the shared selection.
 ExecutionPanel now spans the full card, with shrinkable native inputs and grid
 children. Mobile step labels and priority badges remain readable at 320px.
 
-Previous design/font deployment is live; this usability change awaits push and
-public asset confirmation at this checkpoint. No backend/schema/CSP changes.
+This usability change is deployed from main at
+`92a115672a5a07068f6a97f99c625c9fe2f29eee`. Public HTML references
+`/assets/index-DnSTSqUZ.js` and `/assets/index-Dr1DAnWc.css`; navigation code/styles,
+sampled WOFF2 fonts, OFL license and PostgreSQL health are verified over HTTPS.
+No backend/schema/CSP changes.
 
 ## 3. Run commands
 
@@ -49,7 +52,7 @@ Build and 53 existing tests passed. Targeted synthetic UI checks:
 ## 5. Failed or unrun acceptance IDs
 
 No failing tests; 12 existing get_engine deprecation warnings. Browser native
- datetime fill needed keyboard confirmation; the saved record succeeded afterward.
+datetime fill needed keyboard confirmation; the saved record succeeded afterward.
 Public interaction/persistence/export, private-browser access, real-use C78–C81 and
 final user judgment lines remain pending. This is not a full 44-ID certification.
 The fourth suggestion (natural-language metric interpretation) was not part of
@@ -57,7 +60,8 @@ this first-three-improvements implementation.
 
 ## 6. Next action
 
-Commit/push and verify the new public assets; then complete final submission checks.
+Complete final submission checks using the deployed app. The shared selector
+“현재 계획” chooses the plan for both Do and See.
 
 ## 7. Do not change
 
@@ -75,9 +79,9 @@ STATUS/DECISIONS/HANDOFF record scope and verification.
 
 ## 9. Git state
 
-Started at b5a056e on main. Current usability implementation and documentation are
-prepared for commit/push. Temporary scripts, databases and build outputs are ignored.
-A deployment follow-up will record the application commit and source URL.
+Started at b5a056e on main. Application commit 92a1156 is pushed and verified live.
+This documentation-only follow-up records deployment and the submission source URL.
+Temporary scripts, databases and build outputs are ignored.
 
 ---
 

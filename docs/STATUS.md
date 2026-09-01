@@ -24,8 +24,11 @@ Updated: 2026-09-02 KST
   matching tasks/See metrics, preserved draft during navigation, first-plan save
   and reload, 25-minute execution save/See update, and reflection-to-next-plan
   selection with exact carried improvement. No backend/schema/security change.
-- Implementation is ready for commit/push and public asset verification. Real-use
-  records and final submission checks remain separate.
+- Deployed from main at `92a115672a5a07068f6a97f99c625c9fe2f29eee`.
+  Public HTML references `/assets/index-DnSTSqUZ.js` and
+  `/assets/index-Dr1DAnWc.css`; new navigation code/styles, sampled fonts, license
+  and PostgreSQL health are verified. Real-use records and final submission checks
+  remain separate.
 
 - Preliminary five-card material analyzed.
 - Conflicts with the broader course overview identified.
