@@ -111,7 +111,10 @@ Evidence labels use stronger light/dark colors; sort rule and source IDs are 13p
 Build and 53 tests pass. Flask serves the built CSS and requested Korean/Latin
 fonts with HTTP 200. Dark and forced-light local views retain metrics and IDs;
 375px dark/mobile and 1280px views have no document overflow. Both review findings
-are resolved. Merge/push and public asset verification are the next step.
+are resolved. Merged and pushed to main as application commit
+`d9b23a077b640a6cf4e02be92c356781f52dc958`. Render now serves the new
+`/assets/index-CmX_ZMf7.css`; public Korean/Latin WOFF2 samples and OFL license
+return 200, and /api/health confirms PostgreSQL. The CSP remains same-origin.
 Earlier design review findings below describe the pre-fix state.
 
 Codex review (2026-09-02, HEAD `2ebb7bb`): adopt after fixing external font/CSP
@@ -173,5 +176,5 @@ Cards 3–5 and Render/Neon preparation were committed and pushed to origin/main
 `150a9052610705dad52274d94d28f674ab07d324`. Account connection and public deployment
 remain pending; see `docs/HANDOFF.md`.
 
-Design token layer branched from `main` as `design/css-token-layer` and pushed to
-origin. Deployment picks it up only after a merge into `main`.
+Design token layer and review fixes were merged from `design/css-token-layer` into
+`main`, pushed, and verified on Render at application commit `d9b23a0`.

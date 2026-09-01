@@ -2,9 +2,10 @@
 
 Product URL: https://t06-plando-see-diary.onrender.com
 
-Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/7bb42551308c5d90ab717227982d563e5b9f7a99
+Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/d9b23a077b640a6cf4e02be92c356781f52dc958
 
-This is the published app including the production frontend-path fix. Replace it if
+This is the published app including the reviewed design, bundled fonts and improved
+evidence readability, plus the production frontend-path fix. Replace it if
 later application changes are deployed; verify private-browser access before submission.
 
 ## Four verification lines (T06-C59)

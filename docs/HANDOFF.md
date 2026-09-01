@@ -7,6 +7,12 @@ readability findings, as approved by the user on 2026-09-02.
 
 ## 2. Current state
 
+Deployed and verified: application commit
+`d9b23a077b640a6cf4e02be92c356781f52dc958` on main, public URL
+https://t06-plando-see-diary.onrender.com. Root HTML references the new
+`/assets/index-CmX_ZMf7.css`; sampled Korean/Latin WOFF2 fonts and OFL license
+return 200, /api/health reports PostgreSQL, and CSP is unchanged.
+
 Cards 1–5 remain implemented; user confirmed the existing public app renders.
 Design branch includes the CSS token layer, unchanged workflow markup, and two fixes:
 bundled Gothic A1 weights 400/500/700/800 and stronger, larger evidence labels.
@@ -39,15 +45,14 @@ and dark views. Checked text contrast is 4.63–4.84:1 on light surfaces and
 
 No failing tests; 12 pre-existing get_engine deprecation warnings.
 Actual OS light-mode switching was not tested; a local CSS fixture rendered the
-light palette. Public deployment of this change is pending at this checkpoint.
+light palette. Public HTML/CSS/font/license/database checks passed after deployment.
 Public save/refresh/export, private-browser access, real-use C78–C81 and final
 user judgment lines still require completion. This is not a full 44-ID sign-off.
 
 ## 6. Next action
 
-Commit the approved fixes, merge the design branch into main, push to Render's
-configured deployment branch, then verify the new public HTML/CSS/font assets.
-Continue final submission checks after deployment.
+Continue final submission checks: deployed save/refresh/export, private-browser
+access, actual safe use records, and user-confirmed judgment/rejection text.
 
 ## 7. Do not change
 
@@ -63,9 +68,10 @@ includes OFL. STATUS, DECISIONS and review/handoff docs record approval and evid
 
 ## 9. Git state
 
-Starting HEAD 2ebb7bb on design/css-token-layer; main/origin/main at 929fb43.
-Application and documentation changes are prepared for the approved merge/push.
-See the next deployment update for final commit and verification result.
+Starting HEAD 2ebb7bb on design/css-token-layer; original main was 929fb43.
+Both branches were pushed at application commit d9b23a0; main was fast-forwarded.
+This documentation-only follow-up records verified deployment and the submission
+source URL. Only ignored temporary test data/build outputs remain outside Git.
 
 ---
 
