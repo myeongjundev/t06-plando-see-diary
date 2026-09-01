@@ -1,24 +1,26 @@
-# T06 handoff · Card 1 complete
+# T06 handoff · Cards 1–2 complete
 
 ## 1. Goal
 
-Establish the official baseline and complete Card 1 plan creation and immutable
-pre-edit history for T06-C04–T06-C08.
+Complete the Card 2 task workflow for T06-C09–T06-C20 without changing the fixed
+expectations established for Card 1.
 
 ## 2. Current state
 
-- Official source and all 44 acceptance IDs are reconciled.
-- React + Vite and Flask + SQLAlchemy skeletons run locally.
-- PostgreSQL is the production database contract; isolated SQLite is used for tests
-  and local development only.
-- Users can create a plan with dates, priority, success criterion, and estimated
-  minutes, edit its estimated minutes, inspect the prior values, and refresh without
-  losing the local database values.
-- The first screen displays the exact no-login warning.
+- Official source and all 44 acceptance IDs remain fixed.
+- Card 1 creates plans and preserves immutable pre-edit revisions.
+- Card 2 creates, edits, completes, reopens, and soft-deletes tasks linked to a plan.
+- Tasks store a due date, priority, normalized tags, estimated minutes, and UUID.
+- Server-side search covers content and tags; filters support status, priority, and
+  an exact tag.
+- The API and screen use the declared deterministic order: priority, due date,
+  created time, then UUID.
+- React provides inline edit and delete confirmation instead of native browser
+  prompts.
 
 ## 3. Run commands
 
-Use `docs/DEVELOPMENT.md`. Verified commands:
+Use `docs/DEVELOPMENT.md`. Verified checks:
 
 ```powershell
 cd backend
@@ -33,47 +35,54 @@ Local servers use Flask at `http://127.0.0.1:5000` and Vite at
 
 ## 4. Passed acceptance IDs
 
-- T06-C04: start and end dates persisted and appeared in the browser.
-- T06-C05: priority `high` persisted.
-- T06-C06: success criterion persisted.
-- T06-C07: `600` minutes and the `minutes` unit persisted.
-- T06-C08: editing to `540` retained revision #1 at `600` under the same plan ID.
+- Card 1: T06-C04–T06-C08.
+- Card 2: T06-C09–T06-C20.
 
-Evidence: 3 Pytest tests passed, 89% backend coverage, frontend production build
-passed, and the local browser showed `540분 예상` plus
-`#1 · 600분 · 44개 검사 통과` after refresh.
+Card 2 evidence: the automated suite created a task with a UUID and all required
+fields, edited the same ID, completed and reopened it, soft-deleted only one task,
+searched a unique phrase, combined completed/high filters, and reproduced the same
+declared order twice. The local browser also completed create, edit, complete,
+reopen, and search flows with no console errors.
 
 ## 5. Failed or unrun acceptance IDs
 
-- Failed: none in the Card 1 slice.
-- Unrun: the remaining 39 official IDs, including all Card 2–5 deployment checks.
-- PostgreSQL deployment has not been run; local persistence alone does not claim
-  T06-C34 or T06-C35.
+- Failed: none in Cards 1–2.
+- Unrun: 27 remaining official IDs, including Card 3–5 and all deployment checks.
+- PostgreSQL deployment has not been run; local persistence does not claim T06-C34
+  or T06-C35.
+- T06-C79 requires five real, safe-to-disclose deployed tasks and is not claimed by
+  synthetic automated fixtures.
 
 ## 6. Next action
 
-Implement Card 2 task models, migration, API, and tests for T06-C09–T06-C20 before
-expanding the React screen.
+Implement execution logs and completion-event idempotency for T06-C21–T06-C27.
+Add the database unique constraint before relying on the React button state.
 
 ## 7. Do not change
 
 - Do not change the 44 fixed expectations to make code pass.
 - Do not add authentication in T06.
-- Do not commit real diary data, local databases, exports, or secrets.
+- Do not commit local databases, real diary data, exports, or secrets.
 - Keep UUID identity, minute units, UTC storage, and `Asia/Seoul` date rules.
-- Keep plan revisions immutable and completion idempotency protected by a database
-  unique constraint.
+- Keep plan revisions immutable and task deletion soft.
+- Keep task ordering as priority → due date → created time → UUID.
+- Completion idempotency must be enforced by the database in Card 3.
 
 ## 8. Changed files
 
-- `contracts/pds-schema-v2.json`: canonical database and export contract.
-- `backend/app`, `backend/migrations`, `backend/tests`: Card 1 Flask slice and tests.
-- `frontend/src`, frontend configuration and lockfile: Card 1 React screen.
-- `.gitignore`: excludes local databases, dependencies, coverage, and build products.
-- `docs/DEVELOPMENT.md`, `docs/STATUS.md`, `docs/HANDOFF.md`: reproducible continuation.
+- `backend/app/models/task.py`: task and normalized-tag tables.
+- `backend/app/services/tasks.py`: validation, transitions, soft delete, filtering,
+  searching, and deterministic ordering.
+- `backend/app/api/tasks.py`: Card 2 HTTP routes.
+- `backend/migrations/versions/7f02f5379407_add_task_workflow_tables.py`: database
+  migration.
+- `backend/tests/acceptance/test_card2_tasks.py`: observable C09–C20 checks.
+- `frontend/src/api/tasks.ts` and `frontend/src/features/tasks/TaskPanel.tsx`: Card 2
+  screen workflow.
+- `frontend/src/App.tsx` and `frontend/src/styles.css`: integration and presentation.
 
 ## 9. Git state
 
-- Start commit: `f25841f` (`docs: reconcile official T06 requirements`)
-- Card 1 implementation commit: `1bb2c42` (`feat: implement T06 plan history slice`)
-- Documentation/cleanup commit: `1a4ea62` (`docs: hand off completed T06 card 1`)
+- Card 1 handoff baseline: `c1b8fe9`
+- Card 2 implementation: `f2b9c8c` (`feat: implement T06 task workflow`)
+- Documentation update: pending at the time this handoff was written.
