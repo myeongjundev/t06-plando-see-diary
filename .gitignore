@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Node
+node_modules/
+dist/
+coverage/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Private diary data and exports
+private-data/
+private-exports/
+*.private.json
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary evidence and local databases
+tmp/
+*.sqlite
+*.sqlite3
