@@ -56,4 +56,6 @@ Card 1 handoff commit: `1a4ea62`
 
 Card 2 implementation commit: `f2b9c8c`
 
+Card 2 handoff commit: `22a6655`
+
 Remote: https://github.com/myeongjundev/t06-plando-see-diary

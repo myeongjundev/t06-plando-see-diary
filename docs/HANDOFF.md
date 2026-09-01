@@ -85,4 +85,4 @@ Add the database unique constraint before relying on the React button state.
 
 - Card 1 handoff baseline: `c1b8fe9`
 - Card 2 implementation: `f2b9c8c` (`feat: implement T06 task workflow`)
-- Documentation update: pending at the time this handoff was written.
+- Card 2 handoff: `22a6655` (`docs: hand off completed T06 card 2`)
