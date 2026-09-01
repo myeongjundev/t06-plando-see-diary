@@ -35,4 +35,4 @@ Branch: `main`
 
 Baseline commit: `303012b429234866e2f79e35568475537a094f2b`
 
-Remote: pending GitHub repository creation.
+Remote: https://github.com/myeongjundev/t06-plando-see-diary
