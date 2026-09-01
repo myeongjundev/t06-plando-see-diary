@@ -76,5 +76,4 @@ expanding the React screen.
 
 - Start commit: `f25841f` (`docs: reconcile official T06 requirements`)
 - Card 1 implementation commit: `1bb2c42` (`feat: implement T06 plan history slice`)
-- Documentation/cleanup commit: pending at the time this handoff was written.
-
+- Documentation/cleanup commit: `1a4ea62` (`docs: hand off completed T06 card 1`)

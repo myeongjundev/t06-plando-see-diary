@@ -48,4 +48,6 @@ Official requirements commit: `f25841f`
 
 Card 1 implementation commit: `1bb2c42`
 
+Card 1 handoff commit: `1a4ea62`
+
 Remote: https://github.com/myeongjundev/t06-plando-see-diary
