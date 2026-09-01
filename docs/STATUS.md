@@ -14,6 +14,8 @@ Updated: 2026-09-01 KST
 - Conditional Flask architecture drafted.
 - Shared Claude–Codex working agreement created.
 - Codex skill `t06-diary-workflow` scaffolded.
+- Local Git repository initialized on `main`.
+- Preparation baseline committed as `303012b429234866e2f79e35568475537a094f2b`.
 
 ## Not started
 
@@ -29,5 +31,8 @@ When T06 officially opens, save the latest assignment and reconcile it against
 
 ## Working tree
 
-This preparation directory is not yet initialized as a Git repository.
+Branch: `main`
 
+Baseline commit: `303012b429234866e2f79e35568475537a094f2b`
+
+Remote: pending GitHub repository creation.
