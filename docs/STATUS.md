@@ -2,6 +2,10 @@
 
 Updated: 2026-09-02 KST
 
+학원 PC에서 이어갈 때는 `docs/ACADEMY-HANDOFF.md`를 먼저 읽는다.
+최신 main 받기, 새 PC 설치/실행, 완료 작업, 남은 제출 검증과 이어가기 프롬프트를
+정리했다. 집 PC의 `tmp/` 검증 스크립트·로컬 DB·환경 설정은 Git에 포함되지 않는다.
+
 ## Phase
 
 **IMPLEMENTATION — Cards 1–4 complete locally; Card 5 implemented locally, public verification pending**

@@ -1,6 +1,9 @@
 # T06 · 플랜두씨 다이어리 1
 
-상태: **공식 요구사항 확정 · 구현 시작**
+상태: **기능 구현·공개 배포 완료 · 최종 제출 검증 진행 중**
+
+학원 PC에서 이어가기: [인수인계와 실행 방법](docs/ACADEMY-HANDOFF.md).
+공개 앱: https://t06-plando-see-diary.onrender.com
 
 계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)를 하나의 흐름으로 연결하는
 공개 다이어리입니다. React 화면, Flask API, PostgreSQL 서버 데이터베이스로
@@ -22,7 +25,7 @@
 - Frontend: React + Vite + TypeScript
 - Backend: Flask + SQLAlchemy + Alembic
 - Database: PostgreSQL
-- Test: Pytest, frontend unit tests, browser acceptance checks
+- Test: Pytest, frontend build, browser acceptance checks
 - Timezone: UTC 저장, `Asia/Seoul` 표시·날짜 판정
 - Duration unit: minutes
 

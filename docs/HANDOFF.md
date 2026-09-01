@@ -1,5 +1,8 @@
 # T06 handoff · Plan/Do/See usability
 
+학원 PC 재개 안내: `docs/ACADEMY-HANDOFF.md`. 새로운 PC의 설치·실행 명령과
+남은 제출 작업은 그 문서를 따른다. 아래 `tmp/` 검증 도구는 clone에 포함되지 않는다.
+
 ## 1. Goal
 
 Implement the user's approved first three improvements: saved plans first,
