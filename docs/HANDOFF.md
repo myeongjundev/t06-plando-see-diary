@@ -14,6 +14,9 @@ from site-packages; Config's source-relative frontend path was wrong there.
 Fix: Docker STATIC_DIST=/app/frontend/dist, factory environment override, and
 fail production startup if index.html is absent. Earlier account-pending notes
 below are historical and superseded by this update.
+Fix commit 7bb42551308c5d90ab717227982d563e5b9f7a99 was pushed and auto-deployed.
+Public root HTML, referenced JS/CSS, /api/live and /api/health all return 200.
+The browser tool blocked this origin; user visual confirmation is still needed.
 
 Cards 1–4 are implemented locally: plans/revisions, tasks/tags, execution logs,
 atomic keyed completion, seven See metrics with source records, reflections and
@@ -71,8 +74,9 @@ Actual Neon idle/reconnect and Render startup behavior still require cloud verif
 
 ## 6. Next action
 
-Immediate: push the frontend-path fix and wait for Render's auto-deploy, then
-verify the PUBLIC root page, assets and browser before reporting recovery.
+Immediate: user reloads the public URL to confirm the rendered screen. HTTP root,
+assets and PostgreSQL readiness are verified after the fix; continue deployed
+save/refresh/export and actual-use checks.
 
 Finish Render sign-in, create a Neon Free project, then configure DATABASE_URL
 in Render and create the free blueprint from main. The user directly enters
@@ -104,6 +108,9 @@ This deployment step adds render.yaml and docs/RENDER-NEON.md, the DB-independen
 GCP-SETUP.md is retained as a superseded proposal.
 
 ## 9. Git state
+
+Runtime fix commit: 7bb42551308c5d90ab717227982d563e5b9f7a99, pushed to main and
+verified publicly. This documentation-only follow-up records recovery.
 
 Branch main; origin https://github.com/myeongjundev/t06-plando-see-diary.git.
 Start HEAD f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2. Cards 3–5 and free-hosting

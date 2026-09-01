@@ -81,5 +81,8 @@ frontend path to point under /usr/local/lib/python3.12 rather than /app.
 The Docker image now sets STATIC_DIST=/app/frontend/dist; the app honors that
 setting and refuses production startup if index.html is absent. The installed
 package was tested from /tmp inside the rebuilt image: root and every referenced
-JS/CSS asset returned 200. 53 backend tests passed. Public redeploy verification
-is the next gate; API health alone is not sufficient evidence of a working UI.
+JS/CSS asset returned 200. 53 backend tests passed. Render automatically deployed
+fix commit 7bb42551308c5d90ab717227982d563e5b9f7a99. Public verification then returned
+200 for / (text/html), both referenced JS/CSS assets, /api/live and /api/health
+(database=postgresql). The browser tool blocked this origin with ERR_BLOCKED_BY_CLIENT;
+visual UI verification and deployed save/refresh acceptance remain outstanding.

@@ -92,7 +92,10 @@ https://t06-plando-see-diary.onrender.com. API liveness/PostgreSQL readiness ret
 200, but the initial root page returned 404 because the installed package resolved
 the frontend path incorrectly. STATIC_DIST is now explicit in Docker; missing
 production index.html fails startup. 53 tests and installed-image root/assets
-checks pass. Push the fix and verify the actual public UI after automatic redeploy.
+checks pass. Fix 7bb42551308c5d90ab717227982d563e5b9f7a99 was pushed and automatically
+deployed. Public /, JS, CSS, /api/live and /api/health now all return 200. Browser
+tool access was blocked; ask the user to reload for visual confirmation, then finish
+deployed save/refresh/source/export acceptance.
 
 Account setup is complete. Verify public access, cold-start recovery, stored data and JSON.
 Obtain real safe records and user judgment text for SUBMISSION.md.

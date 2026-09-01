@@ -1,15 +1,15 @@
 # T06 submission draft — not ready to submit
 
-Product URL: pending public deployment.
+Product URL: https://t06-plando-see-diary.onrender.com
 
-Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/150a9052610705dad52274d94d28f674ab07d324
+Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/7bb42551308c5d90ab717227982d563e5b9f7a99
 
-This is the published Cards 3–5 and Render/Neon preparation commit. Replace it if
+This is the published app including the production frontend-path fix. Replace it if
 later application changes are deployed; verify private-browser access before submission.
 
 ## Four verification lines (T06-C59)
 
-Location: [public product URL pending] → See · 돌아보고 이어가기 → user's real plan.
+Location: https://t06-plando-see-diary.onrender.com → See · 돌아보고 이어가기 → user's real plan.
 
 Actions: ① Select the real plan ② Open actual-minutes source records ③ Download the full JSON using “전체 JSON 내려받기”.
 
