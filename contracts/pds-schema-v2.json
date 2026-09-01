@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/myeongjundev/t06-plando-see-diary/contracts/pds-schema-v2.json",
+  "title": "T06 Plan-Do-See database and export contract",
+  "contractVersion": 2,
+  "durationUnit": "minutes",
+  "timezoneRules": {
+    "databaseInstants": "UTC",
+    "displayTimezone": "Asia/Seoul",
+    "calendarDates": "YYYY-MM-DD without time conversion",
+    "overdue": "status is not completed and dueDate is before today in Asia/Seoul"
+  },
+  "type": "object",
+  "required": ["schemaVersion", "exportedAt", "plans", "planRevisions", "tasks", "taskTags", "completionEvents", "executionLogs", "reflections"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "exportedAt": { "type": "string", "format": "date-time" },
+    "plans": { "type": "array", "items": { "$ref": "#/$defs/plan" } },
+    "planRevisions": { "type": "array", "items": { "$ref": "#/$defs/planRevision" } },
+    "tasks": { "type": "array", "items": { "$ref": "#/$defs/task" } },
+    "taskTags": { "type": "array", "items": { "$ref": "#/$defs/taskTag" } },
+    "completionEvents": { "type": "array", "items": { "$ref": "#/$defs/completionEvent" } },
+    "executionLogs": { "type": "array", "items": { "$ref": "#/$defs/executionLog" } },
+    "reflections": { "type": "array", "items": { "$ref": "#/$defs/reflection" } }
+  },
+  "$defs": {
+    "uuid": { "type": "string", "format": "uuid" },
+    "date": { "type": "string", "format": "date" },
+    "instant": { "type": "string", "format": "date-time" },
+    "priority": { "type": "string", "enum": ["high", "medium", "low"] },
+    "minutes": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "plan": {
+      "type": "object",
+      "required": ["id", "title", "startDate", "endDate", "priority", "successCriterion", "estimatedMinutes", "durationUnit", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "startDate": { "$ref": "#/$defs/date" },
+        "endDate": { "$ref": "#/$defs/date" },
+        "priority": { "$ref": "#/$defs/priority" },
+        "successCriterion": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "estimatedMinutes": { "$ref": "#/$defs/minutes" },
+        "durationUnit": { "const": "minutes" },
+        "carriedImprovement": { "type": ["string", "null"], "maxLength": 500 },
+        "createdAt": { "$ref": "#/$defs/instant" },
+        "updatedAt": { "$ref": "#/$defs/instant" }
+      }
+    },
+    "planRevision": {
+      "allOf": [
+        { "$ref": "#/$defs/plan" },
+        {
+          "type": "object",
+          "required": ["revisionId", "planId", "revisionNumber", "replacedAt"],
+          "properties": {
+            "revisionId": { "$ref": "#/$defs/uuid" },
+            "planId": { "$ref": "#/$defs/uuid" },
+            "revisionNumber": { "type": "integer", "minimum": 1 },
+            "replacedAt": { "$ref": "#/$defs/instant" }
+          }
+        }
+      ]
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "planId", "content", "status", "priority", "estimatedMinutes", "durationUnit", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "planId": { "$ref": "#/$defs/uuid" },
+        "content": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "status": { "type": "string", "enum": ["active", "completed"] },
+        "dueDate": { "anyOf": [{ "$ref": "#/$defs/date" }, { "type": "null" }] },
+        "priority": { "$ref": "#/$defs/priority" },
+        "estimatedMinutes": { "$ref": "#/$defs/minutes" },
+        "durationUnit": { "const": "minutes" },
+        "deletedAt": { "anyOf": [{ "$ref": "#/$defs/instant" }, { "type": "null" }] },
+        "createdAt": { "$ref": "#/$defs/instant" },
+        "updatedAt": { "$ref": "#/$defs/instant" }
+      }
+    },
+    "taskTag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "taskId", "value"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "taskId": { "$ref": "#/$defs/uuid" },
+        "value": { "type": "string", "minLength": 1, "maxLength": 40 }
+      }
+    },
+    "completionEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "taskId", "idempotencyKey", "completedAt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "taskId": { "$ref": "#/$defs/uuid" },
+        "idempotencyKey": { "type": "string", "minLength": 8, "maxLength": 100 },
+        "completedAt": { "$ref": "#/$defs/instant" }
+      }
+    },
+    "executionLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "taskId", "startedAt", "endedAt", "actualMinutes", "durationUnit", "blockerReason", "createdAt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "taskId": { "$ref": "#/$defs/uuid" },
+        "startedAt": { "$ref": "#/$defs/instant" },
+        "endedAt": { "$ref": "#/$defs/instant" },
+        "actualMinutes": { "$ref": "#/$defs/minutes" },
+        "durationUnit": { "const": "minutes" },
+        "blockerReason": { "type": "string", "maxLength": 500 },
+        "createdAt": { "$ref": "#/$defs/instant" }
+      }
+    },
+    "reflection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "planId", "periodStart", "periodEnd", "improvement", "createdAt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "planId": { "$ref": "#/$defs/uuid" },
+        "periodStart": { "$ref": "#/$defs/date" },
+        "periodEnd": { "$ref": "#/$defs/date" },
+        "improvement": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "nextPlanId": { "anyOf": [{ "$ref": "#/$defs/uuid" }, { "type": "null" }] },
+        "createdAt": { "$ref": "#/$defs/instant" }
+      }
+    }
+  },
+  "database": {
+    "engine": "PostgreSQL",
+    "tables": {
+      "plans": { "primaryKey": "id", "children": ["plan_revisions.plan_id", "tasks.plan_id", "reflections.plan_id"] },
+      "plan_revisions": { "primaryKey": "revision_id", "unique": [["plan_id", "revision_number"]] },
+      "tasks": { "primaryKey": "id", "softDelete": "deleted_at" },
+      "task_tags": { "primaryKey": "id", "unique": [["task_id", "value"]] },
+      "completion_events": { "primaryKey": "id", "unique": [["task_id", "idempotency_key"]] },
+      "execution_logs": { "primaryKey": "id" },
+      "reflections": { "primaryKey": "id", "foreignKeys": { "next_plan_id": "plans.id" } }
+    }
+  }
+}
