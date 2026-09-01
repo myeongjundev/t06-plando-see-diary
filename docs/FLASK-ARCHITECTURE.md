@@ -56,7 +56,7 @@ The exact fields, nullability, units, relationships, and date rules are canonica
 | POST | `/api/tasks/:id/reopen` | return task to active |
 | GET, POST | `/api/tasks/:id/executions` | linked execution logs |
 | GET | `/api/plans/:id/see` | aggregates plus source IDs |
-| POST | `/api/plans/:id/reflections` | save improvement line |
+| GET, POST | `/api/plans/:id/reflections` | list reflections or save improvement line |
 | POST | `/api/reflections/:id/next-plan` | carry improvement into a new plan |
 | GET | `/api/export` | download one complete JSON file |
 | GET | `/api/health` | deployment and database readiness |
@@ -71,6 +71,19 @@ The UI states and the API implements:
 4. UUID: ascending final tie-break.
 
 Search and filters are applied before the same ordering rule.
+
+## See and reflection rules (Card 4)
+
+- `GET /api/plans/:id/see` accepts both `periodStart` and `periodEnd`, or neither.
+  The period selects tasks by inclusive due date; all execution logs of those tasks
+  are included. Without a period all non-deleted plan tasks are included.
+- A single task/log outer-join result supplies the seven numbers, metric-specific
+  source IDs, and serialized task/log records. Completed count is current status,
+  overdue uses Seoul today, and blocked count deduplicates tasks with nonblank reasons.
+- Reflections store a single improvement line and date range. A whole-plan review's
+  range spans plan dates and included task due dates. Reflection text is immutable.
+- Next-plan creation locks the reflection, creates the plan with exact copied text,
+  and links its UUID in one transaction. A replay returns the already linked plan.
 
 ## Security and T07 boundary
 

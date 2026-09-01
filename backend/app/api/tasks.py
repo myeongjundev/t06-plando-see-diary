@@ -5,8 +5,8 @@ from app.api.plans import error_response
 from app.extensions import db
 from app.models import Plan, Task
 from app.services.plans import ValidationError
+from app.services.executions import CompletionConflict, complete_task, serialize_completion
 from app.services.tasks import (
-    complete_task,
     create_task,
     delete_task,
     reopen_task,
@@ -81,7 +81,13 @@ def post_complete_task(task_id: str):
     task = active_task(task_id)
     if task is None:
         return error_response("할 일을 찾을 수 없습니다.", status=404)
-    return jsonify({"task": serialize_task(complete_task(task))})
+    try:
+        task, event, replayed = complete_task(task, request.get_json(silent=True))
+    except ValidationError as exc:
+        return error_response("완료 요청이 올바르지 않습니다.", details=exc.errors)
+    except CompletionConflict as exc:
+        return error_response(str(exc), status=409)
+    return jsonify({"task": serialize_task(task), "completionEvent": serialize_completion(event), "replayed": replayed})
 
 
 @api.post("/tasks/<task_id>/reopen")
@@ -89,7 +95,10 @@ def post_reopen_task(task_id: str):
     task = active_task(task_id)
     if task is None:
         return error_response("할 일을 찾을 수 없습니다.", status=404)
-    return jsonify({"task": serialize_task(reopen_task(task))})
+    try:
+        return jsonify({"task": serialize_task(reopen_task(task))})
+    except CompletionConflict as exc:
+        return error_response(str(exc), status=409)
 
 
 @api.delete("/tasks/<task_id>")

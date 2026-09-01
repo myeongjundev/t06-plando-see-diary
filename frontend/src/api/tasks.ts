@@ -13,6 +13,7 @@ export interface Task {
   estimatedMinutes: number;
   durationUnit: "minutes";
   completedAt: string | null;
+  deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -36,7 +37,7 @@ interface ApiErrorBody {
   error?: { message?: string; details?: Record<string, string> };
 }
 
-async function request<T>(url: string, init?: RequestInit): Promise<T> {
+export async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
@@ -77,8 +78,10 @@ export async function updateTask(id: string, input: Partial<TaskInput>): Promise
   ).task;
 }
 
-export async function completeTask(id: string): Promise<Task> {
-  return (await request<{ task: Task }>(`/api/tasks/${id}/complete`, { method: "POST" })).task;
+export async function completeTask(id: string, idempotencyKey: string): Promise<Task> {
+  return (await request<{ task: Task }>(`/api/tasks/${id}/complete`, {
+    method: "POST", body: JSON.stringify({ idempotencyKey }),
+  })).task;
 }
 
 export async function reopenTask(id: string): Promise<Task> {

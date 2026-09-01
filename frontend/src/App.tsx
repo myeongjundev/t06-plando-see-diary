@@ -9,6 +9,8 @@ import {
   updatePlan,
 } from "./api/plans";
 import TaskPanel from "./features/tasks/TaskPanel";
+import SeePanel from "./features/see/SeePanel";
+import ExportPanel from "./features/export/ExportPanel";
 
 const EMPTY_PLAN: PlanInput = {
   title: "T06 프로젝트 완주",
@@ -28,6 +30,7 @@ function App() {
   const [editMinutes, setEditMinutes] = useState(0);
   const [message, setMessage] = useState("계획을 불러오는 중입니다.");
   const [busy, setBusy] = useState(false);
+  const [dataRevision, setDataRevision] = useState(0);
 
   async function refresh() {
     try {
@@ -133,18 +136,21 @@ function App() {
 
       <section className="plan-list" aria-label="저장된 계획">
         {plans.map((plan) => (
-          <article className="plan-card" key={plan.id}>
+          <article className="plan-card" id={`plan-${plan.id}`} key={plan.id}>
             <div className="plan-top"><span className={`priority ${plan.priority}`}>{plan.priority}</span><span>{plan.startDate} — {plan.endDate}</span></div>
             <h3>{plan.title}</h3>
             <p>{plan.successCriterion}</p>
             <strong>{plan.estimatedMinutes}분 예상</strong>
+            {plan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{plan.carriedImprovement}</strong></p>}
             <div className="actions"><button onClick={() => beginRevise(plan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(plan.id)}>수정 이력</button></div>
             {editingPlanId === plan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, plan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}
             {history[plan.id] && <div className="history"><h4>처음 계획 기록</h4>{history[plan.id].length === 0 ? <p>아직 수정 이력이 없습니다.</p> : history[plan.id].map((item) => <p key={item.revisionId}>#{item.revisionNumber} · {item.estimatedMinutes}분 · {item.successCriterion}</p>)}</div>}
           </article>
         ))}
       </section>
-      <TaskPanel plans={plans} />
+      <TaskPanel plans={plans} onDataChange={() => setDataRevision((value) => value + 1)} />
+      <SeePanel plans={plans} revision={dataRevision} onPlanCreated={(plan) => setPlans((current) => current.some((item) => item.id === plan.id) ? current : [...current, plan])} />
+      <ExportPanel />
     </main>
   );
 }

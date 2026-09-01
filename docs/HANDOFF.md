@@ -1,88 +1,94 @@
-# T06 handoff · Cards 1–2 complete
+# T06 handoff · Render + Neon deployment preparation
 
 ## 1. Goal
 
-Complete the Card 2 task workflow for T06-C09–T06-C20 without changing the fixed
-expectations established for Card 1.
+Deploy Cards 1–5 using Render Free and Neon Free for approximately three months,
+then complete public acceptance and submission evidence.
 
 ## 2. Current state
 
-- Official source and all 44 acceptance IDs remain fixed.
-- Card 1 creates plans and preserves immutable pre-edit revisions.
-- Card 2 creates, edits, completes, reopens, and soft-deletes tasks linked to a plan.
-- Tasks store a due date, priority, normalized tags, estimated minutes, and UUID.
-- Server-side search covers content and tags; filters support status, priority, and
-  an exact tag.
-- The API and screen use the declared deterministic order: priority, due date,
-  created time, then UUID.
-- React provides inline edit and delete confirmation instead of native browser
-  prompts.
+Cards 1–4 are implemented locally: plans/revisions, tasks/tags, execution logs,
+atomic keyed completion, seven See metrics with source records, reflections and
+atomic next-plan links. Card 5 exports all seven tables from one snapshot,
+including deleted tasks/history; the JSON contract maps every stored column.
+
+The user chose Render Free + Neon Free, superseding the GCP proposals. render.yaml
+uses the existing non-root Waitress Docker image and prompts for secret DATABASE_URL.
+Startup migrates before serving React and /api on one origin. /api/live is the
+DB-independent hosting probe; /api/health explicitly checks PostgreSQL. SQLAlchemy
+pre-ping checks reused connections after DB sleep without background queries.
+
+Render's browser is at Sign In. No Render/Neon CLI or connector was available;
+GitHub CLI is authenticated as myeongjundev. The user was asked to sign into Render
+with GitHub while local preparation was finished. Neon account/DB are not yet
+verified. Do not claim a public deployment or URL exists.
 
 ## 3. Run commands
 
-Use `docs/DEVELOPMENT.md`. Verified checks:
-
-```powershell
-cd backend
-.\.venv\Scripts\python.exe -m pytest --cov=app --cov-report=term-missing
-
-cd ..\frontend
-npm run build
-```
-
-Local servers use Flask at `http://127.0.0.1:5000` and Vite at
-`http://127.0.0.1:5173`.
+Repository: C:\gov\project\skt aleph\t06-plando-see-diary.
+Backend: `.\.venv\Scripts\python.exe -m pytest --cov=app --cov-report=term`.
+Frontend: `npm run build`.
+Root: `docker compose up --build -d` for the LOCAL PostgreSQL stack on port 8000.
+Backend: `python scripts/postgres_smoke.py`, restart web and wait until healthy,
+then `python scripts/postgres_smoke.py --verify`. This writes synthetic local data.
+Backend: `python scripts/audit_secrets.py` scans common patterns without printing values.
+Use docs/RENDER-NEON.md for cloud setup. Never paste DATABASE_URL into chat or Git.
 
 ## 4. Passed acceptance IDs
 
-- Card 1: T06-C04–T06-C08.
-- Card 2: T06-C09–T06-C20.
+Cards 1–4 (C04–C33/C83) retain local regression coverage. C36 local validates
+all exported tables/IDs/history against the canonical schema. C82 local warning
+is exact. C57 local script-shaped text renders literally without a script node.
+Local browser download reports success, with no warning/error console entries.
 
-Card 2 evidence: the automated suite created a task with a UUID and all required
-fields, edited the same ID, completed and reopened it, soft-deleted only one task,
-searched a unique phrase, combined completed/high filters, and reproduced the same
-declared order twice. The local browser also completed create, edit, complete,
-reopen, and search flows with no console errors.
+Latest run: 52 backend tests passed, 91% coverage; frontend build passed.
+The new test fails if /api/live attempts any database session/engine access.
+Prior production Docker build, PostgreSQL migrations and schema check passed.
+Four concurrent completion requests produced one event; four next-plan requests
+produced one linked plan. Web restart preserved all exported values except time.
+Synthetic See: 5 tasks, 1 completed, 3 blocked, estimated 300, actual 150, variance -150.
+Prior Git/worktree/bundle credential-pattern scan found no concrete credentials.
 
 ## 5. Failed or unrun acceptance IDs
 
-- Failed: none in Cards 1–2.
-- Unrun: 27 remaining official IDs, including Card 3–5 and all deployment checks.
-- PostgreSQL deployment has not been run; local persistence does not claim T06-C34
-  or T06-C35.
-- T06-C79 requires five real, safe-to-disclose deployed tasks and is not claimed by
-  synthetic automated fixtures.
+No final test failures. 12 existing get_engine deprecation warnings remain.
+Production local browser port 8000 was blocked by the browser tool; HTTP and DB
+checks passed, while UI checks used dev port 5173.
+Public C01, deployed C34/C35, comprehensive live C58 and actual-use C78–C81 are
+unrun. C59/C60 have a draft; public URL and the user's own judgments are missing.
+Actual Neon idle/reconnect and Render startup behavior still require cloud verification.
 
 ## 6. Next action
 
-Implement execution logs and completion-event idempotency for T06-C21–T06-C27.
-Add the database unique constraint before relying on the React button state.
+Finish Render sign-in, create a Neon Free project, then configure DATABASE_URL
+in Render and create the free blueprint from main. The user directly enters
+secrets in provider settings. Verify the generated HTTPS URL, DB readiness, save/
+refresh/export, first request after idle and private-browser access. Complete
+SUBMISSION.md with actual non-sensitive records and user-confirmed judgments.
 
 ## 7. Do not change
 
-- Do not change the 44 fixed expectations to make code pass.
-- Do not add authentication in T06.
-- Do not commit local databases, real diary data, exports, or secrets.
-- Keep UUID identity, minute units, UTC storage, and `Asia/Seoul` date rules.
-- Keep plan revisions immutable and task deletion soft.
-- Keep task ordering as priority → due date → created time → UUID.
-- Completion idempotency must be enforced by the database in Card 3.
+Keep all 44 fixed acceptance expectations. No T06 authentication. Preserve UUIDs,
+revisions, minute units, UTC instants, Seoul dates, soft deletion, deterministic
+sorting, task locks/idempotency keys and atomic next-plan linking. See counts
+current non-deleted tasks in its declared due-date cohort.
+Do not create the superseded GCP VM or any paid hosting plan. Keep Render/Neon
+within free quotas and retain idle sleep. Do not add periodic keep-awake pings.
+Do not commit secrets, actual diary records, private exports or local databases.
+Do not invent actual times, user judgment or rejected AI advice.
 
 ## 8. Changed files
 
-- `backend/app/models/task.py`: task and normalized-tag tables.
-- `backend/app/services/tasks.py`: validation, transitions, soft delete, filtering,
-  searching, and deterministic ordering.
-- `backend/app/api/tasks.py`: Card 2 HTTP routes.
-- `backend/migrations/versions/7f02f5379407_add_task_workflow_tables.py`: database
-  migration.
-- `backend/tests/acceptance/test_card2_tasks.py`: observable C09–C20 checks.
-- `frontend/src/api/tasks.ts` and `frontend/src/features/tasks/TaskPanel.tsx`: Card 2
-  screen workflow.
-- `frontend/src/App.tsx` and `frontend/src/styles.css`: integration and presentation.
+Cards 3–5: backend models/services/APIs, additive migrations, acceptance tests,
+PostgreSQL smoke and credential audit scripts; frontend Do/See/export panels;
+canonical contract; Docker/Compose/launch configuration and project documentation.
+This deployment step adds render.yaml and docs/RENDER-NEON.md, the DB-independent
+/api/live route/test, SQLAlchemy pre-ping, and updated deployment decisions/status.
+GCP-SETUP.md is retained as a superseded proposal.
 
 ## 9. Git state
 
-- Card 1 handoff baseline: `c1b8fe9`
-- Card 2 implementation: `f2b9c8c` (`feat: implement T06 task workflow`)
-- Card 2 handoff: `22a6655` (`docs: hand off completed T06 card 2`)
+Branch main; origin https://github.com/myeongjundev/t06-plando-see-diary.git.
+Start HEAD f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2. Cards 3–5 and free-hosting
+preparation are being published together. Record the resulting commit after push.
+Only ignored local databases, .env, dependency folders and tmp evidence remain local.

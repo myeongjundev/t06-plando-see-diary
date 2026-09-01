@@ -10,6 +10,8 @@ from app.extensions import db
 from app.models import Plan, Task, TaskTag
 from app.models.plan import utc_now
 from app.services.plans import PRIORITIES, ValidationError
+from app.services.executions import lock_task
+from app.time import utc_iso
 
 EDITABLE_FIELDS = {"content", "dueDate", "priority", "tags", "estimatedMinutes"}
 STATUSES = {"active", "completed"}
@@ -66,7 +68,7 @@ def validate_task(payload: dict[str, Any] | None, *, partial: bool = False) -> d
         values["due_date"] = _parse_date(payload.get("dueDate"))
     if "priority" in payload:
         priority = payload.get("priority")
-        if priority not in PRIORITIES:
+        if not isinstance(priority, str) or priority not in PRIORITIES:
             raise ValidationError({"priority": "high, medium, low 중 하나여야 합니다."})
         values["priority"] = priority
     if "estimatedMinutes" in payload:
@@ -100,19 +102,12 @@ def update_task(task: Task, payload: dict[str, Any] | None) -> Task:
     return task
 
 
-def complete_task(task: Task) -> Task:
-    if task.status != "completed":
-        task.status = "completed"
-        task.completed_at = utc_now()
-        db.session.commit()
-    return task
-
-
 def reopen_task(task: Task) -> Task:
+    task = lock_task(task)
     if task.status != "active":
         task.status = "active"
         task.completed_at = None
-        db.session.commit()
+    db.session.commit()
     return task
 
 
@@ -165,8 +160,9 @@ def serialize_task(task: Task) -> dict[str, Any]:
         "tags": [tag.value for tag in task.tags],
         "estimatedMinutes": task.estimated_minutes,
         "durationUnit": "minutes",
-        "completedAt": task.completed_at.isoformat() if task.completed_at else None,
-        "createdAt": task.created_at.isoformat(),
-        "updatedAt": task.updated_at.isoformat(),
+        "completedAt": utc_iso(task.completed_at) if task.completed_at else None,
+        "deletedAt": utc_iso(task.deleted_at) if task.deleted_at else None,
+        "createdAt": utc_iso(task.created_at),
+        "updatedAt": utc_iso(task.updated_at),
     }
 

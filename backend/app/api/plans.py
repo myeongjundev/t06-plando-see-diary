@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from sqlalchemy import text
 
 from app.api import api
 from app.extensions import db
@@ -10,8 +11,16 @@ def error_response(message: str, *, details: dict[str, str] | None = None, statu
     return jsonify({"error": {"message": message, "details": details or {}}}), status
 
 
+@api.get("/live")
+def live():
+    # Hosting probes must not keep a serverless database awake.
+    # /health remains the explicit database readiness check.
+    return jsonify({"status": "ok"})
+
+
 @api.get("/health")
 def health():
+    db.session.execute(text("SELECT 1"))
     engine = db.engine.url.get_backend_name()
     return jsonify({"status": "ok", "database": engine})
 

@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: t06_diary
+      POSTGRES_USER: t06_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in an untracked .env file}
+    volumes:
+      - diary-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U t06_user -d t06_diary"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  web:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://t06_user:${POSTGRES_PASSWORD}@db:5432/t06_diary
+      REQUIRE_POSTGRES: "1"
+      PORT: "8000"
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+volumes:
+  diary-data:

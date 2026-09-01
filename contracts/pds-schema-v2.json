@@ -8,55 +8,184 @@
     "databaseInstants": "UTC",
     "displayTimezone": "Asia/Seoul",
     "calendarDates": "YYYY-MM-DD without time conversion",
-    "overdue": "status is not completed and dueDate is before today in Asia/Seoul"
+    "overdue": "status is not completed and dueDate is before today in Asia/Seoul",
+    "seePeriod": "Optional inclusive task dueDate range within a plan; include all execution logs of selected non-deleted tasks"
   },
   "type": "object",
-  "required": ["schemaVersion", "exportedAt", "plans", "planRevisions", "tasks", "taskTags", "completionEvents", "executionLogs", "reflections"],
+  "required": [
+    "schemaVersion",
+    "exportedAt",
+    "plans",
+    "planRevisions",
+    "tasks",
+    "taskTags",
+    "completionEvents",
+    "executionLogs",
+    "reflections"
+  ],
   "properties": {
-    "schemaVersion": { "const": 2 },
-    "exportedAt": { "type": "string", "format": "date-time" },
-    "plans": { "type": "array", "items": { "$ref": "#/$defs/plan" } },
-    "planRevisions": { "type": "array", "items": { "$ref": "#/$defs/planRevision" } },
-    "tasks": { "type": "array", "items": { "$ref": "#/$defs/task" } },
-    "taskTags": { "type": "array", "items": { "$ref": "#/$defs/taskTag" } },
-    "completionEvents": { "type": "array", "items": { "$ref": "#/$defs/completionEvent" } },
-    "executionLogs": { "type": "array", "items": { "$ref": "#/$defs/executionLog" } },
-    "reflections": { "type": "array", "items": { "$ref": "#/$defs/reflection" } }
+    "schemaVersion": {
+      "const": 2
+    },
+    "exportedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/plan"
+      }
+    },
+    "planRevisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/planRevision"
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    "taskTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/taskTag"
+      }
+    },
+    "completionEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/completionEvent"
+      }
+    },
+    "executionLogs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/executionLog"
+      }
+    },
+    "reflections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reflection"
+      }
+    }
   },
   "$defs": {
-    "uuid": { "type": "string", "format": "uuid" },
-    "date": { "type": "string", "format": "date" },
-    "instant": { "type": "string", "format": "date-time" },
-    "priority": { "type": "string", "enum": ["high", "medium", "low"] },
-    "minutes": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "instant": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
     "plan": {
       "type": "object",
-      "required": ["id", "title", "startDate", "endDate", "priority", "successCriterion", "estimatedMinutes", "durationUnit", "createdAt", "updatedAt"],
+      "required": [
+        "id",
+        "title",
+        "startDate",
+        "endDate",
+        "priority",
+        "successCriterion",
+        "estimatedMinutes",
+        "durationUnit",
+        "createdAt",
+        "updatedAt",
+        "carriedImprovement"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
-        "startDate": { "$ref": "#/$defs/date" },
-        "endDate": { "$ref": "#/$defs/date" },
-        "priority": { "$ref": "#/$defs/priority" },
-        "successCriterion": { "type": "string", "minLength": 1, "maxLength": 500 },
-        "estimatedMinutes": { "$ref": "#/$defs/minutes" },
-        "durationUnit": { "const": "minutes" },
-        "carriedImprovement": { "type": ["string", "null"], "maxLength": 500 },
-        "createdAt": { "$ref": "#/$defs/instant" },
-        "updatedAt": { "$ref": "#/$defs/instant" }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "startDate": {
+          "$ref": "#/$defs/date"
+        },
+        "endDate": {
+          "$ref": "#/$defs/date"
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
+        "successCriterion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "estimatedMinutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "durationUnit": {
+          "const": "minutes"
+        },
+        "carriedImprovement": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 500
+        },
+        "createdAt": {
+          "$ref": "#/$defs/instant"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/instant"
+        }
       }
     },
     "planRevision": {
       "allOf": [
-        { "$ref": "#/$defs/plan" },
+        {
+          "$ref": "#/$defs/plan"
+        },
         {
           "type": "object",
-          "required": ["revisionId", "planId", "revisionNumber", "replacedAt"],
+          "required": [
+            "revisionId",
+            "planId",
+            "revisionNumber",
+            "replacedAt"
+          ],
           "properties": {
-            "revisionId": { "$ref": "#/$defs/uuid" },
-            "planId": { "$ref": "#/$defs/uuid" },
-            "revisionNumber": { "type": "integer", "minimum": 1 },
-            "replacedAt": { "$ref": "#/$defs/instant" }
+            "revisionId": {
+              "$ref": "#/$defs/uuid"
+            },
+            "planId": {
+              "$ref": "#/$defs/uuid"
+            },
+            "revisionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "replacedAt": {
+              "$ref": "#/$defs/instant"
+            }
           }
         }
       ]
@@ -64,82 +193,592 @@
     "task": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "planId", "content", "status", "priority", "estimatedMinutes", "durationUnit", "createdAt", "updatedAt"],
+      "required": [
+        "id",
+        "planId",
+        "content",
+        "status",
+        "priority",
+        "estimatedMinutes",
+        "durationUnit",
+        "createdAt",
+        "updatedAt",
+        "dueDate",
+        "completedAt",
+        "deletedAt"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "planId": { "$ref": "#/$defs/uuid" },
-        "content": { "type": "string", "minLength": 1, "maxLength": 500 },
-        "status": { "type": "string", "enum": ["active", "completed"] },
-        "dueDate": { "anyOf": [{ "$ref": "#/$defs/date" }, { "type": "null" }] },
-        "priority": { "$ref": "#/$defs/priority" },
-        "estimatedMinutes": { "$ref": "#/$defs/minutes" },
-        "durationUnit": { "const": "minutes" },
-        "deletedAt": { "anyOf": [{ "$ref": "#/$defs/instant" }, { "type": "null" }] },
-        "createdAt": { "$ref": "#/$defs/instant" },
-        "updatedAt": { "$ref": "#/$defs/instant" }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "planId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "completed"
+          ]
+        },
+        "dueDate": {
+          "$ref": "#/$defs/date"
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
+        "estimatedMinutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "durationUnit": {
+          "const": "minutes"
+        },
+        "deletedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/instant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/instant"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/instant"
+        },
+        "completedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/instant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
       }
     },
     "taskTag": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "taskId", "value"],
+      "required": [
+        "id",
+        "taskId",
+        "value"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "taskId": { "$ref": "#/$defs/uuid" },
-        "value": { "type": "string", "minLength": 1, "maxLength": 40 }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
       }
     },
     "completionEvent": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "taskId", "idempotencyKey", "completedAt"],
+      "required": [
+        "id",
+        "taskId",
+        "idempotencyKey",
+        "completedAt"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "taskId": { "$ref": "#/$defs/uuid" },
-        "idempotencyKey": { "type": "string", "minLength": 8, "maxLength": 100 },
-        "completedAt": { "$ref": "#/$defs/instant" }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 100
+        },
+        "completedAt": {
+          "$ref": "#/$defs/instant"
+        }
       }
     },
     "executionLog": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "taskId", "startedAt", "endedAt", "actualMinutes", "durationUnit", "blockerReason", "createdAt"],
+      "required": [
+        "id",
+        "taskId",
+        "startedAt",
+        "endedAt",
+        "actualMinutes",
+        "durationUnit",
+        "blockerReason",
+        "createdAt"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "taskId": { "$ref": "#/$defs/uuid" },
-        "startedAt": { "$ref": "#/$defs/instant" },
-        "endedAt": { "$ref": "#/$defs/instant" },
-        "actualMinutes": { "$ref": "#/$defs/minutes" },
-        "durationUnit": { "const": "minutes" },
-        "blockerReason": { "type": "string", "maxLength": 500 },
-        "createdAt": { "$ref": "#/$defs/instant" }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "taskId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "startedAt": {
+          "$ref": "#/$defs/instant"
+        },
+        "endedAt": {
+          "$ref": "#/$defs/instant"
+        },
+        "actualMinutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "durationUnit": {
+          "const": "minutes"
+        },
+        "blockerReason": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "$ref": "#/$defs/instant"
+        }
       }
     },
     "reflection": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "planId", "periodStart", "periodEnd", "improvement", "createdAt"],
+      "required": [
+        "id",
+        "planId",
+        "periodStart",
+        "periodEnd",
+        "improvement",
+        "createdAt",
+        "nextPlanId"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/uuid" },
-        "planId": { "$ref": "#/$defs/uuid" },
-        "periodStart": { "$ref": "#/$defs/date" },
-        "periodEnd": { "$ref": "#/$defs/date" },
-        "improvement": { "type": "string", "minLength": 1, "maxLength": 500 },
-        "nextPlanId": { "anyOf": [{ "$ref": "#/$defs/uuid" }, { "type": "null" }] },
-        "createdAt": { "$ref": "#/$defs/instant" }
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "planId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "periodStart": {
+          "$ref": "#/$defs/date"
+        },
+        "periodEnd": {
+          "$ref": "#/$defs/date"
+        },
+        "improvement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "nextPlanId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/instant"
+        }
       }
     }
   },
   "database": {
     "engine": "PostgreSQL",
     "tables": {
-      "plans": { "primaryKey": "id", "children": ["plan_revisions.plan_id", "tasks.plan_id", "reflections.plan_id"] },
-      "plan_revisions": { "primaryKey": "revision_id", "unique": [["plan_id", "revision_number"]] },
-      "tasks": { "primaryKey": "id", "softDelete": "deleted_at" },
-      "task_tags": { "primaryKey": "id", "unique": [["task_id", "value"]] },
-      "completion_events": { "primaryKey": "id", "unique": [["task_id", "idempotency_key"]] },
-      "execution_logs": { "primaryKey": "id" },
-      "reflections": { "primaryKey": "id", "foreignKeys": { "next_plan_id": "plans.id" } }
+      "plans": {
+        "primaryKey": "id",
+        "children": [
+          "plan_revisions.plan_id",
+          "tasks.plan_id",
+          "reflections.plan_id"
+        ],
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "title": {
+            "exportField": "title",
+            "type": "VARCHAR(160)",
+            "nullable": false
+          },
+          "start_date": {
+            "exportField": "startDate",
+            "type": "DATE",
+            "nullable": false
+          },
+          "end_date": {
+            "exportField": "endDate",
+            "type": "DATE",
+            "nullable": false
+          },
+          "priority": {
+            "exportField": "priority",
+            "type": "VARCHAR(10)",
+            "nullable": false
+          },
+          "success_criterion": {
+            "exportField": "successCriterion",
+            "type": "TEXT",
+            "nullable": false
+          },
+          "estimated_minutes": {
+            "exportField": "estimatedMinutes",
+            "type": "INTEGER",
+            "nullable": false
+          },
+          "carried_improvement": {
+            "exportField": "carriedImprovement",
+            "type": "TEXT",
+            "nullable": true
+          },
+          "created_at": {
+            "exportField": "createdAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "updated_at": {
+            "exportField": "updatedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        },
+        "foreignKeys": {}
+      },
+      "plan_revisions": {
+        "primaryKey": "revision_id",
+        "unique": [
+          [
+            "plan_id",
+            "revision_number"
+          ]
+        ],
+        "fields": {
+          "revision_id": {
+            "exportField": "revisionId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "plan_id": {
+            "exportField": "planId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "revision_number": {
+            "exportField": "revisionNumber",
+            "type": "INTEGER",
+            "nullable": false
+          },
+          "title": {
+            "exportField": "title",
+            "type": "VARCHAR(160)",
+            "nullable": false
+          },
+          "start_date": {
+            "exportField": "startDate",
+            "type": "DATE",
+            "nullable": false
+          },
+          "end_date": {
+            "exportField": "endDate",
+            "type": "DATE",
+            "nullable": false
+          },
+          "priority": {
+            "exportField": "priority",
+            "type": "VARCHAR(10)",
+            "nullable": false
+          },
+          "success_criterion": {
+            "exportField": "successCriterion",
+            "type": "TEXT",
+            "nullable": false
+          },
+          "estimated_minutes": {
+            "exportField": "estimatedMinutes",
+            "type": "INTEGER",
+            "nullable": false
+          },
+          "carried_improvement": {
+            "exportField": "carriedImprovement",
+            "type": "TEXT",
+            "nullable": true
+          },
+          "created_at": {
+            "exportField": "createdAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "updated_at": {
+            "exportField": "updatedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "replaced_at": {
+            "exportField": "replacedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        },
+        "foreignKeys": {
+          "plan_id": "plans.id"
+        },
+        "exportAlias": "id equals planId; revisionId is the revision primary key"
+      },
+      "tasks": {
+        "primaryKey": "id",
+        "softDelete": "deleted_at",
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "plan_id": {
+            "exportField": "planId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "content": {
+            "exportField": "content",
+            "type": "TEXT",
+            "nullable": false
+          },
+          "status": {
+            "exportField": "status",
+            "type": "VARCHAR(12)",
+            "nullable": false
+          },
+          "due_date": {
+            "exportField": "dueDate",
+            "type": "DATE",
+            "nullable": false
+          },
+          "priority": {
+            "exportField": "priority",
+            "type": "VARCHAR(10)",
+            "nullable": false
+          },
+          "estimated_minutes": {
+            "exportField": "estimatedMinutes",
+            "type": "INTEGER",
+            "nullable": false
+          },
+          "completed_at": {
+            "exportField": "completedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": true
+          },
+          "deleted_at": {
+            "exportField": "deletedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": true
+          },
+          "created_at": {
+            "exportField": "createdAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "updated_at": {
+            "exportField": "updatedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        },
+        "foreignKeys": {
+          "plan_id": "plans.id"
+        }
+      },
+      "task_tags": {
+        "primaryKey": "id",
+        "unique": [
+          [
+            "task_id",
+            "value"
+          ]
+        ],
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "task_id": {
+            "exportField": "taskId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "value": {
+            "exportField": "value",
+            "type": "VARCHAR(40)",
+            "nullable": false
+          }
+        },
+        "foreignKeys": {
+          "task_id": "tasks.id"
+        }
+      },
+      "completion_events": {
+        "primaryKey": "id",
+        "unique": [
+          [
+            "task_id",
+            "idempotency_key"
+          ]
+        ],
+        "foreignKeys": {
+          "task_id": "tasks.id"
+        },
+        "replayRule": "Return the original event without a status transition, even after reopen",
+        "transactionRule": "Lock task, insert event and mark completed in one transaction",
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "task_id": {
+            "exportField": "taskId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "idempotency_key": {
+            "exportField": "idempotencyKey",
+            "type": "VARCHAR(100)",
+            "nullable": false
+          },
+          "completed_at": {
+            "exportField": "completedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        }
+      },
+      "execution_logs": {
+        "primaryKey": "id",
+        "foreignKeys": {
+          "task_id": "tasks.id"
+        },
+        "appendOnly": true,
+        "checks": [
+          "ended_at > started_at",
+          "actual_minutes BETWEEN 0 AND 1000000"
+        ],
+        "durationRule": "Entered actual minutes are independent of elapsed time and never overwrite estimates",
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "task_id": {
+            "exportField": "taskId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "started_at": {
+            "exportField": "startedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "ended_at": {
+            "exportField": "endedAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          },
+          "actual_minutes": {
+            "exportField": "actualMinutes",
+            "type": "INTEGER",
+            "nullable": false
+          },
+          "blocker_reason": {
+            "exportField": "blockerReason",
+            "type": "TEXT",
+            "nullable": false
+          },
+          "created_at": {
+            "exportField": "createdAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        }
+      },
+      "reflections": {
+        "primaryKey": "id",
+        "foreignKeys": {
+          "plan_id": "plans.id",
+          "next_plan_id": "plans.id"
+        },
+        "checks": [
+          "period_end >= period_start"
+        ],
+        "improvementRule": "Nonblank single line, at most 500 characters, copied exactly to the next plan",
+        "nextPlanRule": "Lock reflection and create/link one next plan in one transaction; retries return that plan",
+        "fields": {
+          "id": {
+            "exportField": "id",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "plan_id": {
+            "exportField": "planId",
+            "type": "VARCHAR(36)",
+            "nullable": false
+          },
+          "period_start": {
+            "exportField": "periodStart",
+            "type": "DATE",
+            "nullable": false
+          },
+          "period_end": {
+            "exportField": "periodEnd",
+            "type": "DATE",
+            "nullable": false
+          },
+          "improvement": {
+            "exportField": "improvement",
+            "type": "TEXT",
+            "nullable": false
+          },
+          "next_plan_id": {
+            "exportField": "nextPlanId",
+            "type": "VARCHAR(36)",
+            "nullable": true
+          },
+          "created_at": {
+            "exportField": "createdAt",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false
+          }
+        }
+      }
     }
+  },
+  "additionalProperties": false,
+  "exportRules": {
+    "scope": "All stored rows including soft-deleted tasks and their history; normalized tag IDs retained",
+    "consistency": "One repeatable-read database snapshot",
+    "durationUnit": "Derived constant minutes; not a database column",
+    "order": "Ascending primary key within each table"
   }
 }

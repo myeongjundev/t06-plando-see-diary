@@ -33,6 +33,7 @@ Thumbs.db
 
 # Temporary evidence and local databases
 tmp/
+/backend/instance/
 *.sqlite
 *.sqlite3
 *.db

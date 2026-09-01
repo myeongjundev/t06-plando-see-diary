@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 
 from app.extensions import db
 from app.models import Plan, PlanRevision
+from app.time import utc_iso
 
 PRIORITIES = {"high", "medium", "low"}
 EDITABLE_FIELDS = {
@@ -77,7 +78,7 @@ def validate_plan(payload: dict[str, Any], *, partial: bool = False) -> dict[str
         values["end_date"] = _date(payload, "endDate")
     if "priority" in payload:
         priority = payload.get("priority")
-        if priority not in PRIORITIES:
+        if not isinstance(priority, str) or priority not in PRIORITIES:
             raise ValidationError({"priority": "high, medium, low 중 하나여야 합니다."})
         values["priority"] = priority
     if "estimatedMinutes" in payload:
@@ -142,13 +143,14 @@ def serialize_plan(plan: Plan) -> dict[str, Any]:
         "estimatedMinutes": plan.estimated_minutes,
         "durationUnit": "minutes",
         "carriedImprovement": plan.carried_improvement,
-        "createdAt": plan.created_at.isoformat(),
-        "updatedAt": plan.updated_at.isoformat(),
+        "createdAt": utc_iso(plan.created_at),
+        "updatedAt": utc_iso(plan.updated_at),
     }
 
 
 def serialize_revision(revision: PlanRevision) -> dict[str, Any]:
     return {
+        "id": revision.plan_id,
         "revisionId": revision.revision_id,
         "planId": revision.plan_id,
         "revisionNumber": revision.revision_number,
@@ -160,7 +162,7 @@ def serialize_revision(revision: PlanRevision) -> dict[str, Any]:
         "estimatedMinutes": revision.estimated_minutes,
         "durationUnit": "minutes",
         "carriedImprovement": revision.carried_improvement,
-        "createdAt": revision.created_at.isoformat(),
-        "updatedAt": revision.updated_at.isoformat(),
-        "replacedAt": revision.replaced_at.isoformat(),
+        "createdAt": utc_iso(revision.created_at),
+        "updatedAt": utc_iso(revision.updated_at),
+        "replacedAt": utc_iso(revision.replaced_at),
     }

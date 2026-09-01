@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import ExecutionPanel from "./ExecutionPanel";
 import type { Plan, Priority } from "../../api/plans";
 import {
   completeTask,
@@ -28,9 +29,10 @@ const EMPTY_TASK: TaskInput = {
 
 interface Props {
   plans: Plan[];
+  onDataChange: () => void;
 }
 
-export default function TaskPanel({ plans }: Props) {
+export default function TaskPanel({ plans, onDataChange }: Props) {
   const [planId, setPlanId] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [form, setForm] = useState<TaskInput>(EMPTY_TASK);
@@ -41,6 +43,9 @@ export default function TaskPanel({ plans }: Props) {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [changingIds, setChangingIds] = useState<string[]>([]);
+  const inFlight = useRef(new Set<string>());
+  const refreshVersion = useRef(0);
 
   useEffect(() => {
     if (!planId && plans[0]) setPlanId(plans[0].id);
@@ -49,14 +54,19 @@ export default function TaskPanel({ plans }: Props) {
   const selectedPlan = useMemo(() => plans.find((plan) => plan.id === planId), [planId, plans]);
 
   async function refresh(currentPlanId = planId, currentFilters = filters) {
+    const version = ++refreshVersion.current;
     if (!currentPlanId) {
       setTasks([]);
       return;
     }
     try {
-      setTasks(await listTasks(currentPlanId, currentFilters));
+      const nextTasks = await listTasks(currentPlanId, currentFilters);
+      if (version !== refreshVersion.current) return;
+      setTasks(nextTasks);
+      onDataChange();
       setMessage("");
     } catch (error) {
+      if (version !== refreshVersion.current) return;
       setMessage(error instanceof Error ? error.message : "할 일을 불러오지 못했습니다.");
     }
   }
@@ -87,13 +97,26 @@ export default function TaskPanel({ plans }: Props) {
   }
 
   async function changeStatus(task: Task) {
+    if (inFlight.current.has(task.id)) return;
+    inFlight.current.add(task.id);
+    setChangingIds([...inFlight.current]);
+    const storageKey = `t06-complete:${task.id}`;
     try {
-      if (task.status === "completed") await reopenTask(task.id);
-      else await completeTask(task.id);
+      if (task.status === "completed") {
+        await reopenTask(task.id);
+      } else {
+        const key = sessionStorage.getItem(storageKey) ?? crypto.randomUUID();
+        sessionStorage.setItem(storageKey, key);
+        await completeTask(task.id, key);
+      }
+      sessionStorage.removeItem(storageKey);
       setMessage(task.status === "completed" ? "할 일을 진행 중으로 되돌렸습니다." : "할 일을 완료했습니다.");
       await refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "상태를 바꾸지 못했습니다.");
+    } finally {
+      inFlight.current.delete(task.id);
+      setChangingIds([...inFlight.current]);
     }
   }
 
@@ -165,8 +188,8 @@ export default function TaskPanel({ plans }: Props) {
           <div className="task-list" aria-label={`${selectedPlan?.title ?? "선택한 계획"}의 할 일`}>
             {tasks.length === 0 && <p className="empty">조건에 맞는 할 일이 없습니다.</p>}
             {tasks.map((task) => (
-              <article className={`task-row ${task.status}`} key={task.id}>
-                <button className="status-button" onClick={() => void changeStatus(task)} aria-label={task.status === "completed" ? `${task.content} 진행 중으로 되돌리기` : `${task.content} 완료로 바꾸기`}>{task.status === "completed" ? "✓" : "○"}</button>
+              <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
+                <button className="status-button" disabled={changingIds.includes(task.id)} onClick={() => void changeStatus(task)} aria-label={task.status === "completed" ? `${task.content} 진행 중으로 되돌리기` : `${task.content} 완료로 바꾸기`}>{task.status === "completed" ? "✓" : "○"}</button>
                 <div className="task-body">
                   <div className="task-meta"><span className={`priority ${task.priority}`}>{task.priority}</span><span>{task.dueDate}</span><span>{task.estimatedMinutes}분</span></div>
                   <h3>{task.content}</h3>
@@ -174,6 +197,7 @@ export default function TaskPanel({ plans }: Props) {
                   <div className="actions"><button onClick={() => beginEdit(task)}>내용 수정</button><button className="danger" onClick={() => setPendingDeleteId(task.id)}>삭제</button></div>
                   {editingId === task.id && <form className="inline-edit" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
                   {pendingDeleteId === task.id && <div className="delete-check" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
+                  <ExecutionPanel task={task} onSaved={onDataChange} />
                 </div>
               </article>
             ))}

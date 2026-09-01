@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: t06-plando-see-diary
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/live
+    envVars:
+      - key: REQUIRE_POSTGRES
+        value: "1"
+      - key: DATABASE_URL
+        sync: false

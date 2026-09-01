@@ -59,7 +59,7 @@ def test_t06_c10_to_c13_edit_complete_reopen_and_delete(client):
     assert edited.get_json()["task"]["id"] == task["id"]
     assert edited.get_json()["task"]["content"] == "Flask 할 일 API와 검사 구현"  # T06-C10
 
-    completed = client.post(f"/api/tasks/{task['id']}/complete")
+    completed = client.post(f"/api/tasks/{task['id']}/complete", json={"idempotencyKey": "card2-complete"})
     assert completed.get_json()["task"]["status"] == "completed"  # T06-C11
 
     reopened = client.post(f"/api/tasks/{task['id']}/reopen")
@@ -76,7 +76,7 @@ def test_t06_c18_search_and_c19_combined_filters(client):
     plan = create_plan(client)
     matching = create_task(client, plan["id"], content="고유검색어 배포 검사", priority="high")
     create_task(client, plan["id"], content="문서 정리", priority="low", tags=["docs"])
-    client.post(f"/api/tasks/{matching['id']}/complete")
+    client.post(f"/api/tasks/{matching['id']}/complete", json={"idempotencyKey": "card2-filter"})
 
     searched = client.get(f"/api/plans/{plan['id']}/tasks?q=고유검색어")
     assert [task["id"] for task in searched.get_json()["tasks"]] == [matching["id"]]  # T06-C18
