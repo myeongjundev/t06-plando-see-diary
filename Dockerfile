@@ -7,6 +7,7 @@ RUN npm run build
 
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 REQUIRE_POSTGRES=1 PORT=8000
+ENV STATIC_DIST=/app/frontend/dist
 WORKDIR /app/backend
 COPY backend/pyproject.toml ./
 COPY backend/app ./app

@@ -15,12 +15,15 @@ def create_app(test_config: dict | None = None) -> Flask:
     app = Flask(__name__, static_folder=None)
     app.config.from_object(Config)
     app.config["REQUIRE_POSTGRES"] = os.getenv("REQUIRE_POSTGRES", "0") == "1"
+    app.config["STATIC_DIST"] = os.getenv("STATIC_DIST", app.config["STATIC_DIST"])
     if test_config:
         app.config.update(test_config)
     if not app.config.get("SQLALCHEMY_DATABASE_URI"):
         app.config["SQLALCHEMY_DATABASE_URI"] = database_url()
     if app.config["REQUIRE_POSTGRES"] and make_url(app.config["SQLALCHEMY_DATABASE_URI"]).get_backend_name() != "postgresql":
         raise RuntimeError("Production requires a PostgreSQL DATABASE_URL.")
+    if app.config["REQUIRE_POSTGRES"] and not (Path(app.config["STATIC_DIST"]) / "index.html").is_file():
+        raise RuntimeError("Production frontend build is missing; check STATIC_DIST.")
 
     db.init_app(app)
     migrate.init_app(app, db)

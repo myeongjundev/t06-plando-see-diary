@@ -7,6 +7,14 @@ then complete public acceptance and submission evidence.
 
 ## 2. Current state
 
+Latest: user created Neon project green-pine-50634235 and Render Free at
+https://t06-plando-see-diary.onrender.com. /api/live and /api/health return 200,
+but the initial root URL returned 404. Waitress resolves the installed app package
+from site-packages; Config's source-relative frontend path was wrong there.
+Fix: Docker STATIC_DIST=/app/frontend/dist, factory environment override, and
+fail production startup if index.html is absent. Earlier account-pending notes
+below are historical and superseded by this update.
+
 Cards 1–4 are implemented locally: plans/revisions, tasks/tags, execution logs,
 atomic keyed completion, seven See metrics with source records, reflections and
 atomic next-plan links. Card 5 exports all seven tables from one snapshot,
@@ -36,6 +44,9 @@ Use docs/RENDER-NEON.md for cloud setup. Never paste DATABASE_URL into chat or G
 
 ## 4. Passed acceptance IDs
 
+Latest: 53 tests pass. Rebuilt image tested from /tmp imports the installed
+package and serves / and all referenced JS/CSS assets with HTTP 200.
+
 Cards 1–4 (C04–C33/C83) retain local regression coverage. C36 local validates
 all exported tables/IDs/history against the canonical schema. C82 local warning
 is exact. C57 local script-shaped text renders literally without a script node.
@@ -60,6 +71,9 @@ Actual Neon idle/reconnect and Render startup behavior still require cloud verif
 
 ## 6. Next action
 
+Immediate: push the frontend-path fix and wait for Render's auto-deploy, then
+verify the PUBLIC root page, assets and browser before reporting recovery.
+
 Finish Render sign-in, create a Neon Free project, then configure DATABASE_URL
 in Render and create the free blueprint from main. The user directly enters
 secrets in provider settings. Verify the generated HTTPS URL, DB readiness, save/
@@ -78,6 +92,9 @@ Do not commit secrets, actual diary records, private exports or local databases.
 Do not invent actual times, user judgment or rejected AI advice.
 
 ## 8. Changed files
+
+Root-page fix: Dockerfile, backend/app/__init__.py and test_card5_export.py;
+deployment guide, status and this handoff record the production failure and checks.
 
 Cards 3–5: backend models/services/APIs, additive migrations, acceptance tests,
 PostgreSQL smoke and credential audit scripts; frontend Do/See/export panels;

@@ -72,5 +72,14 @@ Sources checked 2026-09-01:
 - https://render.com/docs/blueprint-spec
 - https://neon.com/pricing
 
-Status: deployment configuration prepared; account connection and actual public
-deployment still need verification. A checked-in blueprint is not a deployed URL.
+The user created Neon project `green-pine-50634235` (production branch, Oregon)
+and deployed https://t06-plando-see-diary.onrender.com using Render Free.
+Initial public probes returned 200 for /api/live and /api/health (PostgreSQL), but
+/ returned 404. Waitress imported the installed package, causing the source-relative
+frontend path to point under /usr/local/lib/python3.12 rather than /app.
+
+The Docker image now sets STATIC_DIST=/app/frontend/dist; the app honors that
+setting and refuses production startup if index.html is absent. The installed
+package was tested from /tmp inside the rebuilt image: root and every referenced
+JS/CSS asset returned 200. 53 backend tests passed. Public redeploy verification
+is the next gate; API health alone is not sufficient evidence of a working UI.

@@ -87,11 +87,16 @@ Updated: 2026-09-01 KST
 
 ## Next action
 
-Connect the user's Render and Neon accounts. Create Neon Free PostgreSQL, enter
-its connection URL directly into Render's secret DATABASE_URL setting, and deploy
-the free blueprint. Verify public access, cold-start recovery, stored data and JSON.
+Public deployment update: the user created Neon and Render Free. Public URL is
+https://t06-plando-see-diary.onrender.com. API liveness/PostgreSQL readiness return
+200, but the initial root page returned 404 because the installed package resolved
+the frontend path incorrectly. STATIC_DIST is now explicit in Docker; missing
+production index.html fails startup. 53 tests and installed-image root/assets
+checks pass. Push the fix and verify the actual public UI after automatic redeploy.
+
+Account setup is complete. Verify public access, cold-start recovery, stored data and JSON.
 Obtain real safe records and user judgment text for SUBMISSION.md.
-No public cloud service has been created or verified in this session yet.
+Public app/database connectivity is verified; UI and full acceptance remain pending.
 
 ## Working tree
 

@@ -82,3 +82,23 @@ def test_production_requires_postgres_and_serves_static_with_csp(tmp_path):
     assert 'unsafe-inline' not in response.headers['Content-Security-Policy']
     assert client.get('/assets/../../pyproject.toml').status_code == 404
     assert client.get('/.env').status_code == 404
+
+
+def test_installed_production_app_uses_explicit_frontend_path(tmp_path, monkeypatch):
+    monkeypatch.setenv('STATIC_DIST', str(tmp_path))
+    production = {'TESTING': True, 'REQUIRE_POSTGRES': True,
+                  'SQLALCHEMY_DATABASE_URI': 'postgresql+psycopg://localhost/unused'}
+    with pytest.raises(RuntimeError, match='frontend build is missing'):
+        create_app(production)
+    (tmp_path / 'index.html').write_text('<html>synthetic production build</html>', encoding='utf-8')
+    assets = tmp_path / 'assets'
+    assets.mkdir()
+    (assets / 'main.js').write_text('/* synthetic bundle */', encoding='utf-8')
+    app = create_app(production)
+    client = app.test_client()
+    assert client.get('/').status_code == 200
+    assert 'synthetic production build' in client.get('/').text
+    assert client.get('/assets/main.js').status_code == 200
+    assert client.get('/api/live').status_code == 200
+    with app.app_context():
+        db.engine.dispose()
