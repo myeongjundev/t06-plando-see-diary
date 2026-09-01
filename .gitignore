@@ -4,11 +4,16 @@ __pycache__/
 .pytest_cache/
 .venv/
 *.egg-info/
+.coverage
+htmlcov/
 
 # Node
 node_modules/
 dist/
 coverage/
+*.tsbuildinfo
+/frontend/vite.config.js
+/frontend/vite.config.d.ts
 
 # Secrets and local configuration
 .env

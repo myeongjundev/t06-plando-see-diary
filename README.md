@@ -34,10 +34,11 @@
 - `docs/FLASK-ARCHITECTURE.md` — 구현 구조
 - `contracts/pds-schema-v2.json` — 데이터 계약
 - `docs/STATUS.md` — 현재 상태와 다음 행동
+- `docs/DEVELOPMENT.md` — 로컬 실행과 검사 명령
+- `docs/HANDOFF.md` — Claude·Codex 인수인계 상태
 
 ## 공개 데이터 주의
 
 T06에는 로그인이 없습니다. 배포 화면에는 남이 봐도 괜찮은 실제 작업 기록만
 입력하고, 저장소·테스트·제출 증거에는 합성 자료만 사용합니다. 인증은 T07에서
 추가합니다.
-

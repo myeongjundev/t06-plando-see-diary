@@ -1,7 +1,7 @@
 """create plan history tables
 
 Revision ID: ce0b2f4cac34
-Revises: 
+Revises:
 Create Date: 2026-09-01 17:21:02.352060
 
 """

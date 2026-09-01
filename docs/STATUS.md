@@ -4,7 +4,7 @@ Updated: 2026-09-01 KST
 
 ## Phase
 
-**IMPLEMENTATION — official requirements reconciled; contract baseline next**
+**IMPLEMENTATION — Card 1 complete; Card 2 next**
 
 ## Completed
 
@@ -21,23 +21,31 @@ Updated: 2026-09-01 KST
 - All 44 official acceptance IDs fixed with observable inputs and expectations.
 - React + Flask + PostgreSQL architecture activated.
 - Initial real-use subject fixed as `T06 프로젝트 완주`, measured in minutes.
+- Canonical `contracts/pds-schema-v2.json` created and JSON syntax verified.
+- React + Vite and Flask + SQLAlchemy application skeletons created.
+- Card 1 plan creation and immutable revision history implemented.
+- T06-C04–T06-C08 passed in automated tests and local browser verification.
+- Backend: 3 tests passed with 89% coverage; frontend production build passed.
 
 ## Not started
 
-- Data contract and application skeleton
-- Card 1 plan history implementation
-- Cards 2–5 implementation
+- Card 2 task workflow implementation
+- Cards 3–5 implementation
 - Server database deployment and public verification
 
 ## Next action
 
-Create `contracts/pds-schema-v2.json`, scaffold the React and Flask applications,
-and implement the Card 1 plan/history slice against T06-C04–T06-C08.
+Implement Card 2 task models, migration, API, and acceptance tests for
+T06-C09–T06-C20, then add the task workflow to the React screen.
 
 ## Working tree
 
 Branch: `main`
 
 Baseline commit: `303012b429234866e2f79e35568475537a094f2b`
+
+Official requirements commit: `f25841f`
+
+Card 1 implementation commit: `1bb2c42`
 
 Remote: https://github.com/myeongjundev/t06-plando-see-diary
