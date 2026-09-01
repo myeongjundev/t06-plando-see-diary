@@ -90,5 +90,7 @@ GCP-SETUP.md is retained as a superseded proposal.
 
 Branch main; origin https://github.com/myeongjundev/t06-plando-see-diary.git.
 Start HEAD f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2. Cards 3–5 and free-hosting
-preparation are being published together. Record the resulting commit after push.
+preparation were committed and pushed to origin/main as
+150a9052610705dad52274d94d28f674ab07d324. A documentation-only follow-up records
+this result. No application changes remain uncommitted.
 Only ignored local databases, .env, dependency folders and tmp evidence remain local.

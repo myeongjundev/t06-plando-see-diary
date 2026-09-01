@@ -2,8 +2,10 @@
 
 Product URL: pending public deployment.
 
-Source URL: pending commit/push of Cards 3–5; use the final full 40-character commit
-URL rather than a branch URL or the older baseline commit.
+Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/150a9052610705dad52274d94d28f674ab07d324
+
+This is the published Cards 3–5 and Render/Neon preparation commit. Replace it if
+later application changes are deployed; verify private-browser access before submission.
 
 ## Four verification lines (T06-C59)
 

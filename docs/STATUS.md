@@ -113,4 +113,6 @@ Remote: https://github.com/myeongjundev/t06-plando-see-diary
 
 Card 3 start commit: `f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2`
 
-Card 3–5 and Render/Neon preparation are ready for GitHub publication; see `docs/HANDOFF.md`.
+Cards 3–5 and Render/Neon preparation were committed and pushed to origin/main as
+`150a9052610705dad52274d94d28f674ab07d324`. Account connection and public deployment
+remain pending; see `docs/HANDOFF.md`.
