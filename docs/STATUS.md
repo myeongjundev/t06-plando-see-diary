@@ -1,6 +1,6 @@
 # T06 project status
 
-Updated: 2026-09-01 KST
+Updated: 2026-09-02 KST
 
 ## Phase
 
@@ -101,6 +101,37 @@ Account setup is complete. Verify public access, cold-start recovery, stored dat
 Obtain real safe records and user judgment text for SUBMISSION.md.
 Public app/database connectivity is verified; UI and full acceptance remain pending.
 
+## Design token layer
+
+Scope: presentation only. No markup, API, contract, or test expectation changed.
+
+- Direction chosen from four sketched candidates: "flow" — Gothic A1, single accent
+  `#1B64DA`, Plan/Do/See read as an ordered process. Rejected candidates kept as
+  evidence of the comparison.
+- `frontend/src/styles.css` rewritten on a token layer: one accent plus three
+  semantic colors (`--good` `--warn` `--crit`), three radii, 4px spacing scale,
+  four font weights, 150ms transitions, `prefers-reduced-motion` respected.
+- Dark palette added under `prefers-color-scheme: dark`; `color-scheme: light dark`
+  set so native date inputs follow the theme.
+- `frontend/index.html` loads Gothic A1 from Google Fonts with a fallback stack.
+- Removed `text-transform: uppercase` from `.priority`. The DOM value was already
+  `high`, but the screen rendered `HIGH`; T06-C05 and T06-C15 expect the plan and
+  task screens to show `high`, so the literal is now what the viewer reads.
+- Removed the `min-height: 48px` hack on `.plan-card > p`, which reserved blank
+  space under every success criterion.
+- Locked screen elements left intact in position and wording: the public-data
+  warning (T06-C82), the sort rule (T06-C20), success criterion text (T06-C06),
+  and the source task/execution IDs (T06-C83).
+
+Evidence: `npm run build` passed; `python -m pytest backend/tests -q` passed 53
+tests; dev server checked in light and dark at 1280px with computed styles verified
+(`.priority` text-transform `none`, tokens resolving, no horizontal overflow).
+
+Remaining design work needs markup changes and is not started: plan-card
+estimate-vs-actual gauge, empty state for `.plan-list`, signed variance and
+evidence counts on See metric cards, step navigation in `TaskPanel`. Run the
+acceptance suite before and after each of those.
+
 ## Working tree
 
 Branch: `main`
@@ -124,3 +155,6 @@ Card 3 start commit: `f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2`
 Cards 3–5 and Render/Neon preparation were committed and pushed to origin/main as
 `150a9052610705dad52274d94d28f674ab07d324`. Account connection and public deployment
 remain pending; see `docs/HANDOFF.md`.
+
+Design token layer branched from `main` as `design/css-token-layer` and pushed to
+origin. Deployment picks it up only after a merge into `main`.
