@@ -1,3 +1,9 @@
+@import "@fontsource/gothic-a1/400.css";
+@import "@fontsource/gothic-a1/500.css";
+@import "@fontsource/gothic-a1/700.css";
+@import "@fontsource/gothic-a1/800.css";
+
+/* Bundled font license: /assets/fonts/Gothic-A1-OFL.txt */
 /* ==========================================================================
    플랜두씨 다이어리 — 디자인 토큰
    방향 C "흐름". 색·간격·반경·글자 크기를 여기서만 정하고 아래는 전부 참조합니다.
@@ -19,7 +25,7 @@
   /* 글자 */
   --ink: #191f28;
   --ink-2: #4e5968;
-  --ink-3: #8b95a1;
+  --ink-3: #667382;
 
   /* 강조 하나 */
   --accent: #1b64da;
@@ -83,7 +89,7 @@
 
     --ink: #e8ecf1;
     --ink-2: #a3adba;
-    --ink-3: #717c8a;
+    --ink-3: #9aa6b5;
 
     --accent: #6f9cf0;
     --accent-ink: #0f1216;
@@ -420,7 +426,7 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 .sort-rule {
   margin: var(--s4) 0 var(--s4);
   color: var(--ink-3);
-  font-size: var(--t-xs);
+  font-size: var(--t-sm);
   font-weight: 500;
 }
 
@@ -557,7 +563,7 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   display: block;
   margin-top: var(--s2);
   font-family: var(--f-mono);
-  font-size: var(--t-2xs);
+  font-size: var(--t-sm);
   color: var(--ink-3);
   overflow-wrap: anywhere;
 }
@@ -621,7 +627,7 @@ summary:hover { color: var(--accent); }
   font-variant-numeric: tabular-nums;
 }
 
-.metric-card small { font-size: var(--t-2xs); font-weight: 500; color: var(--ink-3); }
+.metric-card small { font-size: var(--t-xs); font-weight: 500; color: var(--ink-3); }
 
 .metric-card[aria-pressed="true"] {
   border-color: var(--accent);

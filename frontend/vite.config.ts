@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  // Serve even small font subsets as same-origin files under the strict CSP.
+  build: { assetsInlineLimit: 0 },
   server: {
     port: 5173,
     proxy: {

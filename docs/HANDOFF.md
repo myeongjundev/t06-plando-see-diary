@@ -1,4 +1,77 @@
-# T06 handoff · Render + Neon deployment preparation
+# T06 handoff · reviewed design adoption
+
+## 1. Goal
+
+Adopt the Claude design branch after fixing its font delivery and evidence
+readability findings, as approved by the user on 2026-09-02.
+
+## 2. Current state
+
+Cards 1–5 remain implemented; user confirmed the existing public app renders.
+Design branch includes the CSS token layer, unchanged workflow markup, and two fixes:
+bundled Gothic A1 weights 400/500/700/800 and stronger, larger evidence labels.
+Fontsource 5.3.0 is pinned. Vite assetsInlineLimit=0 prevents small font subsets
+becoming data URLs disallowed by the existing CSP. The OFL license ships at
+/assets/fonts/Gothic-A1-OFL.txt. No backend/security policy changes.
+
+## 3. Run commands
+
+Repository: C:\gov\project\skt aleph\t06-plando-see-diary.
+`npm --prefix frontend run build` and
+`backend/.venv/Scripts/python.exe -m pytest backend/tests -q`.
+The ignored tmp/review_design_server.py serves the built app and synthetic records
+locally with the real Flask headers. It uses a single-threaded in-memory SQLite
+fixture; it is not a production launcher. The /review-light fixture disables the
+dark media block only for local light-palette inspection, without OS theme changes.
+
+## 4. Passed acceptance IDs
+
+Build and 53 existing tests pass; no fixed expectation changed. Targeted browser
+checks retain the exact public warning, high literals, success criterion, sort
+rule and See sources (C05/C06/C15/C20/C82/C83). Synthetic totals remain
+5 tasks, 1 completed, 4 overdue, 3 blocked, 300 estimated, 150 actual, -150 variance.
+Built CSS contains zero external/data URLs; Flask returned 200 for browser-requested
+Korean and Latin font files. Source IDs and sort labels resolve to 13px in light
+and dark views. Checked text contrast is 4.63–4.84:1 on light surfaces and
+6.46–6.99:1 on dark surfaces. No document overflow at checked 1280px/375px widths.
+
+## 5. Failed or unrun acceptance IDs
+
+No failing tests; 12 pre-existing get_engine deprecation warnings.
+Actual OS light-mode switching was not tested; a local CSS fixture rendered the
+light palette. Public deployment of this change is pending at this checkpoint.
+Public save/refresh/export, private-browser access, real-use C78–C81 and final
+user judgment lines still require completion. This is not a full 44-ID sign-off.
+
+## 6. Next action
+
+Commit the approved fixes, merge the design branch into main, push to Render's
+configured deployment branch, then verify the new public HTML/CSS/font assets.
+Continue final submission checks after deployment.
+
+## 7. Do not change
+
+Keep all 44 fixed expectations, exact public warning, unauthenticated T06 behavior,
+immutable IDs/history, units/time rules, source records and transaction semantics.
+Keep Render/Neon free and idle-capable. No secrets or real records in fixtures/Git.
+
+## 8. Changed files
+
+Frontend index removes external links; package/lock pins the bundled font; styles
+imports weights and improves readability; Vite prevents font inlining; public assets
+includes OFL. STATUS, DECISIONS and review/handoff docs record approval and evidence.
+
+## 9. Git state
+
+Starting HEAD 2ebb7bb on design/css-token-layer; main/origin/main at 929fb43.
+Application and documentation changes are prepared for the approved merge/push.
+See the next deployment update for final commit and verification result.
+
+---
+
+# Historical handoff · Render + Neon deployment preparation
+
+The current nine-section handoff above supersedes the account/deployment status below.
 
 ## 1. Goal
 

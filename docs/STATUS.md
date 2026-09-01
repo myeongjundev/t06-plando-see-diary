@@ -103,6 +103,23 @@ Public app/database connectivity is verified; UI and full acceptance remain pend
 
 ## Design token layer
 
+Accepted follow-up (2026-09-02): user approved adopting the design after the review
+fixes. Gothic A1 5.3.0 is bundled through Fontsource at weights 400/500/700/800;
+external Google links are removed, Vite emits even small fonts as files to preserve
+the existing same-origin CSP, and the OFL license ships under /assets/fonts/.
+Evidence labels use stronger light/dark colors; sort rule and source IDs are 13px.
+Build and 53 tests pass. Flask serves the built CSS and requested Korean/Latin
+fonts with HTTP 200. Dark and forced-light local views retain metrics and IDs;
+375px dark/mobile and 1280px views have no document overflow. Both review findings
+are resolved. Merge/push and public asset verification are the next step.
+Earlier design review findings below describe the pre-fix state.
+
+Codex review (2026-09-02, HEAD `2ebb7bb`): adopt after fixing external font/CSP
+compatibility and low-contrast evidence labels. Build and 53 tests pass; seeded
+dark-theme browser checks preserve the public warning, priority literals, success
+criterion, sort rule, execution records and See sources. Main is unchanged; no
+merge/deployment performed. Full review handoff: `docs/REVIEW-CSS-TOKEN-LAYER.md`.
+
 Scope: presentation only. No markup, API, contract, or test expectation changed.
 
 - Direction chosen from four sketched candidates: "flow" — Gothic A1, single accent
@@ -113,7 +130,7 @@ Scope: presentation only. No markup, API, contract, or test expectation changed.
   four font weights, 150ms transitions, `prefers-reduced-motion` respected.
 - Dark palette added under `prefers-color-scheme: dark`; `color-scheme: light dark`
   set so native date inputs follow the theme.
-- `frontend/index.html` loads Gothic A1 from Google Fonts with a fallback stack.
+- Gothic A1 is now bundled locally with a fallback stack (supersedes Google Fonts).
 - Removed `text-transform: uppercase` from `.priority`. The DOM value was already
   `high`, but the screen rendered `HIGH`; T06-C05 and T06-C15 expect the plan and
   task screens to show `high`, so the literal is now what the viewer reads.
