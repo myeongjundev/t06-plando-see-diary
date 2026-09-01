@@ -51,6 +51,8 @@ else. Export to PNG/PDF from each page if a copy needs to travel.
 - Clickable prototype of direction C: desktop, mobile, and the component sheet —
   https://claude.ai/code/artifact/bbc4719c-5608-474c-a0d0-0d5b5a100ea5
 
+Editable sources for all three are committed under `design/`; see `design/README.md`.
+
 Keep the rejected candidates. A reviewer asking "why this design" is answered far
 better by four options and a stated tradeoff than by one finished screen.
 

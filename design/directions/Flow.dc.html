@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #1B64DA; } a:hover { color: #14479b; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 18px; padding: 28px; background: #FFFFFF; color: #191F28; font-family: 'Gothic A1', system-ui, sans-serif; min-height: 100%; box-sizing: border-box;">
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: #1B64DA; background: #EAF1FE; border-radius: 999px; padding: 3px 10px;">방향 C</span>
+      <span style="font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #8B95A1;">흐름 · FLOW</span>
+    </div>
+    <div style="font-size: 25px; font-weight: 800; letter-spacing: -0.03em;">세 걸음이 한눈에 보이는 화면</div>
+    <div style="font-size: 13px; line-height: 1.6; color: #4E5968;">Plan → Do → See를 진행 단계로 세웁니다. 처음 온 사람이 다음에 뭘 할지 바로 아는 방향.</div>
+  </div>
+
+  <div style="display: flex; gap: 10px; align-items: flex-start; background: #F9FAFB; border-radius: 12px; padding: 12px 14px;">
+    <div style="font-size: 12px; line-height: 1.6; color: #4E5968;">지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요</div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 0;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; flex-grow: 1;">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: #1B64DA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
+      <span style="font-size: 12px; font-weight: 700; color: #191F28;">계획</span>
+    </div>
+    <div style="height: 2px; background: #1B64DA; flex-grow: 1; margin-bottom: 20px;"></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; flex-grow: 1;">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: #1B64DA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+      <span style="font-size: 12px; font-weight: 700; color: #191F28;">실제로 한 일</span>
+    </div>
+    <div style="height: 2px; background: #E5E8EB; flex-grow: 1; margin-bottom: 20px;"></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; flex-grow: 1;">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: #FFFFFF; border: 2px solid #E5E8EB; color: #8B95A1; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
+      <span style="font-size: 12px; font-weight: 500; color: #8B95A1;">돌아보기</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #E5E8EB; border-radius: 16px; padding: 20px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.04em; background: #FEECEB; color: #D6473C; border-radius: 6px; padding: 3px 8px;">high</span>
+      <span style="font-size: 12px; font-weight: 500; color: #8B95A1;">2026.09.01 – 09.07</span>
+    </div>
+    <div style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">T06 프로젝트 완주</div>
+    <div style="display: flex; flex-direction: column; gap: 3px; background: #F9FAFB; border-radius: 10px; padding: 12px 14px;">
+      <span style="font-size: 11px; font-weight: 700; color: #8B95A1;">성공 기준</span>
+      <span style="font-size: 14px; font-weight: 500; color: #191F28;">44개 검사 통과</span>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 8px;">
+      <span style="font-size: 13px; color: #4E5968;">예상 300분</span>
+      <span style="font-size: 13px; color: #D1D6DB;">·</span>
+      <span style="font-size: 13px; color: #4E5968;">실제 260분</span>
+      <span style="font-size: 13px; font-weight: 800; color: #0F9D7A; margin-left: auto;">-40분</span>
+    </div>
+    <button style="border: 0; border-radius: 12px; background: #1B64DA; color: #FFFFFF; font-family: 'Gothic A1', sans-serif; font-size: 15px; font-weight: 700; padding: 13px 0; width: 100%; cursor: pointer;">실제로 한 일 기록하기</button>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+    <div style="display: flex; flex-direction: column; gap: 3px; background: #F9FAFB; border-radius: 12px; padding: 12px 10px; text-align: center;">
+      <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">5</span>
+      <span style="font-size: 11px; font-weight: 500; color: #8B95A1;">할 일</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 3px; background: #F9FAFB; border-radius: 12px; padding: 12px 10px; text-align: center;">
+      <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #0F9D7A;">3</span>
+      <span style="font-size: 11px; font-weight: 500; color: #8B95A1;">완료</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 3px; background: #F9FAFB; border-radius: 12px; padding: 12px 10px; text-align: center;">
+      <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #E8890C;">1</span>
+      <span style="font-size: 11px; font-weight: 500; color: #8B95A1;">지연</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 3px; background: #EAF1FE; border-radius: 12px; padding: 12px 10px; text-align: center;">
+      <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #1B64DA;">-40</span>
+      <span style="font-size: 11px; font-weight: 500; color: #8B95A1;">차이(분)</span>
+    </div>
+  </div>
+
+  <div style="font-size: 11px; color: #8B95A1;">정렬 기준 · priority → due date → created time → ID</div>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #E5E8EB; padding-top: 14px;">
+    <div style="font-size: 12px; font-weight: 800; color: #191F28;">이 방향의 대가</div>
+    <div style="font-size: 12px; line-height: 1.6; color: #4E5968;">가장 친숙하고 이해가 빠릅니다. 대신 한국 서비스에서 익숙한 모습이라 “이 사람만의 판단”이 잘 안 보입니다.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

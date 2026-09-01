@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #1B64DA; } a:hover { color: #14479b; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 26px; padding: 32px; background: #FFFFFF; color: #191F28; font-family: 'Gothic A1', system-ui, sans-serif; min-height: 100%; box-sizing: border-box;">
+
+  <div style="display: flex; flex-direction: column; gap: 5px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: #8B95A1;">DESIGN SYSTEM</div>
+    <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">부품과 규칙</div>
+    <div style="font-size: 13px; line-height: 1.6; color: #4E5968;">화면마다 다시 정하지 않기 위해 먼저 고정한 것들입니다.</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #8B95A1;">색</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #1B64DA;"></div><span style="font-size: 11px; font-weight: 700;">강조</span><span style="font-size: 10px; color: #8B95A1;">#1B64DA</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #0F9D7A;"></div><span style="font-size: 11px; font-weight: 700;">달성 · 완료</span><span style="font-size: 10px; color: #8B95A1;">#0F9D7A</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #E8890C;"></div><span style="font-size: 11px; font-weight: 700;">지연 · 주의</span><span style="font-size: 10px; color: #8B95A1;">#E8890C</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #D6473C;"></div><span style="font-size: 11px; font-weight: 700;">위험 · high</span><span style="font-size: 10px; color: #8B95A1;">#D6473C</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #191F28;"></div><span style="font-size: 11px; font-weight: 700;">본문</span><span style="font-size: 10px; color: #8B95A1;">#191F28</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #4E5968;"></div><span style="font-size: 11px; font-weight: 700;">보조 본문</span><span style="font-size: 10px; color: #8B95A1;">#4E5968</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #8B95A1;"></div><span style="font-size: 11px; font-weight: 700;">약한 글자</span><span style="font-size: 10px; color: #8B95A1;">#8B95A1</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 44px; border-radius: 10px; background: #F9FAFB; border: 1px solid #E5E8EB;"></div><span style="font-size: 11px; font-weight: 700;">면 · 선</span><span style="font-size: 10px; color: #8B95A1;">#F9FAFB · #E5E8EB</span></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #8B95A1;">글자 — Gothic A1</div>
+    <div style="display: flex; flex-direction: column; gap: 9px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px dotted #E5E8EB; padding-bottom: 7px;"><span style="font-size: 11px; color: #8B95A1; width: 78px; flex: none;">30 / 800</span><span style="font-size: 26px; font-weight: 800; letter-spacing: -0.035em;">플랜두씨 다이어리</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px dotted #E5E8EB; padding-bottom: 7px;"><span style="font-size: 11px; color: #8B95A1; width: 78px; flex: none;">22 / 800</span><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.025em;">T06 프로젝트 완주</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px dotted #E5E8EB; padding-bottom: 7px;"><span style="font-size: 11px; color: #8B95A1; width: 78px; flex: none;">15 / 700</span><span style="font-size: 15px; font-weight: 700;">할 일 제목</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px dotted #E5E8EB; padding-bottom: 7px;"><span style="font-size: 11px; color: #8B95A1; width: 78px; flex: none;">14 / 400</span><span style="font-size: 14px;">본문은 400으로 읽습니다</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px;"><span style="font-size: 11px; color: #8B95A1; width: 78px; flex: none;">12 / 500</span><span style="font-size: 12px; font-weight: 500; color: #8B95A1;">보조 설명과 라벨</span></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #8B95A1;">부품</div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+      <button style="border: 0; border-radius: 14px; background: #1B64DA; color: #FFFFFF; font-family: 'Gothic A1', sans-serif; font-size: 14px; font-weight: 800; padding: 13px 22px; cursor: pointer;">기본</button>
+      <button style="border: 0; border-radius: 14px; background: #14479B; color: #FFFFFF; font-family: 'Gothic A1', sans-serif; font-size: 14px; font-weight: 800; padding: 13px 22px; cursor: pointer;">눌림</button>
+      <button style="border: 0; border-radius: 14px; background: #C6D8F8; color: #FFFFFF; font-family: 'Gothic A1', sans-serif; font-size: 14px; font-weight: 800; padding: 13px 22px;">비활성</button>
+      <button style="border: 1px solid #E5E8EB; border-radius: 14px; background: #FFFFFF; color: #4E5968; font-family: 'Gothic A1', sans-serif; font-size: 14px; font-weight: 700; padding: 13px 22px; cursor: pointer;">보조</button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+      <span style="border: 1px solid #1B64DA; background: #1B64DA; color: #FFFFFF; border-radius: 999px; font-size: 13px; font-weight: 700; padding: 8px 14px;">선택됨</span>
+      <span style="border: 1px solid #E5E8EB; background: #FFFFFF; color: #4E5968; border-radius: 999px; font-size: 13px; font-weight: 700; padding: 8px 14px;">기본</span>
+      <span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 3px 8px; background: #FEECEB; color: #D6473C;">high</span>
+      <span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 3px 8px; background: #FFF4E0; color: #B26B00;">medium</span>
+      <span style="font-size: 11px; font-weight: 800; border-radius: 6px; padding: 3px 8px; background: #F2F4F6; color: #4E5968;">low</span>
+      <span style="font-size: 11px; font-weight: 700; color: #4E5968; background: #F2F4F6; border-radius: 6px; padding: 3px 8px;">backend</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #8B95A1;">기본</span>
+        <div style="border: 1px solid #E5E8EB; border-radius: 12px; padding: 12px 14px; font-size: 14px; color: #191F28;">T06 프로젝트 완주</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #8B95A1;">포커스</span>
+        <div style="border: 1px solid #1B64DA; box-shadow: 0 0 0 3px rgba(27,100,218,.12); border-radius: 12px; padding: 12px 14px; font-size: 14px; color: #191F28;">T06 프로젝트 완주</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #8B95A1;">오류</span>
+        <div style="border: 1px solid #D6473C; border-radius: 12px; padding: 12px 14px; font-size: 14px; color: #191F28;">-1</div>
+        <span style="font-size: 11px; color: #D6473C;">예상 시간은 0 이상의 정수 분이어야 합니다</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <div style="width: 26px; height: 26px; border-radius: 50%; border: 2px solid #D1D6DB; background: #FFFFFF;"></div>
+        <span style="font-size: 13px; color: #4E5968;">진행 중</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background: #1B64DA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;">✓</div>
+        <span style="font-size: 13px; color: #8B95A1; text-decoration: line-through;">완료</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; background: #FFF9EC; border-radius: 14px; padding: 18px 20px;">
+    <div style="font-size: 13px; font-weight: 800; color: #191F28;">디자인이 못 바꾸는 것</div>
+    <div style="font-size: 12px; line-height: 1.75; color: #4E5968;">
+      공개 안내 문장 — 원문 그대로, 첫 화면에<br>
+      우선순위 — 화면에 <span style="font-family: ui-monospace, monospace;">high</span> 리터럴로 표시<br>
+      성공 기준 — “44개 검사 통과” 정확 일치<br>
+      정렬 기준 — “priority → due date → created time → ID” 화면에 명시<br>
+      지표 클릭 — 정확한 할 일·실행 ID 노출<br>
+      차이 값 — 음수는 ASCII 하이픈
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

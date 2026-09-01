@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #1B64DA; } a:hover { color: #14479b; }
+    .m-check { border-radius: 50%; cursor: pointer; width: 30px; height: 30px; flex: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; transition: transform .12s ease; }
+    .m-check:active { transform: scale(.9); }
+    .m-tab { border: 0; background: transparent; cursor: pointer; font-family: 'Gothic A1', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 5px; flex-grow: 1; padding: 10px 0 4px; min-height: 56px; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; background: #FFFFFF; color: #191F28; font-family: 'Gothic A1', system-ui, sans-serif; height: 100%; box-sizing: border-box;">
+
+  <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.16em; color: {{accent}};">PLAN · DO · SEE</div>
+      <div style="font-size: 22px; font-weight: 800; letter-spacing: -0.03em;">플랜두씨 다이어리</div>
+    </div>
+    <div style="font-size: 12px; line-height: 1.55; color: #4E5968; background: #F9FAFB; border-radius: 10px; padding: 11px 13px;">지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px; padding: 0 20px 16px;">
+    <div style="display: flex; flex-direction: column; gap: 10px; background: {{accent}}; border-radius: 18px; padding: 18px 20px; color: #FFFFFF;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 10px; font-weight: 800; background: rgba(255,255,255,.22); border-radius: 6px; padding: 3px 8px;">high</span>
+        <span style="font-size: 11px; font-weight: 500; opacity: .85;">09.01 – 09.07</span>
+      </div>
+      <div style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">T06 프로젝트 완주</div>
+      <div style="display: flex; align-items: baseline; gap: 8px; font-size: 12px; opacity: .9;">
+        <span>예상 390분</span><span style="opacity: .5;">·</span><span>실제 350분</span>
+        <span style="margin-left: auto; font-size: 15px; font-weight: 800; opacity: 1;">-40분</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 4px 20px 10px;">
+    <span style="font-size: 15px; font-weight: 800;">오늘 할 일</span>
+    <span style="font-size: 12px; font-weight: 700; color: {{accent}};">{{doneLabel}}</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 20px 16px; overflow-y: auto; flex-grow: 1;">
+    <sc-for list="{{rows}}" as="t" hint-placeholder-count="5">
+      <div style="display: flex; align-items: center; gap: 13px; border: 1px solid #E5E8EB; border-radius: 14px; padding: 14px 16px; min-height: 44px;">
+        <button class="m-check" style="{{t.checkStyle}}" onClick="{{ t.toggle }}">{{t.mark}}</button>
+        <div style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1; min-width: 0;">
+          <div style="{{t.titleStyle}}">{{t.content}}</div>
+          <div style="display: flex; align-items: center; gap: 7px;">
+            <span style="{{t.priStyle}}">{{t.pri}}</span>
+            <span style="font-size: 11px; font-weight: 500; color: {{t.dueColor}};">마감 {{t.due}}</span>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; border-top: 1px solid #E5E8EB; padding: 0 8px 8px;">
+    <sc-for list="{{tabs}}" as="b" hint-placeholder-count="3">
+      <button class="m-tab" onClick="{{ b.pick }}">
+        <div style="{{b.dot}}"></div>
+        <span style="{{b.label}}">{{b.name}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#1B64DA","options":["#1B64DA","#0F9D7A","#7A3B52","#E8890C"],"section":"테마"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tab: 1,
+      tasks: [
+        { id: 'a1', content: '계획 저장 API 붙이기', done: true, due: '09-02', pri: 'high' },
+        { id: 'a2', content: '할 일 목록 화면 만들기', done: true, due: '09-03', pri: 'high' },
+        { id: 'a3', content: '실행 기록 입력 폼', done: true, due: '09-04', pri: 'medium' },
+        { id: 'a4', content: '배포 환경 변수 정리', done: false, due: '09-01', pri: 'medium', late: true },
+        { id: 'a5', content: '돌아보기 집계 검증', done: false, due: '09-06', pri: 'low' }
+      ]
+    };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#1B64DA';
+    const st = this.state;
+
+    const priTone = {
+      high: 'background: #FEECEB; color: #D6473C;',
+      medium: 'background: #FFF4E0; color: #B26B00;',
+      low: 'background: #F2F4F6; color: #4E5968;'
+    };
+    const priRank = { high: 0, medium: 1, low: 2 };
+
+    const rows = st.tasks
+      .slice()
+      .sort((a, b) => (priRank[a.pri] - priRank[b.pri]) || a.due.localeCompare(b.due) || a.id.localeCompare(b.id))
+      .map((t) => ({
+        content: t.content,
+        due: t.due,
+        pri: t.pri,
+        mark: t.done ? '✓' : '',
+        dueColor: (!t.done && t.late) ? '#D6473C' : '#8B95A1',
+        priStyle: 'font-size: 10px; font-weight: 800; border-radius: 5px; padding: 2px 7px; ' + priTone[t.pri],
+        checkStyle: t.done
+          ? 'border: 0; background: ' + accent + '; color: #FFFFFF;'
+          : 'border: 2px solid #D1D6DB; background: #FFFFFF; color: transparent;',
+        titleStyle: 'font-size: 14px; font-weight: 700; letter-spacing: -0.01em; color: ' + (t.done ? '#8B95A1' : '#191F28') + '; text-decoration: ' + (t.done ? 'line-through' : 'none') + ';',
+        toggle: () => this.setState({
+          tasks: this.state.tasks.map((x) => x.id === t.id ? Object.assign({}, x, { done: !x.done }) : x)
+        })
+      }));
+
+    const tabNames = ['계획', '한 일', '돌아보기'];
+    const tabs = tabNames.map((name, i) => {
+      const n = i + 1;
+      const on = st.tab === n;
+      return {
+        name: name,
+        pick: () => this.setState({ tab: n }),
+        dot: 'width: 7px; height: 7px; border-radius: 50%; background: ' + (on ? accent : '#D1D6DB') + ';',
+        label: 'font-size: 12px; font-weight: ' + (on ? '800' : '500') + '; color: ' + (on ? '#191F28' : '#8B95A1') + ';'
+      };
+    });
+
+    const doneCount = st.tasks.filter((t) => t.done).length;
+
+    return {
+      accent: accent,
+      rows: rows,
+      tabs: tabs,
+      doneLabel: doneCount + ' / ' + st.tasks.length + ' 완료'
+    };
+  }
+}
+</script>
+</body>
+</html>

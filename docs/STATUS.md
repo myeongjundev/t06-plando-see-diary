@@ -180,6 +180,8 @@ acceptance suite before and after each of those.
 
 Direction rationale, the four sketched candidates, sketch links, the token summary
 and the list of screen elements design must not touch are in `docs/DESIGN.md`.
+Editable sketch and prototype sources are committed under `design/` with their own
+README; they are not built or served, and the 2.5 MB seeded canvases stay ignored.
 
 ## Working tree
 

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #26346B; } a:hover { color: #16204a; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 20px; padding: 28px; background: #F4F5F7; color: #151A22; font-family: 'IBM Plex Sans KR', system-ui, sans-serif; min-height: 100%; box-sizing: border-box;">
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #26346B; border: 1px solid #B9C3E2; border-radius: 999px; padding: 2px 9px;">방향 A</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #798394;">계측 · INSTRUMENT</span>
+    </div>
+    <div style="font-size: 24px; font-weight: 600; letter-spacing: -0.01em;">계획과 실제의 차이를 재는 계기판</div>
+    <div style="font-size: 13px; line-height: 1.6; color: #4A5462;">숫자를 고정폭으로 세우고, 차이를 막대로 보여 줍니다. 도구처럼 읽히는 방향.</div>
+  </div>
+
+  <div style="height: 1px; background: #D9DEE6;"></div>
+
+  <div style="display: flex; gap: 10px; align-items: flex-start; background: #EDEFF3; border-left: 3px solid #9A5200; padding: 12px 14px;">
+    <div style="font-size: 12px; line-height: 1.6; color: #4A5462;">지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px; background: #FFFFFF; border: 1px solid #D9DEE6; border-left: 3px solid #26346B; border-radius: 12px; padding: 20px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; background: #F8E4E2; color: #9E2A21; border-radius: 999px; padding: 2px 9px;">high</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #798394;">2026-09-01 → 09-07</span>
+    </div>
+    <div style="font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">T06 프로젝트 완주</div>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #798394;">성공 기준</span>
+      <span style="font-size: 14px; color: #4A5462;">44개 검사 통과</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding-top: 4px;">
+      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #798394;">
+        <span>예상 300분</span>
+        <span style="color: #0E6355;">실제 260분 · -40</span>
+      </div>
+      <div style="position: relative; height: 6px; border-radius: 999px; background: #E4E8EE; overflow: hidden;">
+        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 74%; border-radius: 999px; background: #0E6355; opacity: 0.85;"></div>
+        <div style="position: absolute; left: 86%; top: -2px; bottom: -2px; width: 1px; background: #151A22; opacity: 0.55;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+    <div style="display: flex; flex-direction: column; gap: 2px; background: #FFFFFF; border: 1px solid #D9DEE6; border-radius: 6px; padding: 12px 14px;">
+      <span style="font-size: 12px; color: #4A5462;">할 일</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: -0.02em;">5<span style="font-size: 13px;">개</span></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #798394;">근거 5건</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; background: #FFFFFF; border: 1px solid #D9DEE6; border-radius: 6px; padding: 12px 14px;">
+      <span style="font-size: 12px; color: #4A5462;">완료</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: -0.02em; color: #0E6355;">3<span style="font-size: 13px;">개</span></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #798394;">근거 3건</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; background: #FFFFFF; border: 1px solid #D9DEE6; border-radius: 6px; padding: 12px 14px;">
+      <span style="font-size: 12px; color: #4A5462;">지연</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: -0.02em; color: #9A5200;">1<span style="font-size: 13px;">개</span></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #798394;">근거 1건</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; background: #E5E9F5; border: 1px solid #26346B; border-radius: 6px; padding: 12px 14px;">
+      <span style="font-size: 12px; color: #4A5462;">차이 · 실제 − 예상</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: -0.02em; color: #0E6355;">-40<span style="font-size: 13px;">분</span></span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #798394;">선택됨</span>
+    </div>
+  </div>
+
+  <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #798394; border-top: 1px dashed #C3CAD6; padding-top: 10px;">정렬 기준 · priority → due date → created time → ID</div>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #D9DEE6; padding-top: 14px;">
+    <div style="font-size: 12px; font-weight: 600; color: #151A22;">이 방향의 대가</div>
+    <div style="font-size: 12px; line-height: 1.6; color: #4A5462;">실무 도구로는 가장 설득력 있지만 차갑습니다. “대중적·친화적”이라는 목표와 가장 멀리 있는 후보입니다.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #1B64DA; } a:hover { color: #14479b; }
+    .pd-input { border: 1px solid #E5E8EB; border-radius: 12px; background: #FFFFFF; color: #191F28; font-family: 'Gothic A1', sans-serif; font-size: 14px; padding: 12px 14px; width: 100%; box-sizing: border-box; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
+    .pd-input:focus { border-color: #1B64DA; box-shadow: 0 0 0 3px rgba(27,100,218,.12); }
+    .pd-chip { border: 1px solid #E5E8EB; border-radius: 999px; background: #FFFFFF; color: #4E5968; font-family: 'Gothic A1', sans-serif; font-size: 13px; font-weight: 700; padding: 8px 14px; cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease; }
+    .pd-chip:hover { background: #F2F4F6; }
+    .pd-step { border: 0; background: transparent; padding: 0; cursor: pointer; font-family: 'Gothic A1', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 7px; flex-grow: 1; }
+    .pd-check { border-radius: 50%; cursor: pointer; width: 26px; height: 26px; flex: none; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; transition: transform .12s ease; }
+    .pd-check:active { transform: scale(.9); }
+    .pd-row { transition: background .15s ease; }
+    .pd-row:hover { background: #F9FAFB; }
+    .pd-metric { text-align: left; cursor: pointer; font-family: 'Gothic A1', sans-serif; transition: border-color .15s ease, background .15s ease; }
+    .pd-metric:hover { border-color: #C6D8F8; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 22px; padding: 32px 36px 40px; background: #FFFFFF; color: #191F28; font-family: 'Gothic A1', system-ui, sans-serif; min-height: 100%; box-sizing: border-box;">
+
+  <div style="display: flex; flex-direction: column; gap: 7px;">
+    <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.16em; color: {{accent}};">PLAN · DO · SEE</div>
+    <div style="font-size: 30px; font-weight: 800; letter-spacing: -0.035em;">플랜두씨 다이어리</div>
+    <div style="font-size: 14px; line-height: 1.6; color: #4E5968;">계획한 나와 실제의 차이를 기록하고, 다음 계획을 더 정확하게 만듭니다.</div>
+  </div>
+
+  <div style="display: flex; gap: 11px; align-items: flex-start; background: #F9FAFB; border-radius: 12px; padding: 14px 16px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="1.8" stroke-linecap="round" style="flex: none; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16.5v.01"></path></svg>
+    <div style="font-size: 13px; line-height: 1.6; color: #4E5968;">지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요</div>
+  </div>
+
+  <div style="display: flex; align-items: flex-start; gap: 0; padding: 4px 0 2px;">
+    <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+      <button class="pd-step" onClick="{{ s.pick }}">
+        <div style="{{s.circle}}">{{s.n}}</div>
+        <span style="{{s.label}}">{{s.name}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+
+      <div style="display: flex; flex-direction: column; gap: 14px; border: 1px solid #E5E8EB; border-radius: 18px; padding: 24px;">
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.04em; background: #FEECEB; color: #D6473C; border-radius: 7px; padding: 4px 9px;">high</span>
+          <span style="font-size: 13px; font-weight: 500; color: #8B95A1;">2026.09.01 – 09.07</span>
+          <span style="margin-left: auto; font-size: 12px; font-weight: 700; color: #0F9D7A; background: #E7F7F2; border-radius: 7px; padding: 4px 9px;">진행 중</span>
+        </div>
+        <div style="font-size: 22px; font-weight: 800; letter-spacing: -0.025em;">T06 프로젝트 완주</div>
+        <div style="display: flex; flex-direction: column; gap: 4px; background: #F9FAFB; border-radius: 12px; padding: 14px 16px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.02em; color: #8B95A1;">성공 기준</span>
+          <span style="font-size: 15px; font-weight: 500;">44개 검사 통과</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 10px; font-size: 14px;">
+          <span style="color: #4E5968;">예상 <span style="font-weight: 700; color: #191F28;">390분</span></span>
+          <span style="color: #D1D6DB;">·</span>
+          <span style="color: #4E5968;">실제 <span style="font-weight: 700; color: #191F28;">350분</span></span>
+          <span style="margin-left: auto; font-weight: 800; color: #0F9D7A;">-40분</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; border: 1px solid #E5E8EB; border-radius: 18px; padding: 24px;">
+        <div style="font-size: 16px; font-weight: 800; letter-spacing: -0.02em;">새 계획 세우기</div>
+        <div style="display: flex; flex-direction: column; gap: 7px;">
+          <label style="font-size: 13px; font-weight: 700; color: #4E5968;">계획 이름</label>
+          <input class="pd-input" value="{{ title }}" onChange="{{ onTitle }}">
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <label style="font-size: 13px; font-weight: 700; color: #4E5968;">시작일</label>
+            <input class="pd-input" type="date" value="2026-09-08">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <label style="font-size: 13px; font-weight: 700; color: #4E5968;">종료일</label>
+            <input class="pd-input" type="date" value="2026-09-14">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <label style="font-size: 13px; font-weight: 700; color: #4E5968;">우선순위</label>
+            <select class="pd-input"><option>high</option><option>medium</option><option>low</option></select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <label style="font-size: 13px; font-weight: 700; color: #4E5968;">예상 시간(분)</label>
+            <input class="pd-input" value="600">
+          </div>
+        </div>
+        <button style="border: 0; border-radius: 14px; background: {{accent}}; color: #FFFFFF; font-family: 'Gothic A1', sans-serif; font-size: 15px; font-weight: 800; padding: 15px 0; width: 100%; cursor: pointer;">계획 저장</button>
+      </div>
+
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isDo }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <input class="pd-input" placeholder="할 일 검색" value="{{ query }}" onChange="{{ onQuery }}">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+            <button class="pd-chip" style="{{f.style}}" onClick="{{ f.pick }}">{{f.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: #8B95A1;">정렬 기준 · priority → due date → created time → ID</div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <sc-for list="{{rows}}" as="t" hint-placeholder-count="5">
+          <div class="pd-row" style="display: flex; align-items: flex-start; gap: 14px; border: 1px solid #E5E8EB; border-radius: 16px; padding: 16px 18px;">
+            <button class="pd-check" style="{{t.checkStyle}}" onClick="{{ t.toggle }}">{{t.mark}}</button>
+            <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="{{t.priStyle}}">{{t.pri}}</span>
+                <span style="font-size: 12px; font-weight: 500; color: {{t.dueColor}};">마감 {{t.due}}</span>
+                <span style="font-size: 12px; color: #D1D6DB;">·</span>
+                <span style="font-size: 12px; font-weight: 500; color: #8B95A1;">예상 {{t.est}}분</span>
+              </div>
+              <div style="{{t.titleStyle}}">{{t.content}}</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <sc-for list="{{t.tags}}" as="g" hint-placeholder-count="2">
+                  <span style="font-size: 11px; font-weight: 700; color: #4E5968; background: #F2F4F6; border-radius: 6px; padding: 3px 8px;">{{g}}</span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px dashed #D1D6DB; border-radius: 16px; padding: 40px 20px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C4CBD3" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path></svg>
+          <div style="font-size: 15px; font-weight: 700; color: #4E5968;">조건에 맞는 할 일이 없습니다</div>
+          <div style="font-size: 13px; color: #8B95A1;">검색어를 지우거나 다른 조건을 눌러 보세요</div>
+        </div>
+      </sc-if>
+
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSee }}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+        <sc-for list="{{metrics}}" as="m" hint-placeholder-count="4">
+          <button class="pd-metric" style="{{m.style}}" onClick="{{ m.pick }}">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; font-weight: 500; color: #8B95A1;">{{m.label}}</span>
+              <span style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: {{m.color}};">{{m.value}}</span>
+              <span style="font-size: 11px; font-weight: 500; color: #8B95A1;">{{m.hint}}</span>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; background: #F9FAFB; border-radius: 16px; padding: 20px;">
+        <div style="font-size: 15px; font-weight: 800;">{{sourceTitle}}</div>
+        <div style="font-size: 13px; color: #4E5968; line-height: 1.6;">{{sourceNote}}</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{sources}}" as="r" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 3px; background: #FFFFFF; border: 1px solid #E5E8EB; border-radius: 12px; padding: 13px 15px;">
+              <span style="font-size: 14px; font-weight: 700;">{{r.title}}</span>
+              <span style="font-size: 12px; color: #4E5968;">{{r.meta}}</span>
+              <span style="font-size: 11px; font-family: ui-monospace, monospace; color: #8B95A1;">{{r.id}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#1B64DA","options":["#1B64DA","#0F9D7A","#7A3B52","#E8890C"],"section":"테마"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      step: 2,
+      query: '',
+      filter: 'all',
+      metric: 'variance',
+      title: 'T06 회고 반영 2주차',
+      tasks: [
+        { id: 'a1', content: '계획 저장 API 붙이기', done: true, due: '09-02', pri: 'high', est: 90, tags: ['backend'] },
+        { id: 'a2', content: '할 일 목록 화면 만들기', done: true, due: '09-03', pri: 'high', est: 120, tags: ['frontend'] },
+        { id: 'a3', content: '실행 기록 입력 폼', done: true, due: '09-04', pri: 'medium', est: 60, tags: ['frontend'] },
+        { id: 'a4', content: '배포 환경 변수 정리', done: false, due: '09-01', pri: 'medium', est: 45, tags: ['deploy'], late: true },
+        { id: 'a5', content: '돌아보기 집계 검증', done: false, due: '09-06', pri: 'low', est: 75, tags: ['test'] }
+      ]
+    };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#1B64DA';
+    const st = this.state;
+
+    const stepNames = ['계획', '실제로 한 일', '돌아보기'];
+    const steps = stepNames.map((name, i) => {
+      const n = i + 1;
+      const active = st.step === n;
+      const done = st.step > n;
+      const bg = active ? accent : (done ? '#E7EFFD' : '#FFFFFF');
+      const fg = active ? '#FFFFFF' : (done ? accent : '#8B95A1');
+      const bd = active ? accent : (done ? '#C6D8F8' : '#E5E8EB');
+      return {
+        n: String(n),
+        name: name,
+        pick: () => this.setState({ step: n }),
+        circle: 'width: 34px; height: 34px; border-radius: 50%; border: 2px solid ' + bd + '; background: ' + bg + '; color: ' + fg + '; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800;',
+        label: 'font-size: 13px; font-weight: ' + (active ? '800' : '500') + '; color: ' + (active ? '#191F28' : '#8B95A1') + ';'
+      };
+    });
+
+    const filterDefs = [
+      { key: 'all', label: '전체' },
+      { key: 'active', label: '진행 중' },
+      { key: 'completed', label: '완료' },
+      { key: 'high', label: 'high' }
+    ];
+    const filters = filterDefs.map((f) => {
+      const on = st.filter === f.key;
+      return {
+        label: f.label,
+        pick: () => this.setState({ filter: f.key }),
+        style: on
+          ? 'background: ' + accent + '; border-color: ' + accent + '; color: #FFFFFF;'
+          : ''
+      };
+    });
+
+    const q = st.query.trim();
+    const priRank = { high: 0, medium: 1, low: 2 };
+    const visible = st.tasks
+      .filter((t) => {
+        if (st.filter === 'active' && t.done) return false;
+        if (st.filter === 'completed' && !t.done) return false;
+        if (st.filter === 'high' && t.pri !== 'high') return false;
+        if (q && t.content.indexOf(q) === -1) return false;
+        return true;
+      })
+      .sort((a, b) => (priRank[a.pri] - priRank[b.pri]) || a.due.localeCompare(b.due) || a.id.localeCompare(b.id));
+
+    const priTone = {
+      high: 'background: #FEECEB; color: #D6473C;',
+      medium: 'background: #FFF4E0; color: #B26B00;',
+      low: 'background: #F2F4F6; color: #4E5968;'
+    };
+
+    const rows = visible.map((t) => ({
+      content: t.content,
+      due: t.due,
+      pri: t.pri,
+      est: String(t.est),
+      tags: t.tags,
+      mark: t.done ? '✓' : '',
+      dueColor: (!t.done && t.late) ? '#D6473C' : '#8B95A1',
+      priStyle: 'font-size: 11px; font-weight: 800; letter-spacing: 0.02em; border-radius: 6px; padding: 3px 8px; ' + priTone[t.pri],
+      checkStyle: t.done
+        ? 'border: 0; background: ' + accent + '; color: #FFFFFF;'
+        : 'border: 2px solid #D1D6DB; background: #FFFFFF; color: transparent;',
+      titleStyle: 'font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: ' + (t.done ? '#8B95A1' : '#191F28') + '; text-decoration: ' + (t.done ? 'line-through' : 'none') + ';',
+      toggle: () => this.setState({
+        tasks: this.state.tasks.map((x) => x.id === t.id ? Object.assign({}, x, { done: !x.done }) : x)
+      })
+    }));
+
+    const total = st.tasks.length;
+    const doneCount = st.tasks.filter((t) => t.done).length;
+    const lateCount = st.tasks.filter((t) => !t.done && t.late).length;
+
+    const metricDefs = [
+      { key: 'tasks', label: '할 일', value: String(total) + '개', color: '#191F28', hint: '근거 ' + total + '건' },
+      { key: 'done', label: '완료', value: String(doneCount) + '개', color: '#0F9D7A', hint: '근거 ' + doneCount + '건' },
+      { key: 'late', label: '지연', value: String(lateCount) + '개', color: lateCount > 0 ? '#E8890C' : '#8B95A1', hint: '근거 ' + lateCount + '건' },
+      { key: 'variance', label: '차이', value: '-40분', color: '#0F9D7A', hint: '예상 390 · 실제 350' }
+    ];
+    const metrics = metricDefs.map((m) => {
+      const on = st.metric === m.key;
+      return {
+        label: m.label, value: m.value, color: m.color, hint: m.hint,
+        pick: () => this.setState({ metric: m.key }),
+        style: 'display: block; width: 100%; border: 1px solid ' + (on ? accent : '#E5E8EB') + '; background: ' + (on ? '#F4F8FE' : '#FFFFFF') + '; border-radius: 14px; padding: 16px 18px;'
+      };
+    });
+
+    const sourceMap = {
+      tasks: {
+        title: '할 일 · 근거 기록',
+        note: '이 계획에 속한 삭제되지 않은 할 일 전부입니다.',
+        rows: st.tasks.map((t) => ({ title: t.content, meta: (t.done ? '완료' : '진행 중') + ' · 마감 2026-' + t.due + ' · 예상 ' + t.est + '분', id: '할 일 ID · task-' + t.id }))
+      },
+      done: {
+        title: '완료 · 근거 기록',
+        note: '현재 상태가 완료인 할 일을 셉니다. 완료 이력이 아니라 현재 상태 기준입니다.',
+        rows: st.tasks.filter((t) => t.done).map((t) => ({ title: t.content, meta: '완료 · 마감 2026-' + t.due, id: '할 일 ID · task-' + t.id }))
+      },
+      late: {
+        title: '지연 · 근거 기록',
+        note: '서울 기준 오늘 이전 마감인 미완료 할 일만 셉니다. 완료된 지난 할 일은 세지 않습니다.',
+        rows: st.tasks.filter((t) => !t.done && t.late).map((t) => ({ title: t.content, meta: '진행 중 · 마감 2026-' + t.due, id: '할 일 ID · task-' + t.id }))
+      },
+      variance: {
+        title: '차이 · 근거 기록',
+        note: '차이는 실제 시간에서 예상 시간을 뺀 값입니다. 실제 시간은 대상 할 일에 연결된 모든 실행 기록을 합산합니다.',
+        rows: [
+          { title: '실제 120분', meta: '2026-09-02 10:00 → 12:00 (서울) · 막힌 이유 없음', id: '실행 ID · exec-01' },
+          { title: '실제 155분', meta: '2026-09-03 14:00 → 16:35 (서울) · 막힌 이유 없음', id: '실행 ID · exec-02' },
+          { title: '실제 75분', meta: '2026-09-04 09:30 → 10:45 (서울) · 배포 환경 변수 확인', id: '실행 ID · exec-03' }
+        ]
+      }
+    };
+    const src = sourceMap[st.metric];
+
+    return {
+      accent: accent,
+      steps: steps,
+      isPlan: st.step === 1,
+      isDo: st.step === 2,
+      isSee: st.step === 3,
+      title: st.title,
+      onTitle: (e) => this.setState({ title: e.target.value }),
+      query: st.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      filters: filters,
+      rows: rows,
+      noRows: rows.length === 0,
+      metrics: metrics,
+      sourceTitle: src.title,
+      sourceNote: src.note,
+      sources: src.rows
+    };
+  }
+}
+</script>
+</body>
+</html>

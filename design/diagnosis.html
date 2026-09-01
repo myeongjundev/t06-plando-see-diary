@@ -1,0 +1,659 @@
+<title>플랜두씨 리디자인 시안</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap');
+
+/* ── 제안 토큰: 라이트 ─────────────────────────────── */
+:root{
+  --ground:#F4F5F7; --surface:#FFFFFF; --surface-2:#EDEFF3; --surface-3:#E4E8EE;
+  --ink:#151A22; --ink-2:#4A5462; --ink-3:#798394;
+  --line:#D9DEE6; --line-2:#C3CAD6;
+  --accent:#26346B; --accent-ink:#FFFFFF; --accent-soft:#E5E9F5; --accent-line:#B9C3E2;
+  --over:#9A5200; --over-soft:#FAEEDD;
+  --under:#0E6355; --under-soft:#DEEEEA;
+  --crit:#9E2A21; --crit-soft:#F8E4E2;
+
+  --f-display:'Archivo','IBM Plex Sans KR',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans KR','Archivo',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s9:96px;
+  --r-ctl:6px; --r-card:12px; --r-pill:999px;
+  --shadow:0 1px 2px rgba(21,26,34,.05), 0 8px 24px -12px rgba(21,26,34,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1218; --surface:#171B23; --surface-2:#1E232C; --surface-3:#262C37;
+    --ink:#E8EBF0; --ink-2:#A2ACBC; --ink-3:#6E788A;
+    --line:#2A303B; --line-2:#3A4250;
+    --accent:#8DA2E8; --accent-ink:#0F1218; --accent-soft:#1C2340; --accent-line:#39456F;
+    --over:#E0A75C; --over-soft:#31261A;
+    --under:#4FC3AE; --under-soft:#122E2A;
+    --crit:#E8837A; --crit-soft:#33201E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1218; --surface:#171B23; --surface-2:#1E232C; --surface-3:#262C37;
+  --ink:#E8EBF0; --ink-2:#A2ACBC; --ink-3:#6E788A;
+  --line:#2A303B; --line-2:#3A4250;
+  --accent:#8DA2E8; --accent-ink:#0F1218; --accent-soft:#1C2340; --accent-line:#39456F;
+  --over:#E0A75C; --over-soft:#31261A;
+  --under:#4FC3AE; --under-soft:#122E2A;
+  --crit:#E8837A; --crit-soft:#33201E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{width:min(1080px,calc(100% - 40px)); margin:0 auto; padding:var(--s8) 0 var(--s9);}
+h1,h2,h3,h4{margin:0; text-wrap:balance; line-height:1.2;}
+p{margin:0;}
+code{font-family:var(--f-mono); font-size:.875em; background:var(--surface-2); padding:1px 5px; border-radius:4px; color:var(--ink-2);}
+.num{font-family:var(--f-mono); font-variant-numeric:tabular-nums;}
+
+.eyebrow{
+  font-family:var(--f-display); font-size:11px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--accent);
+}
+
+/* ── 헤더 ─────────────────────────────── */
+.masthead{display:flex; flex-direction:column; gap:var(--s4); padding-bottom:var(--s6); border-bottom:2px solid var(--ink);}
+.masthead h1{font-family:var(--f-display); font-size:clamp(34px,5.5vw,52px); font-weight:700; letter-spacing:-.02em;}
+.masthead .lede{font-size:18px; color:var(--ink-2); max-width:60ch;}
+.meta{display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); font-family:var(--f-mono); font-size:12px; color:var(--ink-3); padding-top:var(--s2);}
+.meta span{white-space:nowrap;}
+
+section{margin-top:var(--s9);}
+.sec-head{display:flex; flex-direction:column; gap:var(--s2); margin-bottom:var(--s5); padding-bottom:var(--s3); border-bottom:1px solid var(--line);}
+.sec-head h2{font-family:var(--f-display); font-size:28px; font-weight:600; letter-spacing:-.01em;}
+.sec-head p{color:var(--ink-2); max-width:64ch;}
+
+/* ── 진단 ─────────────────────────────── */
+.findings{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:var(--s3);}
+.finding{
+  display:flex; flex-direction:column; gap:var(--s2);
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:var(--s4) var(--s5) var(--s5);
+}
+.finding .tag{
+  align-self:flex-start; font-family:var(--f-mono); font-size:11px; font-weight:500;
+  padding:2px 8px; border-radius:var(--r-pill); background:var(--crit-soft); color:var(--crit);
+}
+.finding h3{font-size:17px; font-weight:600;}
+.finding p{font-size:14px; color:var(--ink-2);}
+.finding .ev{font-family:var(--f-mono); font-size:12px; color:var(--ink-3); border-top:1px dashed var(--line-2); padding-top:var(--s2); margin-top:auto; overflow-wrap:anywhere;}
+
+/* ── 원칙 ─────────────────────────────── */
+.principles{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:var(--s5);}
+.principle{display:flex; flex-direction:column; gap:var(--s2); border-top:2px solid var(--accent); padding-top:var(--s3);}
+.principle h3{font-size:16px; font-weight:600;}
+.principle p{font-size:14px; color:var(--ink-2);}
+
+/* ── 토큰 ─────────────────────────────── */
+.tok-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:var(--s5);}
+.tok-block{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:var(--s5);}
+.tok-block h3{font-family:var(--f-display); font-size:13px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:var(--s4);}
+.swatches{display:flex; flex-direction:column; gap:var(--s2);}
+.sw{display:grid; grid-template-columns:28px 1fr auto; align-items:center; gap:var(--s3); font-size:13px;}
+.sw i{display:block; width:28px; height:28px; border-radius:var(--r-ctl); border:1px solid var(--line-2);}
+.sw b{font-weight:500;}
+.sw code{background:none; padding:0; color:var(--ink-3);}
+.scale{display:flex; flex-direction:column; gap:var(--s3);}
+.scale div{display:flex; align-items:baseline; gap:var(--s4); border-bottom:1px dotted var(--line); padding-bottom:var(--s2);}
+.scale span:first-child{font-family:var(--f-mono); font-size:11px; color:var(--ink-3); width:56px; flex:none;}
+.rule-list{display:flex; flex-direction:column; gap:var(--s3); font-size:14px; color:var(--ink-2);}
+.rule-list b{color:var(--ink); font-weight:600;}
+.rule-list s{color:var(--ink-3);}
+
+/* ── Before / After ─────────────────────────────── */
+.ba{display:grid; grid-template-columns:1fr 1fr; gap:var(--s5); align-items:start; margin-bottom:var(--s7);}
+.ba > figure{margin:0; display:flex; flex-direction:column; gap:var(--s3);}
+.ba figcaption{display:flex; align-items:center; gap:var(--s2); font-family:var(--f-display); font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;}
+.ba figcaption .dot{width:8px; height:8px; border-radius:50%;}
+.cap-before .dot{background:var(--crit);} .cap-before{color:var(--crit);}
+.cap-after .dot{background:var(--under);} .cap-after{color:var(--under);}
+.stage{border:1px solid var(--line); border-radius:var(--r-card); overflow:hidden; box-shadow:var(--shadow);}
+.note{font-size:13px; color:var(--ink-3); line-height:1.55;}
+@media (max-width:860px){ .ba{grid-template-columns:1fr;} }
+
+/* ============ BEFORE: 현재 배포본 값 그대로 ============ */
+.bf{
+  background:#f3f0e8; color:#17221c; padding:22px;
+  font-family:Georgia,'Noto Serif KR',serif;
+}
+.bf .card{border:1px solid #d5d6ce; border-radius:22px; background:#fff; padding:20px;}
+.bf .top{display:flex; justify-content:space-between; gap:12px; color:#66736a; font-size:13px; font-family:Inter,system-ui,sans-serif;}
+.bf .pri{border-radius:999px; padding:3px 9px; text-transform:uppercase; font-weight:900; background:#ffe5da; color:#a33d1c; font-size:13px;}
+.bf h4{margin:22px 0 8px; font-size:24px; font-family:Inter,system-ui,sans-serif; font-weight:800; letter-spacing:-.02em;}
+.bf .desc{color:#66736a; min-height:48px; margin:0; font-family:Inter,system-ui,sans-serif; font-size:15px;}
+.bf strong{font-family:Inter,system-ui,sans-serif; font-weight:800; font-size:15px;}
+.bf .acts{display:flex; gap:8px; margin-top:20px;}
+.bf .acts button{border:1px solid #b9c2bb; border-radius:10px; background:#f7f8f5; padding:9px 12px; font-family:Inter,system-ui,sans-serif; font-weight:400; font-size:14px; color:#17221c;}
+.bf .lab{color:#47534b; font-size:14px; font-weight:800; font-family:Inter,system-ui,sans-serif; display:block; margin-bottom:8px;}
+.bf input,.bf select{width:100%; border:1px solid #bcc4bd; border-radius:12px; background:#fff; color:#17221c; padding:12px 14px; font-family:Inter,system-ui,sans-serif; font-size:15px;}
+.bf .row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px;}
+.bf .primary{border:0; border-radius:999px; background:#1f6b50; color:#fff; padding:13px 24px; font-weight:800; font-family:Inter,system-ui,sans-serif; margin-top:18px; font-size:15px;}
+.bf .mcard{display:grid; gap:10px; text-align:left; padding:18px; border:1px solid #bcc4bd; background:#f7f8f5; border-radius:16px; color:#17221c; font-family:Inter,system-ui,sans-serif;}
+.bf .mcard span{font-size:14px;}
+.bf .mcard strong{font-size:30px; color:#1f6b50;}
+.bf .mcard small{color:#536158; font-size:13px;}
+.bf .mgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+/* ============ AFTER: 제안 시스템 ============ */
+.af{background:var(--surface-2); padding:22px; font-family:var(--f-body); color:var(--ink);}
+.af.on-dark{
+  --surface:#171B23; --surface-2:#1E232C; --surface-3:#262C37;
+  --ink:#E8EBF0; --ink-2:#A2ACBC; --ink-3:#6E788A; --line:#2A303B; --line-2:#3A4250;
+  --accent:#8DA2E8; --accent-ink:#0F1218; --accent-soft:#1C2340; --accent-line:#39456F;
+  --over:#E0A75C; --over-soft:#31261A; --under:#4FC3AE; --under-soft:#122E2A;
+  background:#0F1218; color:#E8EBF0;
+}
+.af .card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
+  padding:var(--s5); display:flex; flex-direction:column; gap:var(--s3);
+  border-left:3px solid var(--accent);
+}
+.af .top{display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap;}
+.af .pri{
+  font-family:var(--f-display); font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:var(--r-pill); background:var(--crit-soft); color:var(--crit);
+}
+.af .dates{font-family:var(--f-mono); font-size:12px; color:var(--ink-3); font-variant-numeric:tabular-nums;}
+.af h4{font-family:var(--f-display); font-size:19px; font-weight:600; letter-spacing:-.01em;}
+.af .desc{font-size:14px; color:var(--ink-2);}
+.af .fieldlab{display:block; font-family:var(--f-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:2px;}
+.af .gauge{display:flex; flex-direction:column; gap:var(--s1); padding-top:var(--s1);}
+.af .gauge .lbl{display:flex; justify-content:space-between; font-family:var(--f-mono); font-size:11px; color:var(--ink-3);}
+.af .gauge .lbl b{color:var(--over); font-weight:500;}
+.af .bar{height:6px; border-radius:var(--r-pill); background:var(--surface-3); position:relative; overflow:hidden;}
+.af .bar i{position:absolute; inset:0 auto 0 0; border-radius:var(--r-pill);}
+.af .bar .plan{width:60%; background:var(--accent); opacity:.35;}
+.af .bar .act{width:82%; background:var(--over); height:100%; opacity:.9;}
+.af .bar .tick{position:absolute; left:60%; top:-2px; bottom:-2px; width:1px; background:var(--ink); opacity:.55;}
+.af .acts{display:flex; gap:var(--s2); padding-top:var(--s2);}
+.af .acts button{
+  border:1px solid var(--line-2); border-radius:var(--r-ctl); background:transparent;
+  padding:6px 12px; font-family:var(--f-body); font-size:13px; font-weight:500; color:var(--ink-2);
+  cursor:pointer; transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.af .acts button:hover{background:var(--accent-soft); border-color:var(--accent-line); color:var(--accent);}
+.af .lab{display:block; font-size:12px; font-weight:500; color:var(--ink-2); margin-bottom:var(--s1); letter-spacing:.01em;}
+.af input,.af select{
+  width:100%; border:1px solid var(--line-2); border-radius:var(--r-ctl); background:var(--surface);
+  color:var(--ink); padding:9px 11px; font-family:var(--f-body); font-size:14px; line-height:1.4;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.af input.mono{font-family:var(--f-mono); font-variant-numeric:tabular-nums;}
+.af input:focus,.af select:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+.af .row{display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); margin-top:var(--s3);}
+.af .primary{
+  border:1px solid var(--accent); border-radius:var(--r-ctl); background:var(--accent); color:var(--accent-ink);
+  padding:9px 18px; font-family:var(--f-body); font-weight:600; font-size:14px; margin-top:var(--s4);
+  cursor:pointer; transition:filter .15s ease, transform .1s ease;
+}
+.af .primary:hover{filter:brightness(1.15);}
+.af .primary:active{transform:translateY(1px);}
+.af .fieldset{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:var(--s5);}
+.af .fs-head{display:flex; align-items:baseline; gap:var(--s2); margin-bottom:var(--s4); padding-bottom:var(--s3); border-bottom:1px solid var(--line);}
+.af .fs-head .step{font-family:var(--f-mono); font-size:11px; color:var(--accent); border:1px solid var(--accent-line); border-radius:var(--r-pill); padding:1px 7px;}
+.af .fs-head h4{font-size:16px;}
+.af .mgrid{display:grid; grid-template-columns:1fr 1fr; gap:var(--s2);}
+.af .mcard{
+  display:flex; flex-direction:column; gap:2px; text-align:left; padding:var(--s3) var(--s4);
+  border:1px solid var(--line); background:var(--surface); border-radius:var(--r-ctl); color:var(--ink);
+  cursor:pointer; transition:border-color .15s ease, background .15s ease;
+}
+.af .mcard:hover{border-color:var(--accent-line); background:var(--accent-soft);}
+.af .mcard span{font-size:12px; color:var(--ink-2);}
+.af .mcard strong{font-family:var(--f-mono); font-size:26px; font-weight:500; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+.af .mcard.sel{border-color:var(--accent); background:var(--accent-soft);}
+.af .mcard.pos strong{color:var(--over);}
+.af .mcard.neg strong{color:var(--under);}
+.af .mcard small{font-family:var(--f-mono); font-size:10px; color:var(--ink-3); letter-spacing:.06em; text-transform:uppercase;}
+
+/* ── 적용 범위 ─────────────────────────────── */
+.scope{width:100%; border-collapse:collapse; font-size:14px;}
+.scope th,.scope td{text-align:left; padding:var(--s3) var(--s4); border-bottom:1px solid var(--line); vertical-align:top;}
+.scope th{font-family:var(--f-display); font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3);}
+.scope td:first-child{font-family:var(--f-mono); font-size:12.5px; white-space:nowrap; color:var(--accent);}
+.scope td:last-child{color:var(--ink-2);}
+.scope-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);}
+.risk{margin-top:var(--s5); border-left:3px solid var(--over); background:var(--over-soft); padding:var(--s4) var(--s5); border-radius:0 var(--r-ctl) var(--r-ctl) 0;}
+.risk h3{font-size:15px; font-weight:600; margin-bottom:var(--s2);}
+.locked td:first-child{color:var(--crit); font-family:var(--f-body); font-size:14px; white-space:normal;}
+.locked td:nth-child(2){font-family:var(--f-mono); font-size:12px; color:var(--ink-3); white-space:nowrap;}
+.ok-badge{display:inline-flex; align-items:center; gap:6px; font-family:var(--f-mono); font-size:12px; color:var(--under); background:var(--under-soft); border-radius:var(--r-pill); padding:3px 10px;}
+.risk p{font-size:14px; color:var(--ink-2);}
+.risk + .risk{margin-top:var(--s3);}
+
+footer{margin-top:var(--s9); padding-top:var(--s5); border-top:1px solid var(--line); font-family:var(--f-mono); font-size:12px; color:var(--ink-3);}
+
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">T06 · Plan Do See · 디자인 리뷰</p>
+    <h1>플랜두씨 리디자인 시안</h1>
+    <p class="lede">현재 배포본을 실제로 열어 측정하고 <code>styles.css</code> 전체를 읽은 뒤 정리한 진단과, 그에 대응하는 디자인 시스템 제안입니다. 코드는 아직 건드리지 않았습니다.</p>
+    <div class="meta">
+      <span>대상 · t06-plando-see-diary.onrender.com</span>
+      <span>측정 · 1440×900 / 문서 높이 2008px</span>
+      <span>2026-09-01</span>
+    </div>
+  </header>
+
+  <!-- 1. 진단 -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">01 — 진단</p>
+      <h2>지금 촌스러워 보이는 이유</h2>
+      <p>취향 문제가 아니라 시스템 부재입니다. 아래 다섯 가지가 체감 품질의 대부분을 깎고 있습니다.</p>
+    </div>
+    <div class="findings">
+
+      <div class="finding">
+        <span class="tag">위계</span>
+        <h3>전부 굵어서 아무것도 강조되지 않음</h3>
+        <p>라벨·버튼·요약·눈썹 텍스트가 모두 800, 우선순위 뱃지는 900입니다. 강조가 기본값이 되면 위계가 사라지고, 화면이 소리를 지릅니다.</p>
+        <p class="ev">font-weight: 800 × 5곳 · 900 × 1곳 · 400 본문 없음</p>
+      </div>
+
+      <div class="finding">
+        <span class="tag">서체</span>
+        <h3>타입 스케일이 없고 한글 자간이 뭉갬</h3>
+        <p>제목은 최대 82px인데 다음 단계가 28px입니다. 근거 없는 점프죠. 여기에 <code>letter-spacing:-.05em</code>은 라틴 기준 값이라 한글에서는 글자가 서로 붙습니다.</p>
+        <p class="ev">clamp(42px, 8vw, 82px) → 28 → 24 → 19 → 13</p>
+      </div>
+
+      <div class="finding">
+        <span class="tag">색</span>
+        <h3>팔레트가 아니라 그때그때 고른 값들</h3>
+        <p>초록만 세 종류, 주황 계열 세 종류, 거기에 노란 뱃지까지 섞입니다. 게다가 크림 + 세리프 + 테라코타는 생성형 도구가 가장 흔하게 뱉는 조합이라 “어디서 본 화면”으로 읽힙니다.</p>
+        <p class="ev">#1f6b50 #31745a #99b8a7 · #d9663d #a33d1c #8a4228 · #fff2bf</p>
+      </div>
+
+      <div class="finding">
+        <span class="tag">형태</span>
+        <h3>모서리 8종, 상자 안의 상자 안의 상자</h3>
+        <p>한 화면에 radius가 여덟 가지 나옵니다. 패널(테두리+그림자) 안에 카드(테두리), 그 안에 인라인 편집, 또 그 안에 이력 박스가 들어가 깊이 위계가 무너집니다.</p>
+        <p class="ev">28 / 22 / 18 / 16 / 14 / 12 / 10 / 999px</p>
+      </div>
+
+      <div class="finding">
+        <span class="tag">반응</span>
+        <h3>손대도 아무 반응이 없음</h3>
+        <p><code>transition</code>이 스타일시트 전체에 한 줄도 없고 <code>:hover</code>도 없습니다. 정적인 화면은 실제 완성도와 무관하게 싸게 보입니다. 입력창과 버튼 높이도 서로 안 맞습니다.</p>
+        <p class="ev">transition 0회 · :hover 0회 · input 12/14 vs button 9/12</p>
+      </div>
+
+      <div class="finding">
+        <span class="tag">빈 상태</span>
+        <h3>계획이 없으면 그냥 빈 공간</h3>
+        <p>실측했더니 <code>.plan-list</code>의 높이가 0이었습니다. 처음 들어온 사람은 Plan 패널과 Task 패널 사이의 여백만 봅니다. 첫인상이 여기서 결정됩니다.</p>
+        <p class="ev">plan-list · height 0px · top 1031px</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 2. 방향 -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">02 — 방향</p>
+      <h2>다이어리가 아니라 계측 기록장</h2>
+      <p>이 앱이 실제로 하는 일은 “계획한 나”와 “실제의 나”의 <em>차이</em>를 재는 것입니다. 그렇다면 화면도 장식이 아니라 계측기처럼 생겨야 합니다. 세 가지 원칙으로 정리했습니다.</p>
+    </div>
+    <div class="principles">
+      <div class="principle">
+        <h3>숫자는 숫자답게</h3>
+        <p>예상·실제·차이·ID는 전부 고정폭 서체에 <code>tabular-nums</code>를 씁니다. 자리가 맞아야 비교가 되고, 비교가 이 앱의 존재 이유입니다.</p>
+      </div>
+      <div class="principle">
+        <h3>강조색은 하나, 의미색은 둘</h3>
+        <p>잉크 인디고 한 색만 강조에 씁니다. 나머지 색은 장식이 아니라 판정입니다. 호박색은 초과, 청록은 미달·완료. 색이 정보를 나르면 팔레트가 저절로 줄어듭니다.</p>
+      </div>
+      <div class="principle">
+        <h3>차이를 글자 말고 형태로</h3>
+        <p>“600분 예상 / 820분 실제”를 읽게 하지 말고, 기준선을 넘긴 막대로 보게 합니다. 아래 계획 카드 시안에 들어 있습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 토큰 -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">03 — 시스템</p>
+      <h2>토큰 스펙</h2>
+      <p>이 문서 자체가 아래 토큰으로 그려져 있습니다. 라이트·다크 모두 같은 변수 이름을 쓰고 값만 바뀝니다.</p>
+    </div>
+    <div class="tok-grid">
+
+      <div class="tok-block">
+        <h3>Color · 라이트</h3>
+        <div class="swatches">
+          <div class="sw"><i style="background:#F4F5F7"></i><b>ground</b><code>#F4F5F7</code></div>
+          <div class="sw"><i style="background:#FFFFFF"></i><b>surface</b><code>#FFFFFF</code></div>
+          <div class="sw"><i style="background:#151A22"></i><b>ink</b><code>#151A22</code></div>
+          <div class="sw"><i style="background:#4A5462"></i><b>ink-2</b><code>#4A5462</code></div>
+          <div class="sw"><i style="background:#D9DEE6"></i><b>line</b><code>#D9DEE6</code></div>
+          <div class="sw"><i style="background:#26346B"></i><b>accent</b><code>#26346B</code></div>
+          <div class="sw"><i style="background:#9A5200"></i><b>over · 초과</b><code>#9A5200</code></div>
+          <div class="sw"><i style="background:#0E6355"></i><b>under · 완료</b><code>#0E6355</code></div>
+        </div>
+      </div>
+
+      <div class="tok-block">
+        <h3>Color · 다크</h3>
+        <div class="swatches">
+          <div class="sw"><i style="background:#0F1218"></i><b>ground</b><code>#0F1218</code></div>
+          <div class="sw"><i style="background:#171B23"></i><b>surface</b><code>#171B23</code></div>
+          <div class="sw"><i style="background:#E8EBF0"></i><b>ink</b><code>#E8EBF0</code></div>
+          <div class="sw"><i style="background:#A2ACBC"></i><b>ink-2</b><code>#A2ACBC</code></div>
+          <div class="sw"><i style="background:#2A303B"></i><b>line</b><code>#2A303B</code></div>
+          <div class="sw"><i style="background:#8DA2E8"></i><b>accent</b><code>#8DA2E8</code></div>
+          <div class="sw"><i style="background:#E0A75C"></i><b>over · 초과</b><code>#E0A75C</code></div>
+          <div class="sw"><i style="background:#4FC3AE"></i><b>under · 완료</b><code>#4FC3AE</code></div>
+        </div>
+      </div>
+
+      <div class="tok-block">
+        <h3>Type</h3>
+        <div class="scale">
+          <div><span>36 / 700</span><span style="font-family:var(--f-display); font-size:30px; font-weight:700; letter-spacing:-.02em;">플랜두씨</span></div>
+          <div><span>22 / 600</span><span style="font-family:var(--f-display); font-size:20px; font-weight:600;">Plan · 계획 세우기</span></div>
+          <div><span>16 / 400</span><span style="font-size:16px;">본문은 400으로 읽습니다</span></div>
+          <div><span>13 / 500</span><span style="font-size:13px; font-weight:500;">라벨 · 예상 시간(분)</span></div>
+          <div><span>26 mono</span><span class="num" style="font-size:24px; font-weight:500;">+220분</span></div>
+          <div><span>11 mono</span><span class="num" style="font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3);">근거 기록 보기</span></div>
+        </div>
+        <p class="note" style="margin-top:var(--s4);">Archivo · IBM Plex Sans KR · IBM Plex Mono</p>
+      </div>
+
+      <div class="tok-block">
+        <h3>Form &amp; Rhythm</h3>
+        <div class="rule-list">
+          <p><b>Weight</b> — 400 본문 / 500 UI / 600 강조 / 700 대제목. <s>800·900 폐기</s></p>
+          <p><b>Radius</b> — 6px 컨트롤 / 12px 카드 / 999px 알약. <s>8종 → 3종</s></p>
+          <p><b>Spacing</b> — 4의 배수만: 4·8·12·16·24·32·48·64·96. <s>임의값 13종 폐기</s></p>
+          <p><b>Depth</b> — 테두리는 한 겹만. 중첩 표면은 배경 명도로 구분하고 그림자는 카드 한 단계에만.</p>
+          <p><b>Motion</b> — 상태 변화는 전부 150ms ease. <code>prefers-reduced-motion</code> 존중.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. Before / After -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">04 — 비교</p>
+      <h2>실물 대조</h2>
+      <p>왼쪽은 현재 배포본의 CSS 값을 그대로 옮겨 그린 것이고, 오른쪽이 제안입니다. 둘 다 실제로 렌더링된 화면입니다.</p>
+    </div>
+
+    <div class="ba">
+      <figure>
+        <figcaption class="cap-before"><span class="dot"></span>현재 · 계획 카드</figcaption>
+        <div class="stage">
+          <div class="bf">
+            <div class="card">
+              <div class="top"><span class="pri">high</span><span>2026-09-01 — 2026-09-07</span></div>
+              <h4>T06 프로젝트 완주</h4>
+              <p class="desc">44개 검사 통과</p>
+              <strong>600분 예상</strong>
+              <div class="acts"><button>예상 시간 수정</button><button>수정 이력</button></div>
+            </div>
+          </div>
+        </div>
+        <p class="note">뱃지 900 굵기, 제목 800, 설명은 <code>min-height:48px</code>로 강제된 빈칸. 예상 600분만 있고 실제와의 비교는 어디에도 없습니다.</p>
+      </figure>
+
+      <figure>
+        <figcaption class="cap-after"><span class="dot"></span>제안 · 계획 카드</figcaption>
+        <div class="stage">
+          <div class="af">
+            <div class="card">
+              <div class="top">
+                <span class="pri">high</span>
+                <span class="dates">2026-09-01 → 09-07</span>
+              </div>
+              <h4>T06 프로젝트 완주</h4>
+              <p class="desc"><span class="fieldlab">성공 기준</span>44개 검사 통과</p>
+              <div class="gauge">
+                <div class="lbl"><span>예상 600분</span><b>실제 820분 · +220</b></div>
+                <div class="bar"><i class="act"></i><i class="tick"></i></div>
+              </div>
+              <div class="acts"><button>예상 시간 수정</button><button>수정 이력</button></div>
+            </div>
+          </div>
+        </div>
+        <p class="note">왼쪽 잉크 레일이 우선순위를 대신합니다. 세로 눈금이 예상치, 막대가 실제. 넘기면 호박색으로 바뀌므로 숫자를 읽기 전에 상태가 보입니다.</p>
+      </figure>
+    </div>
+
+    <div class="ba">
+      <figure>
+        <figcaption class="cap-before"><span class="dot"></span>현재 · 입력 폼</figcaption>
+        <div class="stage">
+          <div class="bf">
+            <label class="lab">계획 이름</label>
+            <input value="T06 프로젝트 완주" readonly>
+            <div class="row">
+              <div><label class="lab">우선순위</label><select><option>높음</option></select></div>
+              <div><label class="lab">예상 시간(분)</label><input value="600" readonly></div>
+            </div>
+            <button class="primary">계획 저장</button>
+          </div>
+        </div>
+        <p class="note">라벨이 800이라 입력값보다 더 눈에 띕니다. 알약 버튼과 12px 라운드 입력창이 같은 화면에서 다른 언어를 씁니다.</p>
+      </figure>
+
+      <figure>
+        <figcaption class="cap-after"><span class="dot"></span>제안 · 입력 폼</figcaption>
+        <div class="stage">
+          <div class="af">
+            <div class="fieldset">
+              <div class="fs-head"><span class="step">STEP 1</span><h4>Plan · 계획 세우기</h4></div>
+              <label class="lab" for="d1">계획 이름</label>
+              <input id="d1" value="T06 프로젝트 완주">
+              <div class="row">
+                <div><label class="lab" for="d2">우선순위</label><select id="d2"><option>높음</option><option>보통</option><option>낮음</option></select></div>
+                <div><label class="lab" for="d3">예상 시간(분)</label><input id="d3" class="mono" value="600"></div>
+              </div>
+              <button class="primary">계획 저장</button>
+            </div>
+          </div>
+        </div>
+        <p class="note">라벨은 500으로 물러나고 입력값이 앞으로 나옵니다. 컨트롤 반경은 6px 하나로 통일. 분 단위 입력은 고정폭이라 자리수가 맞습니다. 클릭해서 포커스 링을 확인해 보세요.</p>
+      </figure>
+    </div>
+
+    <div class="ba">
+      <figure>
+        <figcaption class="cap-before"><span class="dot"></span>현재 · See 지표</figcaption>
+        <div class="stage">
+          <div class="bf">
+            <div class="mgrid">
+              <div class="mcard"><span>예상 시간</span><strong>600분</strong><small>근거 기록 보기</small></div>
+              <div class="mcard"><span>실제 시간</span><strong>820분</strong><small>근거 기록 보기</small></div>
+              <div class="mcard"><span>차이 (실제 − 예상)</span><strong>220분</strong><small>근거 기록 보기</small></div>
+              <div class="mcard"><span>지연</span><strong>3개</strong><small>근거 기록 보기</small></div>
+            </div>
+          </div>
+        </div>
+        <p class="note">일곱 개 지표가 모두 같은 초록, 같은 크기입니다. 가장 중요한 “차이”가 “지연”과 구분되지 않고, 부호도 없습니다.</p>
+      </figure>
+
+      <figure>
+        <figcaption class="cap-after"><span class="dot"></span>제안 · See 지표</figcaption>
+        <div class="stage">
+          <div class="af">
+            <div class="mgrid">
+              <div class="mcard"><span>예상 시간</span><strong>600<small style="font-size:13px">분</small></strong><small>근거 4건</small></div>
+              <div class="mcard"><span>실제 시간</span><strong>820<small style="font-size:13px">분</small></strong><small>근거 9건</small></div>
+              <div class="mcard sel pos"><span>차이 · 실제 − 예상</span><strong>+220<small style="font-size:13px">분</small></strong><small>선택됨</small></div>
+              <div class="mcard neg"><span>완료</span><strong>5<small style="font-size:13px">개</small></strong><small>근거 5건</small></div>
+            </div>
+          </div>
+        </div>
+        <p class="note">부호를 붙이고, 초과는 호박색·달성은 청록으로 판정합니다. 선택된 지표는 테두리와 배경으로 상태를 드러냅니다. 나머지 카드에 마우스를 올려 보세요.</p>
+      </figure>
+    </div>
+
+    <div class="ba">
+      <figure>
+        <figcaption class="cap-after"><span class="dot"></span>제안 · 다크 모드</figcaption>
+        <div class="stage">
+          <div class="af on-dark">
+            <div class="card">
+              <div class="top"><span class="pri" style="background:#33201E; color:#E8837A;">high</span><span class="dates">2026-09-01 → 09-07</span></div>
+              <h4>T06 프로젝트 완주</h4>
+              <p class="desc"><span class="fieldlab">성공 기준</span>44개 검사 통과</p>
+              <div class="gauge">
+                <div class="lbl"><span>예상 600분</span><b>실제 820분 · +220</b></div>
+                <div class="bar"><i class="act"></i><i class="tick" style="background:#E8EBF0"></i></div>
+              </div>
+              <div class="acts"><button>예상 시간 수정</button><button>수정 이력</button></div>
+            </div>
+          </div>
+        </div>
+        <p class="note">같은 변수 이름, 값만 교체. 현재 사이트에는 다크 모드가 없습니다.</p>
+      </figure>
+      <figure>
+        <figcaption class="cap-after"><span class="dot"></span>제안 · 빈 상태</figcaption>
+        <div class="stage">
+          <div class="af">
+            <div class="card" style="border-left-color:var(--line-2); border-style:dashed; align-items:flex-start; gap:var(--s2);">
+              <span class="dates">저장된 계획 0</span>
+              <h4 style="font-weight:600;">아직 기록할 차이가 없습니다</h4>
+              <p class="desc">위에서 계획을 하나 저장하면 예상과 실제를 나란히 재기 시작합니다.</p>
+              <button class="primary" style="margin-top:var(--s2);">첫 계획 만들기</button>
+            </div>
+          </div>
+        </div>
+        <p class="note">높이 0의 빈 구간을 대체합니다. 처음 들어온 사람에게 다음 행동을 알려 주는 자리이기도 합니다.</p>
+      </figure>
+    </div>
+  </section>
+
+
+  <!-- 5. 과제 제약 -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">05 — 제약</p>
+      <h2>과제 조건이 잠근 것</h2>
+      <p><code>docs/REQUIREMENTS.md</code>와 <code>docs/T06-ACCEPTANCE-MATRIX.md</code>를 대조한 결과입니다. 매트릭스 상단에 “expectation을 삭제·약화·변경하지 말 것”이 명시되어 있어, 아래 다섯 가지는 디자인이 건드릴 수 없습니다.</p>
+    </div>
+
+    <p class="ok-badge">검사 44개 중 DOM·클래스 의존 0건 — CSS 개편은 안전</p>
+    <p class="note" style="margin:var(--s3) 0 var(--s5);">
+      <code>backend/tests/acceptance/</code> 7개 파일 모두 API 레벨 테스트입니다.
+      <code>className</code> / <code>querySelector</code> / <code>document.</code> 검색 결과 0건이고,
+      프론트엔드에 대한 유일한 의존은 <code>test_card5_export.py</code>가 <code>index.html</code>의 존재를 확인하는 것뿐입니다.
+    </p>
+
+    <div class="scope-wrap">
+      <table class="scope locked">
+        <thead><tr><th>잠긴 화면 요소</th><th>근거</th><th>디자인이 할 수 있는 것 / 없는 것</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>우선순위를 화면에 <code>high</code>로 표시</td>
+            <td>T06-C05<br>T06-C15</td>
+            <td>색·굵기·형태는 바꿔도 됩니다. 리터럴 <code>high</code>를 “높음”으로 번역하면 안 됩니다. <b>첫 시안이 이걸 어겼고, 위 계획 카드에서 되돌렸습니다.</b></td>
+          </tr>
+          <tr>
+            <td>성공 기준 “44개 검사 통과” 정확 일치</td>
+            <td>T06-C06</td>
+            <td>라벨을 붙이려면 반드시 별도 엘리먼트로 분리해 원문 텍스트 노드를 오염시키지 않습니다. <b>시안을 그렇게 고쳤습니다.</b></td>
+          </tr>
+          <tr>
+            <td>공개 안내 문장, 첫 화면에, 원문 그대로</td>
+            <td>T06-C82<br>공식 179행</td>
+            <td>“지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요” — 한 글자도 못 바꿉니다. 접거나 토스트로 바꾸거나 접힘선 아래로 밀 수 없습니다. 채도만 낮춰 배치합니다.</td>
+          </tr>
+          <tr>
+            <td>정렬 기준 문구 <code>.sort-rule</code></td>
+            <td>T06-C20<br>공식 75행</td>
+            <td>“priority → due date → created time → ID”가 화면에 남아 있어야 합니다. 할 일 목록 밀도를 줄일 때 같이 지우기 쉬운 자리라 표시해 둡니다.</td>
+          </tr>
+          <tr>
+            <td>지표 클릭 시 정확한 task/log ID 노출</td>
+            <td>T06-C83</td>
+            <td>지표 카드는 계속 클릭 가능해야 하고, 근거 레코드의 ID 표기를 시각적으로 정리하는 것은 되지만 제거하면 안 됩니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="risk" style="border-left-color:var(--accent); background:var(--accent-soft);">
+      <h3>디자인은 채점 항목이 아닙니다</h3>
+      <p>공식 과제문에 디자인·UI·화면 완성도에 대한 언급은 한 건도 없고, 고정된 44개 ID 어디에도 없습니다. 이 작업은 점수를 올리지 않습니다. 다만 “남길 것”이 전부 화면 캡처(계획 화면·돌아보기 화면·공개 안내 화면)라서 제출 증거의 인상과 포트폴리오 가치는 달라집니다. 채점 대비 순수 투자라는 전제로 진행하고, 대신 44개 중 하나라도 깨뜨리지 않는 것이 절대 조건입니다.</p>
+    </div>
+
+    <div class="risk">
+      <h3>차이 값의 부호 표기</h3>
+      <p>T06-C32는 variance를 <code>-40</code>으로 기대합니다. 양수에 <code>+</code>를 붙이는 것은 괜찮지만, 음수는 반드시 ASCII 하이픈이어야 합니다. 지표 라벨에 쓰는 U+2212(−)를 값에 쓰지 않습니다.</p>
+    </div>
+  </section>
+
+  <!-- 6. 적용 범위 -->
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">06 — 적용</p>
+      <h2>무엇을 어디까지 고치는가</h2>
+      <p>이 시안을 승인하시면 아래 순서로 진행합니다. 위쪽 두 줄만 해도 체감 차이의 대부분이 나옵니다.</p>
+    </div>
+    <div class="scope-wrap">
+      <table class="scope">
+        <thead><tr><th>파일</th><th>작업</th><th>영향</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>src/styles.css</td>
+            <td>토큰 레이어 도입 — 색·간격·반경·타입 스케일을 CSS 변수로 정의하고 기존 하드코딩 값을 전부 치환. 굵기 정리, hover·focus·transition 추가, 다크 모드 블록 추가. 공개 안내 배너는 채도만 낮추고 위치·문구 유지.</td>
+            <td>마크업 변경 없음. 검사 영향 없음.</td>
+          </tr>
+          <tr>
+            <td>index.html</td>
+            <td>Google Fonts 링크 추가 (Archivo / IBM Plex Sans KR / IBM Plex Mono), 폴백 스택 지정.</td>
+            <td>초기 로드에 폰트 요청 추가.</td>
+          </tr>
+          <tr>
+            <td>src/App.tsx</td>
+            <td>계획 카드에 예상 대비 실제 게이지 추가, 빈 상태 블록 추가, <code>min-height:48px</code> 땜빵 제거. 우선순위 <code>high</code>와 성공 기준 원문은 그대로 유지.</td>
+            <td>T06-C05·C06 유지 확인 필요.</td>
+          </tr>
+          <tr>
+            <td>features/see/SeePanel.tsx</td>
+            <td>지표 카드에 부호와 판정 색 적용, 근거 건수 표시. 클릭 동작과 근거 레코드의 ID 표기는 유지.</td>
+            <td>T06-C83·C32 유지 확인 필요.</td>
+          </tr>
+          <tr>
+            <td>features/tasks/TaskPanel.tsx</td>
+            <td>할 일 행 밀도 조정, 상태 버튼과 태그 칩 통일. 정렬 기준 문구와 우선순위 <code>high</code> 표기는 유지.</td>
+            <td>T06-C20·C15 유지 확인 필요.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="risk">
+      <h3>서체를 외부에서 받을지 번들할지</h3>
+      <p>Google Fonts 링크는 공개 접근(T06-C01)이나 비밀값(T06-C58) 조건과 무관하지만, 공개 앱에 서드파티 CDN 의존이 하나 생기고 Render 콜드 스타트에서 글꼴이 늦게 바뀌는 게 보입니다. 폰트 파일을 저장소에 넣어 자체 호스팅하면 의존이 0이 됩니다. 결정이 필요합니다.</p>
+    </div>
+    <div class="risk" style="border-left-color:var(--accent); background:var(--accent-soft);">
+      <h3>영상 반영은 아직 안 됐습니다</h3>
+      <p>보내주신 두 영상은 제가 재생할 수 없어 제목만 확인했습니다. 위 진단은 전부 배포본과 소스를 직접 보고 뽑은 것입니다. 영상에서 인상 깊었던 지적을 몇 줄 적어 주시면 이 시안에 합쳐서 다시 정리하겠습니다.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>T06 플랜두씨 다이어리 · 디자인 리뷰 · 코드 미수정 · 2026-09-01</p>
+  </footer>
+
+</div>

@@ -37,3 +37,6 @@ tmp/
 *.sqlite
 *.sqlite3
 *.db
+
+# Seeded design canvases are 2.5 MB build artifacts; keep only the sources
+/design/**/plando-see-*.html
