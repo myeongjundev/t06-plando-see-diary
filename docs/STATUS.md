@@ -2,6 +2,38 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 public completion verification
+
+- Public Neon data now contains the real safe plan `T06 프로젝트 완주`, five
+  linked tasks, three execution logs, three completed tasks, one reflection and
+  one next plan carrying the approved improvement line.
+- Plan estimate changed from 600 to 540 under the same UUID; revision history
+  retained the original 600 and survived refresh.
+- Task create/edit/complete/reopen/delete/search/filter/sort behavior was exercised
+  on the deployed app. A temporary high-priority `backend`, `test` task was removed,
+  leaving the five real tasks unchanged.
+- Repeated activation of the first completion control left one completion event;
+  See increased once. Three real tasks remain completed after refresh.
+- See currently reports task 5, completed 3, overdue 0, blocked 1, estimated 600,
+  actual 390 and variance -210. All seven cards exposed their exact source IDs or
+  an empty evidence result.
+- The approved reflection is `공개 환경의 저장·새로고침·집계 검증 시간을 구현 일정에 미리 포함한다.`
+  The linked next plan carries the exact line and both records survived refresh.
+- Script-shaped input rendered literally and was deleted after verification.
+- `/api/export` returned two plans, one plan revision, seven tasks including two
+  soft-deleted verification records, eight tag links, four completion events,
+  three execution logs and one reflection. No real export file was committed.
+- Working source, Git history, current public HTML/JS/CSS and API responses passed
+  the common-secret pattern scan. Backend 53 tests, frontend production build and
+  `git diff --check` passed.
+- Render serves the same `index-Dc4X5YZr.js` and `index-BLGnwQPS.css` produced by
+  application commit `1d0e0f79fe2f8a57d0f5a21e9ae4102bcbb36a38`.
+- User approved the final judgment and rejected-advice statements in
+  `docs/SUBMISSION.md`.
+
+Remaining submission action: open the product and full-commit source URLs in a
+fresh private browser without authentication, then record final confirmation.
+
 학원 PC에서 이어갈 때는 `docs/ACADEMY-HANDOFF.md`를 먼저 읽는다.
 최신 main 받기, 새 PC 설치/실행, 완료 작업, 남은 제출 검증과 이어가기 프롬프트를
 정리했다. 집 PC의 `tmp/` 검증 스크립트·로컬 DB·환경 설정은 Git에 포함되지 않는다.
