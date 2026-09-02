@@ -723,8 +723,8 @@ T06-C11·C12의 되돌리기가 닿아야 합니다. 상태 필터를 쓰는 중
 
 ```powershell
 # backend/
-.\.venv\Scriptslask.exe --app app:create_app db upgrade
-.\.venv\Scriptslask.exe --app app:create_app run --host 127.0.0.1 --port 5055
+.\.venv\Scripts\flask.exe --app app:create_app db upgrade
+.\.venv\Scripts\flask.exe --app app:create_app run --host 127.0.0.1 --port 5055
 
 # frontend/, 다른 터미널
 $env:T06_API_TARGET = "http://127.0.0.1:5055"
