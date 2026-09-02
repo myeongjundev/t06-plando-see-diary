@@ -40,6 +40,7 @@ function App() {
   const [selectedPlanId, setSelectedPlanId] = useState("");
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [planQuery, setPlanQuery] = useState("");
+  const [planPriority, setPlanPriority] = useState("");
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
   // 어느 계획의 집계인지 함께 들고 있는다. 받아오는 동안 화면을 비우지 않으려면
@@ -52,9 +53,10 @@ function App() {
   // 스크롤이 시작될 즈음부터 검색을 내놓는다. 줄에 보이는 것이 이름이라
   // 이름만 찾는다 — 안 보이는 값까지 걸리면 왜 걸렸는지 알 수 없다.
   const planNeedle = planQuery.trim().toLowerCase();
-  const visibleOtherPlans = planNeedle
-    ? otherPlans.filter((plan) => plan.title.toLowerCase().includes(planNeedle))
-    : otherPlans;
+  const planFiltered = planNeedle !== "" || planPriority !== "";
+  const visibleOtherPlans = otherPlans.filter((plan) =>
+    (planNeedle === "" || plan.title.toLowerCase().includes(planNeedle)) &&
+    (planPriority === "" || plan.priority === planPriority));
   const activeStep = useActiveStep(STEP_IDS);
 
   // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
@@ -219,22 +221,35 @@ function App() {
         {otherPlans.length > 0 && (
           <section className="plan-others" aria-label="다른 계획">
             <div className="plan-others-head">
-              <h3>{planNeedle
+              <h3>{planFiltered
                 ? `다른 계획 ${visibleOtherPlans.length}개 · 전체 ${otherPlans.length}개`
                 : `다른 계획 ${otherPlans.length}개`}</h3>
               {otherPlans.length > 5 && (
-                <input
-                  className="plan-search"
-                  type="search"
-                  value={planQuery}
-                  onChange={(event) => setPlanQuery(event.target.value)}
-                  placeholder="계획 이름 검색"
-                  aria-label="계획 이름 검색"
-                />
+                <div className="plan-filters">
+                  <input
+                    className="plan-search"
+                    type="search"
+                    value={planQuery}
+                    onChange={(event) => setPlanQuery(event.target.value)}
+                    placeholder="계획 이름 검색"
+                    aria-label="계획 이름 검색"
+                  />
+                  <select
+                    className="plan-priority"
+                    value={planPriority}
+                    onChange={(event) => setPlanPriority(event.target.value)}
+                    aria-label="우선순위로 거르기"
+                  >
+                    <option value="">우선순위 전체</option>
+                    <option value="high">높음</option>
+                    <option value="medium">보통</option>
+                    <option value="low">낮음</option>
+                  </select>
+                </div>
               )}
             </div>
             <div className="plan-other-list">
-              {visibleOtherPlans.length === 0 && <p className="plan-none">이름이 맞는 계획이 없습니다.</p>}
+              {visibleOtherPlans.length === 0 && <p className="plan-none">조건에 맞는 계획이 없습니다.</p>}
               {visibleOtherPlans.map((plan) => (
                 <button type="button" className="plan-row" id={`plan-${plan.id}`} key={plan.id} onClick={() => { setSelectedPlanId(plan.id); setPlanQuery(""); }}>
                   <span className={`priority ${plan.priority}`}>{plan.priority}</span>
