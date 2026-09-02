@@ -2,6 +2,28 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 smooth step navigation
+
+- Step navigation animated instead of jumping (D-029). Both paths were instant: the
+  step-bar anchors and `goToStep`'s `scrollIntoView`, neither of which set a
+  behaviour, and `scroll-behavior` appeared nowhere in the stylesheet. One
+  declaration on `:root` covers both, because `scrollIntoView` without an explicit
+  behaviour follows the CSS. The step links also gained a 150ms background/colour
+  transition so the current-step marker glides.
+- The reduced-motion block previously disabled only `transition`. Animating a
+  4000px document is exactly the movement that setting exists to stop, so it now
+  restores `scroll-behavior: auto` as well.
+- Verified: computed `scroll-behavior` is `smooth`; the reduced-motion rule sits at
+  stylesheet index 562 against the `:root` rule at 396, so at equal specificity it
+  wins whenever the query matches. Anchor landings clear the sticky bar in both
+  layouts — desktop puts the section top at 148 against a 106px bar (42px spare),
+  375px against a 131px bar (16px spare), with every section heading visible.
+- Not verified here: the animation running. The browser pane cannot perform scroll
+  animations, and there is no reduced-motion emulation, so the cascade order is the
+  evidence for the second half. Notably `scrollTo` stopped taking effect in the pane
+  once smooth was set, which is itself a sign the declaration applies.
+- 53 backend tests and the frontend build pass. CSS only; no TypeScript changed.
+
 ## 2026-09-02 step bar marks the section being read
 
 - Considered porting the T05 floating section rail and decided against it (D-028).

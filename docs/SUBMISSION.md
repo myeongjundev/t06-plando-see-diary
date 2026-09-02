@@ -14,7 +14,7 @@ the tag.
 
 The tag tracks the deployed code: Render builds `main` automatically, and the tag is
 moved onto the commit Render is serving. At the time of writing that build emits
-`index-C-fz5xbB.js` and `index-Cr8t1p2x.css`, which is what the public app returns.
+`index-CpPmN_2E.js` and `index-B6MuCkAg.css`, which is what the public app returns.
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
 saved plans first, mobile input fixes, bundled fonts, signed variance with explicit

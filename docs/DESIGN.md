@@ -119,6 +119,17 @@ Through `113d02f`:
   block (`:root[data-theme="dark"]`) instead of being duplicated across a media
   query and an attribute selector. `color-scheme` is set per theme so native date
   inputs follow.
+- Steps are scrolled to, not jumped to (D-029). `scroll-behavior: smooth` on `:root`,
+  turned off under `prefers-reduced-motion`. The document is over 4000px, so Plan to
+  See was a teleport and the new current-step marker never appeared to travel between
+  the three steps — which is the one thing direction C exists to show. One
+  declaration covers both navigation paths: the step-bar anchors and `goToStep`,
+  whose `scrollIntoView` has no explicit `behavior` and therefore follows the CSS.
+  The reduced-motion block previously disabled only `transition`; animating thousands
+  of pixels is precisely what that setting is meant to stop, so it now also restores
+  `auto`. The step links gained a 150ms background/colour transition so the marker
+  glides rather than snapping; the existing `* { transition: none }` covers it under
+  reduced motion.
 - Step bar marks the section being read (D-028). The user asked whether the T05
   floating section rail (`t05-ai-handoff`, `src/components/SectionRail.jsx`) belonged
   here. It does not: that rail carries a long single page with six sections and no

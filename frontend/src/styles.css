@@ -13,6 +13,11 @@
 
 :root {
   color-scheme: light;
+  /* 단계 이동을 눈에 보이게 한다. 문서가 4000px을 넘어서 Plan에서 See로 가는 건
+     순간이동에 가깝고, 그러면 단계 바의 현재 위치 표시가 건너가는 것도 안 보인다.
+     scrollIntoView는 behavior를 주지 않으면 이 값을 따르므로 단계 바 링크와
+     goToStep 두 경로가 함께 덮인다. */
+  scroll-behavior: smooth;
 
   /* 면과 선 */
   --ground: #ffffff;
@@ -826,6 +831,7 @@ summary:hover { color: var(--accent); }
   font-weight: 700;
   text-align: center;
   text-decoration: none;
+  transition: background var(--ease), color var(--ease);
 }
 .step-nav a:hover { text-decoration: underline; }
 
@@ -867,4 +873,6 @@ summary:hover { color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+  /* 긴 문서를 애니메이션으로 훑는 건 이 설정이 막으려는 움직임 그 자체다. */
+  :root { scroll-behavior: auto; }
 }
