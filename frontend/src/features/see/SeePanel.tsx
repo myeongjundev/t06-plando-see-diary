@@ -13,6 +13,22 @@ const METRICS: { key: Metric; label: string; unit: string }[] = [
 ];
 const seoul = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "short", timeStyle: "short" });
 const errorText = (error: unknown) => error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
+// Variance is the only metric whose sign carries meaning, so it is the only one
+// that takes a semantic colour. Keep the ASCII hyphen for negatives (T06-C32).
+const metricTone = (key: Metric, value: number) =>
+  key !== "varianceMinutes" || value === 0 ? "" : value > 0 ? " over" : " under";
+const metricValue = (key: Metric, value: number, unit: string) =>
+  `${key === "varianceMinutes" && value > 0 ? "+" : ""}${value}${unit}`;
+// A single total would read as a mismatch: 막힘 shows 2 tasks but is backed by
+// 2 tasks and 3 logs. Name each kind instead.
+function evidenceLabel(source?: { taskIds: string[]; executionIds: string[] }) {
+  const tasks = source?.taskIds.length ?? 0;
+  const logs = source?.executionIds.length ?? 0;
+  if (tasks && logs) return `근거 할 일 ${tasks} · 기록 ${logs}`;
+  if (tasks) return `근거 할 일 ${tasks}건`;
+  if (logs) return `근거 기록 ${logs}건`;
+  return "근거 없음";
+}
 function nextDate(value: string, days: number) {
   const date = new Date(`${value}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
@@ -99,8 +115,8 @@ function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan;
     {!summary ? <p className="empty">{message ? "조건을 확인하고 다시 조회하세요." : "집계를 불러오는 중입니다."}</p> : <>
       <p>{summary.scope === "plan" ? "계획 전체" : `${summary.periodStart} — ${summary.periodEnd}`} · 지연 판단: 서울 {summary.today} 이전 마감인 미완료 할 일</p>
       <div className="metric-grid" aria-label="돌아보기 집계">
-        {METRICS.map((metric) => <button key={metric.key} aria-pressed={selected === metric.key} onClick={() => setSelected(metric.key)} className="metric-card">
-          <span>{metric.label}</span><strong>{summary[metric.key]}{metric.unit}</strong><small>근거 기록 보기</small>
+        {METRICS.map((metric) => <button key={metric.key} aria-pressed={selected === metric.key} onClick={() => setSelected(metric.key)} className={`metric-card${metricTone(metric.key, summary[metric.key])}`}>
+          <span>{metric.label}</span><strong>{metricValue(metric.key, summary[metric.key], metric.unit)}</strong><small>{evidenceLabel(summary.sources[metric.key])}</small>
         </button>)}
       </div>
       {source && <section className="source-records" aria-label="집계 근거 기록">

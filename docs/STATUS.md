@@ -12,6 +12,29 @@ Updated: 2026-09-02 KST
 
 ## Completed
 
+### 2026-09-02 — See metric cards: signed variance and evidence counts
+
+- The variance card renders its sign (`+220분` / `-40분`, ASCII hyphen) and is the only
+  metric with a semantic colour: `--crit` when actual exceeded the estimate, `--good`
+  when under, neutral at zero. The other six stay neutral, so the light default keeps
+  its white-and-blue base and the screen carries one point of colour. Dark palette
+  resolves to `#ef8279` / `#4fc3a1`. Decision D-025.
+- The tone rules sit after `.metric-card[aria-pressed="true"] strong` at equal
+  specificity, so selecting the variance card does not repaint the sign in the accent.
+- `근거 기록 보기` replaced by the real counts, named per kind. A single total
+  misread against the metric: 막힘 shows `2개` but is backed by 2 tasks and 3 logs, so the
+  label reads `근거 할 일 5 · 기록 3` and matches what the drill-down lists.
+- Verified against a seeded local database holding the matrix fixture
+  (`[5, 3, 1, 2, 300, 260, -40]`) plus a second plan built to produce `+220`:
+  both signs and both colours in light and dark, the variance drill-down listing
+  exactly 8 records for `할 일 5 · 기록 3` with task/execution IDs visible (T06-C83),
+  the value's leading character confirmed as ASCII 45 (T06-C32), and at 375px no
+  document or card overflow with every evidence label on one line and card heights equal.
+- 53 backend tests passed; `npm run build` (tsc + vite) passed. Presentation only —
+  no API, contract, migration or test expectation changed.
+- Not committed. Browser-pane screenshots of scrolled content were unreliable in this
+  session, so the evidence above is computed-style and layout measurement, not images.
+
 ### 2026-09-02 — Plan/Do/See usability follow-up
 
 - Saved plans appear before the optional new-plan form. Empty accounts show the

@@ -646,6 +646,12 @@ summary:hover { color: var(--accent); }
 
 .metric-card[aria-pressed="true"] strong { color: var(--accent); }
 
+/* Variance only. Placed after the pressed rule so the sign keeps its meaning
+   while the card is selected. Same specificity, later wins. */
+.metric-card.over strong { color: var(--crit); }
+.metric-card.under strong { color: var(--good); }
+.metric-card.over small, .metric-card.under small { color: var(--ink-2); }
+
 .source-records, .reflection-list { margin-top: var(--s5); overflow-wrap: anywhere; }
 
 .source-records article, .reflection-list > article {

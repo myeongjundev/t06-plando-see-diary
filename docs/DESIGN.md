@@ -106,20 +106,27 @@ Through `113d02f`:
 - Plan/Do/See step navigation, saved plans first, App-owned plan selection, sections
   kept mounted across steps (D-024).
 - Empty state for the plan list.
+- See metric cards carry a signed variance and a per-kind evidence count (D-025).
+  `varianceMinutes` is the only metric whose sign means something, so it is the only
+  one that takes a semantic colour: `--crit` when actual exceeded the estimate,
+  `--good` when it came in under, neutral at zero. The other six stay `--ink`, which
+  keeps the white-and-blue base and puts one point of colour on the screen.
+  The tone rules sit after `.metric-card[aria-pressed="true"] strong` at equal
+  specificity, so selecting the card does not repaint the sign in the accent.
+  `근거 기록 보기` became the real count. A single total misread: 막힘 shows `2개`
+  but is backed by 2 tasks and 3 logs, so the label names each kind —
+  `근거 할 일 5 · 기록 3`, which is exactly what the drill-down then lists.
 
 ## Remaining
 
-Both need markup changes. Run `backend/.venv/Scripts/python.exe -m pytest
-backend/tests -q` before and after each, and check the screen by eye afterwards.
+Needs markup changes. Run `backend/.venv/Scripts/python.exe -m pytest
+backend/tests -q` before and after, and check the screen by eye afterwards.
 
 1. **Plan-card estimate-vs-actual gauge.** A bar with a tick at the estimate and fill
    at the actual, so the gap reads before the numbers do. Prototyped in the direction
    A sketch; the mechanic transfers to C unchanged. `frontend/src/App.tsx`.
-2. **Signed variance and evidence counts on See metric cards.** Currently every
-   metric renders the same color at the same size with `근거 기록 보기` beneath.
-   Proposal: `+220분` / `-40분` with sign, over color for exceeded and under color for
-   met, and the real record count in place of the generic label. Keep the ASCII
-   hyphen and keep the cards clickable. `frontend/src/features/see/SeePanel.tsx`.
+   Deferred until real records exist — the deployed database is still empty, so
+   there is nothing to judge the gauge against by eye.
 
 ## Resuming
 
