@@ -17,7 +17,8 @@
 
 - 저장소: <https://github.com/myeongjundev/t06-plando-see-diary> · 브랜치 **main** 하나
 - 공개 앱: <https://t06-plando-see-diary.onrender.com>
-- `main` = `origin/main` = 태그 `t06-submission` = **`ae4dad89fc6a550e23893e0592e02770c46cb939`**
+- `main` = `origin/main` = 태그 `t06-submission`. 해시는 `git rev-parse t06-submission`으로 뽑습니다 —
+  이 문서에 적어 두면 다음 커밋에 곰바로 틀립니다
 - 배포 에셋 `index-MZVl8FZ4.js` · `index-CGU0rIJc.css` — `docs/SUBMISSION.md`의 기록과 일치
 - 백엔드 테스트 **53개 통과**, 프런트 운영 빌드 통과, `git diff --check` 깨끗
 - Render는 `main` 변경 시 자동 배포합니다. 문서만 바꾸면 번들 해시는 그대로입니다.
@@ -115,7 +116,11 @@ python tools\seed_screenshot_fixture.py
    압니다. → [`../SUBMISSION.md`](../SUBMISSION.md)의 「AI와 내 판단 3줄」 블록
 2. **폼에 붙여 넣는다.**
    - 결과물 URL: `https://t06-plando-see-diary.onrender.com`
-   - 소스 URL: `https://github.com/myeongjundev/t06-plando-see-diary/commit/ae4dad89fc6a550e23893e0592e02770c46cb939`
+   - 소스 URL: `https://github.com/.../commit/<해시>` — 해시는 아래로 뽑습니다
+
+     ```bash
+     git rev-parse t06-submission
+     ```
    - 나머지 두 블록은 `docs/SUBMISSION.md`에 원문 그대로 있습니다.
 
 > 소스 URL은 **태그가 가리키는 커밋의 40자 전체 해시**여야 합니다. 폼이 브랜치나
@@ -178,7 +183,7 @@ python tools\seed_screenshot_fixture.py
 ## 9. Git 상태
 
 - 시작 커밋: `1180c8d` (2026-09-02 밤)
-- 끝 커밋: **`ae4dad89fc6a550e23893e0592e02770c46cb939`**, `origin/main`과 태그가 같음
+- 끝 커밋: `git rev-parse t06-submission` — `origin/main`·태그·`main` 셋이 같은 지점입니다
 - 미커밋 경로: 없음
 - 원격 ref: `refs/heads/main`, `refs/tags/t06-submission` 둘뿐
 - 저장소 설명·홈페이지·토픽을 GitHub에서 갱신했습니다(설명이 「skeleton」이라고 적혀
