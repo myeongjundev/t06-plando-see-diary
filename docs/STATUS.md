@@ -2,6 +2,26 @@
 
 Updated: 2026-09-03 KST
 
+## 2026-09-03 handoff written for the academy PC
+
+- `docs/process/ACADEMY-HANDOFF-2026-09-03.md` covers what to do next on another
+  machine. The 2026-09-02 academy handoff is kept and marked as the older of the two;
+  `docs/README.md` now lists both with the newer one first.
+- Written for a machine that has none of this one's state. `backend/instance/` is
+  gitignored, so a fresh clone has no plans at all, and `frontend/.env.local` — the
+  dev proxy target — does not travel either. Both are called out, and the two local
+  database backups are named as unavailable there rather than left to be looked for.
+- `tools/seed_screenshot_fixture.py` promoted out of scratch. It seeds the synthetic
+  data the README screenshots use, with due dates relative to today so the aggregate
+  lands on 할 일 5 · 완료 3 · 지연 1 · 막힘 2 · 예상 300분 · 실제 260분 · 차이 -40분 —
+  the figures the alt text already claims. Screenshots are now reproducible anywhere
+  rather than depending on one machine's database.
+- Also corrected while writing it: the pre-existing academy handoff pointed at
+  `design/css-token-layer` as the branch to continue from, which no longer exists.
+- Remaining work is two items, both the user's: rewrite the three judgment lines in
+  their own voice (D-019), then paste the two URLs and two blocks into the form.
+- 53 backend tests pass and the frontend production build passes.
+
 ## 2026-09-03 pushed, tag moved, deploy confirmed
 
 - The 2026-09-02 UI pass is on `origin/main` as eight change commits plus one for

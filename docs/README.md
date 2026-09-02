@@ -21,7 +21,8 @@
 | [SUBMISSION.md](SUBMISSION.md) | 제출 주소와 제출문 |
 
 원문과 자료: [`source/`](source) 공식 과제 원문 · [`screenshots/`](screenshots) README용 합성 화면
-(생성기는 [`tools/capture_screenshots.mjs`](../tools/capture_screenshots.mjs))
+(자료는 [`tools/seed_screenshot_fixture.py`](../tools/seed_screenshot_fixture.py)로 심고,
+촬영은 [`tools/capture_screenshots.mjs`](../tools/capture_screenshots.mjs)로 합니다)
 
 `docs/T06-VERIFICATION.md`는 손으로 고치지 않습니다. 기준이 바뀌면
 `python tools/generate_verification.py`로 다시 만듭니다.
@@ -34,7 +35,8 @@
 | 문서 | 시점 |
 |---|---|
 | [HANDOFF.md](process/HANDOFF.md) | 카드 진행 중 인수인계 |
-| [ACADEMY-HANDOFF.md](process/ACADEMY-HANDOFF.md) | 학원 PC에서 이어가기 |
+| [ACADEMY-HANDOFF-2026-09-03.md](process/ACADEMY-HANDOFF-2026-09-03.md) | **학원 PC에서 이어가기 — 최신** |
+| [ACADEMY-HANDOFF.md](process/ACADEMY-HANDOFF.md) | 학원 PC에서 이어가기 (2026-09-02) |
 | [HANDOFF-DESIGN-REVIEW.md](process/HANDOFF-DESIGN-REVIEW.md) | 디자인 브랜치 인수인계 |
 | [REVIEW-CSS-TOKEN-LAYER.md](process/REVIEW-CSS-TOKEN-LAYER.md) | 토큰 레이어 리뷰 |
 | [TODAY-CHECKLIST-2026-09-02.md](process/TODAY-CHECKLIST-2026-09-02.md) | 2026-09-02 하루 작업 |
