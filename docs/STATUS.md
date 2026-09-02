@@ -2,6 +2,34 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 plan-card estimate-vs-actual gauge
+
+- The last open design item shipped (D-027). The selected plan card now carries a
+  bar with a tick at the estimate and fill at the actual, so the gap reads before the
+  numbers. Under fills short of the tick in `--good`, over runs past it in `--crit`,
+  the same rule the See variance card uses; the signed figure keeps the ASCII hyphen.
+- Selected card only. Actual minutes exist only on `/api/plans/<id>/see`, one call
+  per plan, so a gauge on every card would fan out a request per plan on every first
+  paint of a free-tier deployment. App owns one period-less summary fetch for the
+  selected plan; SeePanel keeps its own period-aware fetch untouched, because a card
+  representing the whole plan must not follow a period filter.
+- Two problems found and fixed while checking by eye. The tick disappeared into the
+  fill when actual exceeded the estimate, reading as a seam rather than a marker, so
+  it now stands proud of the track with a `--surface` halo and the heads carry
+  matching swatches. And the card's existing estimate line is the plan's own figure
+  while the gauge uses the task-estimate sum (D-014) — different numbers sitting
+  together, so both are now named: `계획 예상 300분` and `할 일 예상 300분`.
+- Verified on the built frontend served by Flask against a seeded database: under
+  (260 of 300) fills 86.7% with the tick at 99.8% in `--good`; over (520 of 300)
+  fills 100% with the tick at 57.5% in `--crit`; switching plans moves the gauge to
+  the newly selected card; a plan with no tasks shows the empty message and no bar.
+  Light and dark both correct. At 375px no document or element overflow and both
+  head labels stay on one line. Public warning still fully on the first screen,
+  priority still renders the literal `high` with `text-transform: none`, and the sort
+  rule is unchanged.
+- 53 backend tests and the frontend build pass. Presentation only; no API, contract
+  or migration change.
+
 ## 2026-09-02 submission tag moved onto the deployed toggle build
 
 - Deploying the light/dark toggle left the `t06-submission` tag on the previous

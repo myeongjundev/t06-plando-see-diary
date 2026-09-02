@@ -119,6 +119,18 @@ Through `113d02f`:
   block (`:root[data-theme="dark"]`) instead of being duplicated across a media
   query and an attribute selector. `color-scheme` is set per theme so native date
   inputs follow.
+- Plan-card estimate-vs-actual gauge (D-027). Tick at the estimate, fill at the
+  actual, on the selected plan card only. Under fills short of the tick in `--good`,
+  over runs past it in `--crit`, matching the See variance rule.
+  Two things needed care. The tick vanished when the fill ran past it — it read as a
+  seam in the bar — so it carries a `--surface` halo and stands proud of the track.
+  And the card already showed a "N분 예상" line that is the *plan's* estimate, while
+  the gauge compares the *sum of task estimates* the See screen uses (D-014); those
+  are different numbers, so both are now named (`계획 예상` and `할 일 예상`)
+  rather than left to look like a contradiction.
+  The gauge is on the selected card only because actual minutes come from
+  `/api/plans/<id>/see`, one call per plan; drawing it on every card would fan out a
+  request per plan on a free tier for every first paint.
 - See metric cards carry a signed variance and a per-kind evidence count (D-025).
   `varianceMinutes` is the only metric whose sign means something, so it is the only
   one that takes a semantic colour: `--crit` when actual exceeded the estimate,
@@ -132,14 +144,7 @@ Through `113d02f`:
 
 ## Remaining
 
-Needs markup changes. Run `backend/.venv/Scripts/python.exe -m pytest
-backend/tests -q` before and after, and check the screen by eye afterwards.
-
-1. **Plan-card estimate-vs-actual gauge.** A bar with a tick at the estimate and fill
-   at the actual, so the gap reads before the numbers do. Prototyped in the direction
-   A sketch; the mechanic transfers to C unchanged. `frontend/src/App.tsx`.
-   Deferred until real records exist — the deployed database is still empty, so
-   there is nothing to judge the gauge against by eye.
+Nothing open. Both items from the token-layer plan have shipped.
 
 ## Resuming
 

@@ -14,12 +14,13 @@ the tag.
 
 The tag tracks the deployed code: Render builds `main` automatically, and the tag is
 moved onto the commit Render is serving. At the time of writing that build emits
-`index-CemQlsng.js` and `index-DZQlTvwW.css`, which is what the public app returns.
+`index-ap8UgvrT.js` and `index-B_l_OmhI.css`, which is what the public app returns.
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
 saved plans first, mobile input fixes, bundled fonts, signed variance with explicit
-evidence counts, and a light/dark toggle. Both submitted URLs were verified in
-Chrome Incognito without authentication.
+evidence counts, a light/dark toggle and an estimate-vs-actual gauge on the selected
+plan card. Both submitted URLs were verified in Chrome Incognito without
+authentication.
 
 ## Four verification lines (T06-C59)
 

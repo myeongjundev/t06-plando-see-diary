@@ -12,6 +12,8 @@ import TaskPanel from "./features/tasks/TaskPanel";
 import SeePanel from "./features/see/SeePanel";
 import ExportPanel from "./features/export/ExportPanel";
 import ThemeToggle from "./ThemeToggle";
+import PlanGauge from "./features/plans/PlanGauge";
+import { getSummary, Summary } from "./api/reflections";
 
 const EMPTY_PLAN: PlanInput = {
   title: "T06 프로젝트 완주",
@@ -36,6 +38,23 @@ function App() {
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
+  const [planSummary, setPlanSummary] = useState<Summary | null>(null);
+
+  // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
+  // 공유하지 않는다. 카드는 언제나 계획 전체를 보여줘야 하므로 기간 없는 집계를
+  // 따로 가져온다.
+  useEffect(() => {
+    if (!selectedPlan) {
+      setPlanSummary(null);
+      return;
+    }
+    let cancelled = false;
+    setPlanSummary(null);
+    getSummary(selectedPlan.id, null)
+      .then((data) => { if (!cancelled) setPlanSummary(data); })
+      .catch(() => { if (!cancelled) setPlanSummary(null); });
+    return () => { cancelled = true; };
+  }, [selectedPlan?.id, dataRevision]);
 
   function goToStep(id: string) {
     requestAnimationFrame(() => {
@@ -162,7 +181,8 @@ function App() {
               <div className="plan-top"><span className={`priority ${plan.priority}`}>{plan.priority}</span><span>{plan.startDate} — {plan.endDate}</span></div>
               <h3>{plan.title}</h3>
               <p>{plan.successCriterion}</p>
-              <strong>{plan.estimatedMinutes}분 예상</strong>
+              <strong>계획 예상 {plan.estimatedMinutes}분</strong>
+              {selectedPlan?.id === plan.id && planSummary && <PlanGauge summary={planSummary} />}
               {plan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{plan.carriedImprovement}</strong></p>}
               <div className="actions"><button className="use-plan" onClick={() => { setSelectedPlanId(plan.id); goToStep("do-step"); }}>이 계획으로 실행</button><button onClick={() => beginRevise(plan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(plan.id)}>수정 이력</button></div>
               {editingPlanId === plan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, plan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}

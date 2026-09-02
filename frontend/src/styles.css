@@ -156,6 +156,90 @@ p { margin-top: 0; }
 
 /* ── 머리말 ──────────────────────────────────────────────────────────── */
 
+/* 계획 카드의 예상 대비 실제. 눈금이 예상, 채움이 실제.
+   색은 See 지표 카드와 같은 규칙을 따른다: 초과는 --crit, 절약은 --good. */
+.plan-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  margin-top: var(--s1);
+}
+
+.plan-gauge-heads {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  font-size: var(--t-xs);
+  color: var(--ink-2);
+}
+
+.plan-gauge-heads strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* 머리글에 막대와 같은 표식을 달아 눈금=예상, 채움=실제를 짝지어 준다. */
+.plan-gauge-heads span::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  vertical-align: baseline;
+  border-radius: 2px;
+}
+
+.plan-gauge-heads span:first-child::before { width: 2px; height: 10px; background: var(--ink); }
+.plan-gauge-heads span:last-child::before { background: var(--ink-3); }
+.plan-gauge.under .plan-gauge-heads span:last-child::before { background: var(--good); }
+.plan-gauge.over .plan-gauge-heads span:last-child::before { background: var(--crit); }
+.plan-gauge.even .plan-gauge-heads span:last-child::before { background: var(--accent); }
+
+.plan-gauge-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+
+.plan-gauge-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+  background: var(--ink-3);
+  transition: width var(--ease);
+}
+
+/* 눈금은 트랙보다 높게 빼고, 카드 배경색 후광을 둘러 채움 위에서도 분리돼 보이게
+   한다. 후광이 없으면 채운 막대 위에서 이음매처럼 읽힌다. */
+.plan-gauge-tick {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.plan-gauge.under .plan-gauge-fill { background: var(--good); }
+.plan-gauge.over .plan-gauge-fill { background: var(--crit); }
+.plan-gauge.even .plan-gauge-fill { background: var(--accent); }
+
+.plan-gauge-note {
+  margin: 0;
+  font-size: var(--t-xs);
+  color: var(--ink-2);
+}
+
+.plan-gauge-note strong { font-variant-numeric: tabular-nums; }
+.plan-gauge.under .plan-gauge-note strong { color: var(--good); }
+.plan-gauge.over .plan-gauge-note strong { color: var(--crit); }
+
+.plan-gauge-empty {
+  margin: var(--s1) 0 0;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
 /* 헤더 줄: 제목 왼쪽, 테마 버튼 오른쪽. 좁은 화면에서는 버튼이 아래로 내려간다. */
 .page-top {
   display: flex;
