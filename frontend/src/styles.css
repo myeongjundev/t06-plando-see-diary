@@ -1209,3 +1209,142 @@ summary:hover { color: var(--accent); }
   /* 긴 문서를 애니메이션으로 훑는 건 이 설정이 막으려는 움직임 그 자체다. */
   :root { scroll-behavior: auto; }
 }
+
+
+/* ── 날짜 고르기 ──────────────────────────────────────────────────────────
+   input[type="date"]의 팝업은 브라우저가 그리는 위젯이라 CSS가 닿지 않는다. 화면의
+   나머지가 전부 토큰 위에 있는데 달력 하나만 크롬 기본 모양이었다. 직접 그린 팝업이라
+   여기서부터는 나머지 화면과 같은 색·반경·간격을 쓴다. */
+
+.date-field { display: grid; gap: var(--s2); min-width: 0; }
+.date-field-control { position: relative; }
+
+/* 오른쪽 끝의 달력 단추가 글자를 덮지 않도록 자리를 비운다. */
+.date-input { padding-right: 42px; font-variant-numeric: tabular-nums; }
+
+.date-open {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--ink-3);
+  transition: background var(--ease), color var(--ease);
+}
+
+.date-open:hover { background: var(--surface-3); color: var(--ink); }
+.date-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.date-pop {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--s1));
+  left: 0;
+  width: max-content;
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.date-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-bottom: var(--s2);
+}
+
+.date-pop-head strong { font-size: var(--t-sm); color: var(--ink); }
+
+.date-pop-head button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--t-body);
+  line-height: 1;
+  transition: background var(--ease), border-color var(--ease);
+}
+
+.date-pop-head button:hover { background: var(--surface-2); border-color: var(--line-2); }
+
+.date-weekdays, .date-grid { display: grid; grid-template-columns: repeat(7, 32px); gap: 2px; }
+
+.date-weekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  font-size: var(--t-2xs);
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+/* 접근성 구조상 필요한 줄 요소. 격자 배치는 칸이 직접 하도록 자리를 비켜 준다. */
+.date-row { display: contents; }
+
+.date-cell {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--t-sm);
+  font-variant-numeric: tabular-nums;
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.date-cell:hover { background: var(--surface-3); }
+.date-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.date-cell.outside { color: var(--ink-3); opacity: .55; }
+
+/* 오늘은 테두리로, 고른 날은 채움으로. 둘이 같은 날이면 채움이 이긴다. */
+.date-cell.today { border-color: var(--accent-line); font-weight: 700; }
+.date-cell.selected { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.date-cell.selected:hover { background: var(--accent-strong); }
+
+.date-pop-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-top: var(--s2);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--line);
+}
+
+.date-pop-foot button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--r-ctl);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  transition: background var(--ease), color var(--ease);
+}
+
+.date-pop-foot button:hover { background: var(--surface-3); color: var(--ink); }
+
+/* 좁은 화면에서는 칸이 붙어 손가락이 옆 날을 누른다. 폭이 있는 만큼 칸을 키운다. */
+@media (max-width: 720px) {
+  .date-weekdays, .date-grid { grid-template-columns: repeat(7, 40px); }
+  .date-cell { width: 40px; height: 40px; }
+}
+
+/* 오른쪽 열의 칸에서 열면 팝업이 화면 밖으로 나간다. 그 열은 오른쪽에 맞춰 편다. */
+.grid > .date-field:last-child .date-pop { left: auto; right: 0; }

@@ -1,4 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import DateField from "../../components/DateField";
+import { seoulToday } from "../../lib/date";
 import ExecutionPanel from "./ExecutionPanel";
 import type { Plan, Priority } from "../../api/plans";
 import {
@@ -17,11 +19,6 @@ function tomorrow(): string {
   const value = new Date();
   value.setDate(value.getDate() + 1);
   return value.toISOString().slice(0, 10);
-}
-
-// 마감 판정은 See·집계와 같은 서울 시간대를 쓴다(D-008). sv-SE 로캘이 YYYY-MM-DD를 준다.
-function seoulToday(): string {
-  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Seoul" }).format(new Date());
 }
 
 // 날짜 문자열 둘의 차이를 날 수로. 둘 다 자정 UTC로 읽어 시간대 밀림을 없앤다.
@@ -271,7 +268,7 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
             {detailOpen && (
               <div className="task-detail">
                 <div className="grid three">
-                  <label>마감일<input type="date" value={form.dueDate} onChange={(event) => setForm({ ...form, dueDate: event.target.value })} required /></label>
+                  <DateField label="마감일" value={form.dueDate} onChange={(dueDate) => setForm({ ...form, dueDate })} required />
                   <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
                   <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
                 </div>

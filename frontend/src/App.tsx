@@ -15,6 +15,7 @@ import ThemeToggle from "./ThemeToggle";
 import PlanGauge from "./features/plans/PlanGauge";
 import { getSummary, Summary } from "./api/reflections";
 import useActiveStep from "./useActiveStep";
+import DateField from "./components/DateField";
 
 const STEP_IDS = ["plan-step", "do-step", "see-step"] as const;
 
@@ -297,8 +298,8 @@ function App() {
           <form onSubmit={submit}>
             <label>계획 이름<input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required /></label>
             <div className="grid two">
-              <label>시작일<input type="date" value={form.startDate} onChange={(event) => setForm({ ...form, startDate: event.target.value })} required /></label>
-              <label>종료일<input type="date" value={form.endDate} onChange={(event) => setForm({ ...form, endDate: event.target.value })} required /></label>
+              <DateField label="시작일" value={form.startDate} onChange={(startDate) => setForm({ ...form, startDate })} required />
+              <DateField label="종료일" value={form.endDate} onChange={(endDate) => setForm({ ...form, endDate })} required />
             </div>
             <div className="grid two">
               <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as PlanInput["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>

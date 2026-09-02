@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import type { Plan } from "../../api/plans";
 import { createNextPlan, getSummary, listReflections, Metric, NextPlanInput, Period, Reflection, saveReflection, Summary } from "../../api/reflections";
+import DateField from "../../components/DateField";
 
 const METRICS: { key: Metric; label: string; unit: string }[] = [
   { key: "taskCount", label: "할 일", unit: "개" },
@@ -56,8 +57,8 @@ function NextPlanForm({ plan, reflection, onCreated }: { plan: Plan; reflection:
     <p>다음 계획에 전달할 개선점: <strong>{reflection.improvement}</strong></p>
     <label>다음 계획 이름<input maxLength={160} required value={input.title} onChange={(e) => setInput({ ...input, title: e.target.value })} /></label>
     <div className="grid two">
-      <label>다음 계획 시작일<input type="date" required value={input.startDate} onChange={(e) => setInput({ ...input, startDate: e.target.value })} /></label>
-      <label>다음 계획 종료일<input type="date" required value={input.endDate} onChange={(e) => setInput({ ...input, endDate: e.target.value })} /></label>
+      <DateField label="다음 계획 시작일" required value={input.startDate} onChange={(startDate) => setInput({ ...input, startDate })} />
+      <DateField label="다음 계획 종료일" required value={input.endDate} onChange={(endDate) => setInput({ ...input, endDate })} />
       <label>다음 계획 우선순위<select value={input.priority} onChange={(e) => setInput({ ...input, priority: e.target.value as Plan["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
       <label>다음 계획 예상 시간(분)<input type="number" min={0} max={1000000} step={1} required value={input.estimatedMinutes} onChange={(e) => setInput({ ...input, estimatedMinutes: Number(e.target.value) })} /></label>
     </div>
@@ -105,8 +106,8 @@ function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan;
   return <>
     <form className="period-form" onSubmit={applyPeriod}>
       <div className="grid two">
-        <label>집계 시작일<input type="date" required value={draftPeriod.periodStart} onChange={(e) => setDraftPeriod({ ...draftPeriod, periodStart: e.target.value })} /></label>
-        <label>집계 종료일<input type="date" required value={draftPeriod.periodEnd} onChange={(e) => setDraftPeriod({ ...draftPeriod, periodEnd: e.target.value })} /></label>
+        <DateField label="집계 시작일" required value={draftPeriod.periodStart} onChange={(periodStart) => setDraftPeriod({ ...draftPeriod, periodStart })} />
+        <DateField label="집계 종료일" required value={draftPeriod.periodEnd} onChange={(periodEnd) => setDraftPeriod({ ...draftPeriod, periodEnd })} />
       </div>
       <div className="actions"><button type="submit">마감일 기간 적용</button><button type="button" onClick={() => { setSelected(null); setPeriod(null); setReload((v) => v + 1); }}>계획 전체 보기</button><button type="button" onClick={() => setReload((v) => v + 1)}>집계 새로고침</button></div>
     </form>
