@@ -19,6 +19,26 @@ function tomorrow(): string {
   return value.toISOString().slice(0, 10);
 }
 
+// 마감 판정은 See·집계와 같은 서울 시간대를 쓴다(D-008). sv-SE 로캘이 YYYY-MM-DD를 준다.
+function seoulToday(): string {
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Seoul" }).format(new Date());
+}
+
+// 날짜 문자열 둘의 차이를 날 수로. 둘 다 자정 UTC로 읽어 시간대 밀림을 없앤다.
+function daysUntil(dueDate: string, today: string): number {
+  return Math.round((Date.parse(`${dueDate}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86400000);
+}
+
+// 마감이 코앞이거나 지났을 때만 표시를 붙인다. 열여덟 줄이 모두 표시를 달면 아무것도
+// 눈에 띄지 않는다. 저장한 날짜 자체는 T06-C14의 근거라 화면에서 빼지 않는다.
+function dueMark(dueDate: string, today: string): { text: string; tone: string } | null {
+  const days = daysUntil(dueDate, today);
+  if (days < 0) return { text: `${-days}일 지남`, tone: "overdue" };
+  if (days === 0) return { text: "오늘", tone: "today" };
+  if (days === 1) return { text: "내일", tone: "soon" };
+  return null;
+}
+
 const EMPTY_TASK: TaskInput = {
   content: "",
   dueDate: tomorrow(),
@@ -59,6 +79,9 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
   // 실행 기록 토글을 행의 오른쪽 액션 줄로 옮긴다. 예전에는 패널이 스스로 열림 상태를
   // 들고 있어서 닫혀 있을 때도 구분선과 한 줄을 차지했다.
   const [openLogId, setOpenLogId] = useState<string | null>(null);
+  // 끝난 일이 남은 일보다 위에 있을 이유가 없다. 완료는 아래로 접어 두되, 방금
+  // 완료하거나 되돌렸다면 펴 둔다 — 어디로 갔는지 보이고 되돌리기도 닿아야 한다.
+  const [showDone, setShowDone] = useState(false);
   const [filters, setFilters] = useState<TaskFilters>({ q: "", status: "", priority: "", tag: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
@@ -134,6 +157,7 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
         await completeTask(task.id, key);
       }
       sessionStorage.removeItem(storageKey);
+      setShowDone(true);
       setMessage(task.status === "completed" ? "할 일을 진행 중으로 되돌렸습니다." : "할 일을 완료했습니다.");
       await refresh();
     } catch (error) {
@@ -170,6 +194,46 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "할 일을 삭제하지 못했습니다.");
     }
+  }
+
+  const today = seoulToday();
+  // 상태 필터를 쓰고 있으면 사용자가 이미 무엇을 볼지 고른 것이라 나누지 않는다.
+  // 나누면 «완료»로 거른 결과가 빈 목록처럼 보인다(T06-C19).
+  const splitDone = !filters.status;
+  const activeTasks = splitDone ? tasks.filter((task) => task.status !== "completed") : tasks;
+  const doneTasks = splitDone ? tasks.filter((task) => task.status === "completed") : [];
+
+  // 남은 목록과 완료 목록이 같은 줄 모양을 쓴다.
+  function taskRow(task: Task) {
+    const mark = dueMark(task.dueDate, today);
+    return (
+    <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
+      <button className="status-button" disabled={changingIds.includes(task.id)} onClick={() => void changeStatus(task)} aria-label={task.status === "completed" ? `${task.content} 진행 중으로 되돌리기` : `${task.content} 완료로 바꾸기`}>{task.status === "completed" ? "✓" : "○"}</button>
+      <span className={`priority ${task.priority}`}>{task.priority}</span>
+      <div className="task-main">
+        <h3 title={task.content}>{task.content}</h3>
+        <span className="task-meta">
+        {mark && <span className={`due-mark ${mark.tone}`}>{mark.text}</span>}
+        {task.dueDate} · {task.estimatedMinutes}분
+      </span>
+        {task.tags.length > 0 && <span className="tags">{task.tags.map((tag) => <span key={tag}>#{tag}</span>)}</span>}
+      </div>
+      <div className="task-actions">
+        <button type="button" className={`icon-button log-toggle${openLogId === task.id ? " on" : ""}`}
+                aria-expanded={openLogId === task.id}
+                title={`Do · 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
+                aria-label={`${task.content} 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
+                onClick={() => setOpenLogId(openLogId === task.id ? null : task.id)}>
+          <ClockIcon />
+        </button>
+        <button type="button" className="icon-button" title="내용 수정" aria-label={`${task.content} 내용 수정`} onClick={() => beginEdit(task)}><PencilIcon /></button>
+        <button type="button" className="icon-button danger" title="삭제" aria-label={`${task.content} 삭제`} onClick={() => setPendingDeleteId(task.id)}><TrashIcon /></button>
+      </div>
+      {editingId === task.id && <form className="inline-edit row-extra" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
+      {pendingDeleteId === task.id && <div className="delete-check row-extra" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
+      {openLogId === task.id && <ExecutionPanel task={task} onSaved={onDataChange} />}
+    </article>
+    );
   }
 
   return (
@@ -233,34 +297,24 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
           <p className="sort-rule">정렬 기준: 우선순위(높음→보통→낮음) → 마감일 → 생성 시각 → ID</p>
           {message && <p className="message" role="status">{message}</p>}
 
-          <div className="task-list" aria-label={`${plan.title}의 할 일`}>
+          <div className="task-list" aria-label={`${plan.title}의 남은 할 일`}>
             {tasks.length === 0 && <p className="empty">조건에 맞는 할 일이 없습니다.</p>}
-            {tasks.map((task) => (
-              <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
-                <button className="status-button" disabled={changingIds.includes(task.id)} onClick={() => void changeStatus(task)} aria-label={task.status === "completed" ? `${task.content} 진행 중으로 되돌리기` : `${task.content} 완료로 바꾸기`}>{task.status === "completed" ? "✓" : "○"}</button>
-                <span className={`priority ${task.priority}`}>{task.priority}</span>
-                <div className="task-main">
-                  <h3 title={task.content}>{task.content}</h3>
-                  <span className="task-meta">{task.dueDate} · {task.estimatedMinutes}분</span>
-                  {task.tags.length > 0 && <span className="tags">{task.tags.map((tag) => <span key={tag}>#{tag}</span>)}</span>}
-                </div>
-                <div className="task-actions">
-                  <button type="button" className={`icon-button log-toggle${openLogId === task.id ? " on" : ""}`}
-                          aria-expanded={openLogId === task.id}
-                          title={`Do · 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
-                          aria-label={`${task.content} 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
-                          onClick={() => setOpenLogId(openLogId === task.id ? null : task.id)}>
-                    <ClockIcon />
-                  </button>
-                  <button type="button" className="icon-button" title="내용 수정" aria-label={`${task.content} 내용 수정`} onClick={() => beginEdit(task)}><PencilIcon /></button>
-                  <button type="button" className="icon-button danger" title="삭제" aria-label={`${task.content} 삭제`} onClick={() => setPendingDeleteId(task.id)}><TrashIcon /></button>
-                </div>
-                {editingId === task.id && <form className="inline-edit row-extra" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
-                {pendingDeleteId === task.id && <div className="delete-check row-extra" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
-                {openLogId === task.id && <ExecutionPanel task={task} onSaved={onDataChange} />}
-              </article>
-            ))}
+            {tasks.length > 0 && activeTasks.length === 0 && <p className="empty">남은 할 일이 없습니다. 모두 마쳤습니다.</p>}
+            {activeTasks.map(taskRow)}
           </div>
+          {doneTasks.length > 0 && (
+            <div className="task-done">
+              <button type="button" className="done-toggle" aria-expanded={showDone}
+                      onClick={() => setShowDone(!showDone)}>
+                완료 {doneTasks.length}개 {showDone ? "접기" : "보기"}
+              </button>
+              {showDone && (
+                <div className="task-list" aria-label={`${plan.title}의 완료한 할 일`}>
+                  {doneTasks.map(taskRow)}
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
     </section>

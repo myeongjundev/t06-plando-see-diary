@@ -48,6 +48,12 @@
   --crit: #d6473c;
   --crit-soft: #feeceb;
 
+  /* --crit·--warn을 각자의 -soft 위에 글자로 올리면 대비가 3.8:1대에 머문다. 11px
+     굵은 글씨는 WCAG의 «큰 글씨»가 아니라 4.5:1이 필요하다. 채움과 테두리는 원래
+     색을 그대로 쓰고, soft 배경 위 «글자»에만 이 어두운 짝을 쓴다. */
+  --crit-ink: #b3352c;
+  --warn-ink: #8a5200;
+
   /* 글자 크기 */
   --f-display: "Gothic A1", "Noto Sans KR", system-ui, sans-serif;
   --f-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
@@ -122,6 +128,9 @@
   --warn-soft: #2e2418;
   --crit: #ef8279;
   --crit-soft: #33201f;
+  /* 다크에서는 원래 색이 이미 5.9:1·6.9:1이라 그대로 쓴다. */
+  --crit-ink: #ef8279;
+  --warn-ink: #dfa458;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 12px 32px -20px rgba(0, 0, 0, .8);
 
@@ -542,8 +551,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   text-transform: none;
 }
 
-.priority.high { background: var(--crit-soft); color: var(--crit); }
-.priority.medium { background: var(--warn-soft); color: var(--warn); }
+.priority.high { background: var(--crit-soft); color: var(--crit-ink); }
+.priority.medium { background: var(--warn-soft); color: var(--warn-ink); }
 .priority.low { background: var(--surface-3); color: var(--ink-2); }
 
 .plan-card h3 { margin: 0; font-size: var(--t-h3); font-weight: 800; letter-spacing: -.02em; }
@@ -778,6 +787,40 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   font-weight: 500;
   white-space: nowrap;
 }
+
+/* 마감이 지났거나 오늘·내일일 때만 붙는 표시. 모든 줄에 붙으면 아무것도 눈에 띄지
+   않으므로 드물게 둔다. 저장한 날짜는 T06-C14의 근거라 옆에 그대로 남는다. */
+.due-mark {
+  border-radius: 6px;
+  padding: 2px 7px;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-size: var(--t-2xs);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 급한 차례대로 빨강 → 노랑 → 회색. 파랑은 동작에만 남겨 둔다(D-025). */
+.due-mark.today { background: var(--warn-soft); color: var(--warn-ink); }
+.due-mark.overdue { background: var(--crit-soft); color: var(--crit-ink); }
+
+/* 완료한 일은 목록 아래에 접어 둔다. */
+.task-done { margin-top: var(--s3); }
+
+.done-toggle {
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  color: var(--ink-3);
+  padding: 8px 14px;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  transition: border-color var(--ease), color var(--ease);
+}
+
+.done-toggle:hover:not(:disabled) { border-color: var(--accent-line); color: var(--accent); }
+
+.task-done .task-list { margin-top: var(--s2); }
 
 .tags { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: var(--s1); font-size: var(--t-2xs); }
 
