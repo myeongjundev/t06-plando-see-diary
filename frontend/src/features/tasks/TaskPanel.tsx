@@ -39,6 +39,9 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
   const [tagText, setTagText] = useState("");
   // 대부분의 방문은 '적기'가 아니라 '보기'다. 제목 한 줄만 늘 보이고 나머지는 접어 둔다.
   const [detailOpen, setDetailOpen] = useState(false);
+  // 실행 기록 토글을 행의 오른쪽 액션 줄로 옮긴다. 예전에는 패널이 스스로 열림 상태를
+  // 들고 있어서 닫혀 있을 때도 구분선과 한 줄을 차지했다.
+  const [openLogId, setOpenLogId] = useState<string | null>(null);
   const [filters, setFilters] = useState<TaskFilters>({ q: "", status: "", priority: "", tag: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
@@ -222,11 +225,18 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
                   <div className="task-meta"><span className={`priority ${task.priority}`}>{task.priority}</span><span>{task.dueDate}</span><span>{task.estimatedMinutes}분</span></div>
                   <h3>{task.content}</h3>
                   <div className="tags">{task.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-                  <div className="actions"><button onClick={() => beginEdit(task)}>내용 수정</button><button className="danger" onClick={() => setPendingDeleteId(task.id)}>삭제</button></div>
                   {editingId === task.id && <form className="inline-edit" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
                   {pendingDeleteId === task.id && <div className="delete-check" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
                 </div>
-                <ExecutionPanel task={task} onSaved={onDataChange} />
+                <div className="task-actions">
+                  <button type="button" className="log-toggle" aria-expanded={openLogId === task.id}
+                          onClick={() => setOpenLogId(openLogId === task.id ? null : task.id)}>
+                    Do · 실행 기록 {openLogId === task.id ? "닫기" : "열기"}
+                  </button>
+                  <button onClick={() => beginEdit(task)}>내용 수정</button>
+                  <button className="danger" onClick={() => setPendingDeleteId(task.id)}>삭제</button>
+                </div>
+                {openLogId === task.id && <ExecutionPanel task={task} onSaved={onDataChange} />}
               </article>
             ))}
           </div>

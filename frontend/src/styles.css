@@ -538,7 +538,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
 
-.actions button {
+.actions button,
+.task-actions button {
   border: 1px solid var(--line);
   border-radius: var(--r-ctl);
   background: var(--surface);
@@ -549,7 +550,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   transition: background var(--ease), border-color var(--ease), color var(--ease);
 }
 
-.actions button:hover:not(:disabled) {
+.actions button:hover:not(:disabled),
+.task-actions button:hover:not(:disabled) {
   background: var(--accent-soft);
   border-color: var(--accent-line);
   color: var(--accent);
@@ -680,9 +682,11 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .task-list { display: grid; gap: var(--s2); }
 
+/* 세 열: 상태 · 내용 · 액션. 예전에는 두 열이라 액션과 실행 기록 토글이 내용 아래로
+   쌓여 행 하나가 249px이었고, 정작 가로는 70%가 비어 있었다. */
 .task-row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: var(--s3);
   border: 1px solid var(--line);
   border-radius: var(--r-card);
@@ -739,7 +743,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 .danger { color: var(--crit); border-color: var(--line); }
-.actions button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
+.actions button.danger:hover:not(:disabled),
+.task-actions button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
 .danger.solid { border-color: var(--crit); background: var(--crit); color: #fff; }
 .actions button.danger.solid:hover:not(:disabled) { background: var(--crit); border-color: var(--crit); color: #fff; }
 
@@ -765,6 +770,29 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 /* ── 실행 기록 ───────────────────────────────────────────────────────── */
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: start;
+  gap: var(--s1);
+  align-self: start;
+}
+
+.task-actions button { white-space: nowrap; font-size: var(--t-xs); padding: 6px 10px; }
+
+.log-toggle {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.log-toggle:hover:not(:disabled) { background: var(--accent-soft); }
+
+@media (max-width: 640px) {
+  .task-row { grid-template-columns: auto minmax(0, 1fr); }
+  .task-actions { grid-column: 2; flex-direction: row; flex-wrap: wrap; }
+}
 
 .execution-panel {
   grid-column: 1 / -1;

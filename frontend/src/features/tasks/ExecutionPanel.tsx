@@ -8,7 +8,6 @@ const seoulTime = new Intl.DateTimeFormat("ko-KR", {
 });
 
 export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved: () => void }) {
-  const [open, setOpen] = useState(false);
   const [logs, setLogs] = useState<ExecutionLog[]>([]);
   const [events, setEvents] = useState<CompletionEvent[]>([]);
   const [start, setStart] = useState("");
@@ -20,7 +19,6 @@ export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved:
   const saving = useRef(false);
 
   useEffect(() => {
-    if (!open) return;
     let cancelled = false;
     Promise.all([listExecutions(task.id), listCompletions(task.id)])
       .then(([nextLogs, nextEvents]) => {
@@ -30,7 +28,7 @@ export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved:
         if (!cancelled) setMessage(error instanceof Error ? error.message : "기록을 불러오지 못했습니다.");
       });
     return () => { cancelled = true; };
-  }, [open, task.id, task.status]);
+  }, [task.id, task.status]);
 
   async function save(event: FormEvent) {
     event.preventDefault();
@@ -56,8 +54,7 @@ export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved:
   }
 
   return <div className="execution-panel">
-    <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}>Do · 실행 기록 {open ? "닫기" : "열기"}</button>
-    {open && <div>
+    <div>
       <h4>실제로 한 일 적기</h4>
       <p className="time-rule">입력·표시 시각: Asia/Seoul (UTC+09:00) · 예상 {task.estimatedMinutes}분</p>
       <form onSubmit={save}>
@@ -82,6 +79,6 @@ export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved:
         <p>다시 시작해도 과거 완료 이력은 남습니다.</p>
         {events.map((event) => <p key={event.id}>{seoulTime.format(new Date(event.completedAt))} (서울)<br /><small>완료 ID: {event.id}</small></p>)}
       </details>
-    </div>}
+    </div>
   </div>;
 }

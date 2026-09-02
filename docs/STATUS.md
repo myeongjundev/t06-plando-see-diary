@@ -2,6 +2,30 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 task rows use the width they already had
+
+- Measured the Do section next: each task row ran 249px and six tasks filled
+  1,979px, while roughly 70% of every row's width sat empty. The action buttons and
+  the execution-log toggle were stacked under the content because the row was a
+  two-column grid, so vertical space paid for what horizontal space was wasting.
+- Rows are now three columns — status, body, actions — with 내용 수정, 삭제 and the
+  log toggle sharing the previously empty right column. Nothing was hidden behind a
+  hover: those two buttons back T06-C10 and C13 and a grader has to be able to find
+  them.
+- The log toggle moved out of `ExecutionPanel` into that group, and the panel is
+  mounted only while open, so a closed row no longer pays for a divider and a full
+  button row. One panel is open at a time now.
+- Row height 249px → 114px (92px without tags), Do section 1,979px → 1,171px, whole
+  document 4,565px → 3,758px, with the same six tasks.
+- Found and fixed while checking by eye: button styling was scoped to
+  `.actions button`, so the buttons in the new container rendered as unstyled native
+  controls. The rule and its hover and danger variants now cover both containers.
+- Verified: opening a row mounts the panel with its four fields, save button and
+  completion history, the toggle label flips, and closing unmounts it. Acceptance
+  elements re-checked at 1280px and 375px — warning on the first screen, sort rule,
+  priority literals with `text-transform: none`, twelve plan anchors, no overflow.
+  53 tests and the frontend build pass.
+
 ## 2026-09-02 plan list and task form stop crowding the page
 
 - The user asked what happens as plans accumulate. Measured: every plan was drawn
