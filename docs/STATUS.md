@@ -31,8 +31,10 @@ Updated: 2026-09-02 KST
 - User approved the final judgment and rejected-advice statements in
   `docs/SUBMISSION.md`.
 
-Remaining submission action: open the product and full-commit source URLs in a
-fresh private browser without authentication, then record final confirmation.
+The user supplied a Chrome Incognito screenshot confirming the product URL,
+public warning, source plan and carried next plan. Remaining submission action:
+open the full-commit source URL in a fresh private browser without authentication
+and record final confirmation.
 
 학원 PC에서 이어갈 때는 `docs/ACADEMY-HANDOFF.md`를 먼저 읽는다.
 최신 main 받기, 새 PC 설치/실행, 완료 작업, 남은 제출 검증과 이어가기 프롬프트를

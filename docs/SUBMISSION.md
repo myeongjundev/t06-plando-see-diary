@@ -29,6 +29,9 @@ Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 �
 
 ## Evidence completed
 
+- A user-provided Chrome Incognito screenshot confirms the product URL opens
+  without authentication and displays the public warning, source plan and carried
+  next plan.
 - Public app has one real source plan, five linked tasks, three execution logs,
   three completed tasks, one reflection and one carried next plan.
 - Refresh preserved UUIDs, dates, values and minute units in Neon PostgreSQL.
@@ -43,7 +46,7 @@ Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 �
 
 ## Evidence still needed
 
-- Open both URLs in a fresh private browser without authentication and record the
-  final confirmation before submission.
+- Open the full-commit source URL in a fresh private browser without authentication
+  and record the final confirmation before submission.
 
 Local evidence is in `HANDOFF.md`; synthetic fixtures are not real-use evidence.
