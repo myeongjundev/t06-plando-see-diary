@@ -555,12 +555,14 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
 
-/* 보조 버튼의 생김새는 여기 한 곳에서만 정합니다. 이 선택자 밖에 새 버튼을 만들면
+/* 글자가 든 보조 버튼의 생김새는 여기 한 곳에서만 정합니다. 아이콘 버튼은
+   `.icon-button`이 따로 맡습니다 — 한때 `.task-actions button`이 이 목록에 있었는데
+   `.icon-button`(0,1,0)보다 명시도가 높아(0,1,1) 패딩 8px 14px를 덮어씌웠고,
+   32px 버튼의 내용 상자가 2px로 줄어 16px 아이콘이 오른쪽으로 밀려났습니다. 이 선택자 밖에 새 버튼을 만들면
    테두리·배경이 하나도 없어 브라우저 기본 버튼(검은 outset 테두리)으로 렌더링됩니다.
    실제로 «내용 수정»·«삭제»에 이어 «자세히»가 같은 이유로 두 번 새어 나갔습니다.
    새 보조 버튼을 만들면 반드시 이 목록에 더하세요. */
 .actions button,
-.task-actions button,
 .task-detail-toggle {
   border: 1px solid var(--line);
   border-radius: var(--r-ctl);
@@ -573,7 +575,6 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 .actions button:hover:not(:disabled),
-.task-actions button:hover:not(:disabled),
 .task-detail-toggle:hover:not(:disabled) {
   background: var(--accent-soft);
   border-color: var(--accent-line);
@@ -789,8 +790,7 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 .danger { color: var(--crit); border-color: var(--line); }
-.actions button.danger:hover:not(:disabled),
-.task-actions button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
+.actions button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
 .danger.solid { border-color: var(--crit); background: var(--crit); color: #fff; }
 .actions button.danger.solid:hover:not(:disabled) { background: var(--crit); border-color: var(--crit); color: #fff; }
 
@@ -842,6 +842,10 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   color: var(--ink-3);
   transition: background var(--ease), border-color var(--ease), color var(--ease);
 }
+
+/* inline SVG는 baseline에 놓여 아래로 몇 px 내려앉는다. 블록으로 두면 place-items가
+   그대로 가운데를 잡는다. */
+.icon-button > svg { display: block; }
 
 .icon-button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
 .icon-button.danger { color: var(--ink-3); border-color: transparent; }
