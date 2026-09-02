@@ -213,7 +213,7 @@ p { margin-top: 0; }
   border-radius: 2px;
 }
 
-.plan-gauge-heads span:first-child::before { width: 2px; height: 10px; background: var(--ink); }
+.plan-gauge-heads span:first-child::before { background: var(--ink-3); }
 .plan-gauge-heads span:last-child::before { background: var(--ink-3); }
 .plan-gauge.under .plan-gauge-heads span:last-child::before { background: var(--good); }
 .plan-gauge.over .plan-gauge-heads span:last-child::before { background: var(--crit); }
@@ -226,30 +226,65 @@ p { margin-top: 0; }
   background: var(--surface-3);
 }
 
-.plan-gauge-fill {
+/* 구간 셋은 같은 자리에 겹쳐 놓인다. 트랙 높이를 그대로 채우고, 이어지는 구간은
+   카드 색 2px 테두리로 갈라져 그 틈이 곧 기준선이 된다. */
+.plan-gauge-planned,
+.plan-gauge-over,
+.plan-gauge-saved {
+  position: absolute;
+  top: 0;
   height: 100%;
+  transition: width var(--ease), left var(--ease);
+}
+
+.plan-gauge-planned {
+  left: 0;
   min-width: 2px;
   border-radius: 999px;
   background: var(--ink-3);
-  transition: width var(--ease);
 }
 
-/* 눈금은 트랙보다 높게 빼고, 카드 배경색 후광을 둘러 채움 위에서도 분리돼 보이게
-   한다. 후광이 없으면 채운 막대 위에서 이음매처럼 읽힌다. */
-.plan-gauge-tick {
+/* 뒤에 붙는 구간이 있으면 오른쪽 끝을 세운다. 둥근 끝과 각진 끝이 만나면 홈이 팬다. */
+.plan-gauge-planned.joined { border-radius: 999px 0 0 999px; }
+
+.plan-gauge-over,
+.plan-gauge-saved {
+  border-left: 2px solid var(--surface);
+  border-radius: 0 999px 999px 0;
+}
+
+.plan-gauge-over { background: var(--crit); }
+
+/* 아낀 자리는 채우지 않는다 — 쓰지 않은 시간이므로 빈 자리로 두고 빗금으로 표시만 한다. */
+.plan-gauge-saved {
+  border: 1px solid var(--good);
+  border-left: 2px solid var(--surface);
+  background: repeating-linear-gradient(-45deg, var(--good) 0 2px, transparent 2px 5px);
+}
+
+/* 구간이 덮지 않는 자리에서만 드러나는 실선. 카드의 다른 구분선과 같은 굵기·색이다 —
+   기준선이 화면에서 가장 센 요소일 이유가 없다. */
+.plan-gauge-baseline {
   position: absolute;
-  top: -5px;
-  bottom: -5px;
-  width: 2px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
   margin-left: -1px;
-  border-radius: 1px;
-  background: var(--ink);
-  box-shadow: 0 0 0 2px var(--surface);
+  background: var(--line-2);
 }
 
-.plan-gauge.under .plan-gauge-fill { background: var(--good); }
-.plan-gauge.over .plan-gauge-fill { background: var(--crit); }
-.plan-gauge.even .plan-gauge-fill { background: var(--accent); }
+/* 막대가 끝에서 잘렸다는 표시. 찢긴 가장자리로 «여기서 끝난 게 아니다»를 말한다. */
+.plan-gauge-clip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  border-radius: 0 999px 999px 0;
+  background: repeating-linear-gradient(-45deg, var(--surface) 0 2px, transparent 2px 4px);
+}
+
+/* 계획 구간은 어느 쪽이든 무채색이다. 판정색은 넘어선 구간과 아낀 자리만 갖는다. */
 
 .plan-gauge-note {
   margin: 0;
