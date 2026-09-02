@@ -2,6 +2,38 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 documentation and tooling filed by lifecycle
+
+- `docs/` had grown to 19 flat files with nothing distinguishing a standing rule from
+  a one-day note, including four filenames containing HANDOFF and three documents
+  that declare themselves superseded in their own headers. A reader could not tell
+  which was authoritative.
+- Split by lifecycle. `docs/` now holds the ten standing references; `docs/process/`
+  holds the six handoffs, reviews and dated checklists; `docs/archive/` holds the
+  three superseded ones. `docs/README.md` is a new index that says which layer is
+  binding and, for each archived document, why it was set aside.
+- `PROJECT-SKELETON.md` was archived despite its ACTIVE header: it is a
+  pre-implementation plan whose tree names nine directories that do not exist
+  (`tests/integration`, `frontend/src/components`, `features/do`, `pages`, and
+  others), so it cannot serve as a structure guide. Its substantive parts —
+  dependency direction and work slices — are carried by `FLASK-ARCHITECTURE.md`.
+- `DEPLOYMENT.md` stayed: it documents the local Docker Compose stack, which
+  `RENDER-NEON.md` does not cover. Its status line still described the hosted
+  deployment as pending and now states its actual scope.
+- `capture_screenshots.mjs` moved from `backend/scripts/` to a new top-level
+  `tools/`. It is a Node script that produces README images and has nothing to do
+  with the Python backend.
+- All 12 cross-references to the moved paths were rewritten and every relative link
+  in `README.md` and `docs/README.md` was resolved against the working tree. 53
+  tests, the frontend build, the secret scan and `git diff --check` pass; the build
+  output is unchanged.
+- Not done yet, and deliberately left until after submission: `STATUS.md` is 481
+  lines and is really a changelog wearing a status file's name; `design/` sits at the
+  repository root beside things that ship; `ThemeToggle.tsx`, `theme.ts` and
+  `useActiveStep.ts` sit loose in `src/` while `PlanGauge.tsx` is filed under
+  `features/`; and the Plan UI lives in `App.tsx` while Do, See and Export each have
+  their own panel.
+
 ## 2026-09-02 README rebuilt as a portfolio front page
 
 - The README was a text-only status page: it opened with an internal handoff link,
@@ -19,7 +51,7 @@ Updated: 2026-09-02 KST
   figures as the fixture, plus a second plan carrying a reflection line.
 - Captured with headless Chrome over CDP at 2x, clipped per section, in both themes;
   the browser pane cannot save files or paint scrolled content. The generator is kept
-  at `backend/scripts/capture_screenshots.mjs` so the shots can be regenerated.
+  at `tools/capture_screenshots.mjs` so the shots can be regenerated.
   Light and dark pairs are served through `<picture>` so GitHub follows the reader's
   theme.
 - Every relative link and image path in the README was resolved against the working
@@ -64,7 +96,7 @@ Updated: 2026-09-02 KST
 - Build output is byte-identical (`index-CpPmN_2E.js`, `index-B6MuCkAg.css`): the
   change affects only the dev server, and the deployment has no proxy at all because
   Flask serves the API and the built frontend from one origin.
-- `docs/DEVELOPMENT.md` and `docs/ACADEMY-HANDOFF.md` now show the port-conflict path.
+- `docs/DEVELOPMENT.md` and `docs/process/ACADEMY-HANDOFF.md` now show the port-conflict path.
 - 53 backend tests, the frontend build and `git diff --check` pass.
 
 ## 2026-09-02 smooth step navigation
@@ -249,7 +281,7 @@ authentication and shows commit `1d0e0f7` with the repository file list. Product
 database health and source URLs returned HTTP 200 in the final check. No submission
 verification remains.
 
-학원 PC에서 이어갈 때는 `docs/ACADEMY-HANDOFF.md`를 먼저 읽는다.
+학원 PC에서 이어갈 때는 `docs/process/ACADEMY-HANDOFF.md`를 먼저 읽는다.
 최신 main 받기, 새 PC 설치/실행, 완료 작업, 남은 제출 검증과 이어가기 프롬프트를
 정리했다. 집 PC의 `tmp/` 검증 스크립트·로컬 DB·환경 설정은 Git에 포함되지 않는다.
 
@@ -379,7 +411,7 @@ verification remains.
 - SQLAlchemy pre-ping checks connections reused after database sleep.
 - 52 tests passed with 91% coverage; frontend production build passed.
 - Render browser shows Sign In; account connection and Neon database creation are pending.
-- See docs/RENDER-NEON.md. GCP-SETUP.md is a superseded alternative.
+- See docs/RENDER-NEON.md. docs/archive/GCP-SETUP.md is a superseded alternative.
 
 ## Next action
 
@@ -417,7 +449,7 @@ Codex review (2026-09-02, HEAD `2ebb7bb`): adopt after fixing external font/CSP
 compatibility and low-contrast evidence labels. Build and 53 tests pass; seeded
 dark-theme browser checks preserve the public warning, priority literals, success
 criterion, sort rule, execution records and See sources. Main is unchanged; no
-merge/deployment performed. Full review handoff: `docs/REVIEW-CSS-TOKEN-LAYER.md`.
+merge/deployment performed. Full review handoff: `docs/process/REVIEW-CSS-TOKEN-LAYER.md`.
 
 Scope: presentation only. No markup, API, contract, or test expectation changed.
 
@@ -475,7 +507,7 @@ Card 3 start commit: `f8e04fd1d9c413ccf6999a9d666f78f6f3e349b2`
 
 Cards 3–5 and Render/Neon preparation were committed and pushed to origin/main as
 `150a9052610705dad52274d94d28f674ab07d324`. Account connection and public deployment
-remain pending; see `docs/HANDOFF.md`.
+remain pending; see `docs/process/HANDOFF.md`.
 
 Design token layer and review fixes were merged from `design/css-token-layer` into
 `main`, pushed, and verified on Render at application commit `d9b23a0`.

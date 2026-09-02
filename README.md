@@ -148,6 +148,9 @@ npm run dev -- --host 127.0.0.1
 
 ## 문서
 
+무엇이 유효한 기준이고 무엇이 지나간 기록인지는
+[`docs/README.md`](docs/README.md)가 안내합니다.
+
 | 문서 | 내용 |
 |---|---|
 | [`docs/DESIGN.md`](docs/DESIGN.md) | 방향 선택 근거, 토큰, 건드리면 안 되는 화면 요소 |

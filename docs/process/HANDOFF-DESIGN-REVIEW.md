@@ -13,7 +13,7 @@ submission evidence quality, so any regression it causes is a net loss.
 ## 2. Current state
 
 Phase unchanged: Cards 1–5 implemented, public verification still pending per
-`docs/HANDOFF.md`. This branch touches presentation only.
+`docs/process/HANDOFF.md`. This branch touches presentation only.
 
 `frontend/src/styles.css` is rewritten on a CSS custom-property token layer. Every
 selector that existed before still exists; no class name was added, renamed, or
@@ -118,7 +118,7 @@ changes, and the four remaining design items in section 6 of `docs/STATUS.md`.
 - End commit: `100ed9b` on `design/css-token-layer`, pushed to origin.
 - Remote branch: `origin/design/css-token-layer`.
 - PR not opened.
-- Uncommitted paths: `docs/HANDOFF-DESIGN-REVIEW.md` (this file).
+- Uncommitted paths: `docs/process/HANDOFF-DESIGN-REVIEW.md` (this file).
 - `main` is untouched, so the deployed app at
   https://t06-plando-see-diary.onrender.com still serves the previous design.
 

@@ -1,9 +1,9 @@
 # T06 deployment and verification
 
-Status: production image and local PostgreSQL verified on 2026-09-01. The user
-selected **Render Free + Neon Free** for approximately three months. Follow
-`RENDER-NEON.md` and the root `render.yaml`. Account connection and public deployment
-remain pending. The GCP proposal is superseded; no GCP VM was created.
+Scope: the local production stack (Docker Compose against a local PostgreSQL). For
+the hosted deployment on **Render Free + Neon Free**, follow `RENDER-NEON.md` and the
+root `render.yaml`; that deployment is live. The GCP proposal was superseded and no
+GCP VM was created — see `docs/archive/GCP-SETUP.md`.
 
 ## Local production stack
 

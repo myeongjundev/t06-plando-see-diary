@@ -1,6 +1,6 @@
 # T06 handoff · Plan/Do/See usability
 
-학원 PC 재개 안내: `docs/ACADEMY-HANDOFF.md`. 새로운 PC의 설치·실행 명령과
+학원 PC 재개 안내: `docs/process/ACADEMY-HANDOFF.md`. 새로운 PC의 설치·실행 명령과
 남은 제출 작업은 그 문서를 따른다. 아래 `tmp/` 검증 도구는 clone에 포함되지 않는다.
 
 ## 1. Goal
@@ -197,7 +197,7 @@ PostgreSQL smoke and credential audit scripts; frontend Do/See/export panels;
 canonical contract; Docker/Compose/launch configuration and project documentation.
 This deployment step adds render.yaml and docs/RENDER-NEON.md, the DB-independent
 /api/live route/test, SQLAlchemy pre-ping, and updated deployment decisions/status.
-GCP-SETUP.md is retained as a superseded proposal.
+docs/archive/GCP-SETUP.md is retained as a superseded proposal.
 
 ## 9. Git state
 

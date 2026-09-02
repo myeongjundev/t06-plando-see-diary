@@ -138,8 +138,8 @@ git diff --check
 
 ```text
 T06 작업을 이어서 진행해줘. 최신 main을 기준으로
-AGENTS.md, docs/ACADEMY-HANDOFF.md, docs/STATUS.md,
-docs/REQUIREMENTS.md, docs/DECISIONS.md, docs/HANDOFF.md를 먼저 읽어.
+AGENTS.md, docs/process/ACADEMY-HANDOFF.md, docs/STATUS.md,
+docs/REQUIREMENTS.md, docs/DECISIONS.md, docs/process/HANDOFF.md를 먼저 읽어.
 카드 1~5 구현과 Render + Neon 배포, 디자인 및 사용성 개선 1~3번은 완료됐어.
 공개 앱은 https://t06-plando-see-diary.onrender.com 이야.
 우선 현재 상태와 남은 제출 검증을 확인하고 이어서 진행해줘.
@@ -154,7 +154,7 @@ docs/REQUIREMENTS.md, docs/DECISIONS.md, docs/HANDOFF.md를 먼저 읽어.
 - 운영 DB 연결 문자열은 Render/Neon 설정에서 관리한다. `.env`, 비밀번호,
   개인 데이터, 내려받은 개인 JSON, 로컬 DB를 저장소나 대화에 넣지 않는다.
 - 무료 Render/Neon의 유휴 중지를 유지한다. 별도 GCP VM이나 깨워두기 작업은 필요 없다.
-- `docs/HANDOFF.md` 아래 Historical 부분의 오래된 계정 설정 대기 문구는 현재 상태가 아니다.
+- `docs/process/HANDOFF.md` 아래 Historical 부분의 오래된 계정 설정 대기 문구는 현재 상태가 아니다.
 
 ## 8. 주요 파일
 
@@ -165,7 +165,7 @@ docs/REQUIREMENTS.md, docs/DECISIONS.md, docs/HANDOFF.md를 먼저 읽어.
 - `frontend/src/styles.css`: 디자인 토큰·반응형·단계 메뉴.
 - `docs/RENDER-NEON.md`: 현재 배포 방법.
 - `docs/SUBMISSION.md`: 제출 초안 및 제품/전체 커밋 URL.
-- `docs/REVIEW-CSS-TOKEN-LAYER.md`: 디자인 리뷰와 해결 내역.
+- `docs/process/REVIEW-CSS-TOKEN-LAYER.md`: 디자인 리뷰와 해결 내역.
 
 ## 9. Git 상태
 

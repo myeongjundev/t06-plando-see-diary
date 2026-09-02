@@ -6,7 +6,7 @@
 //
 //   1) 합성 자료를 심은 백엔드를 띄운다 (docs/DEVELOPMENT.md 참고)
 //   2) chrome --headless=new --remote-debugging-port=9222 --user-data-dir=<임시>
-//   3) SHOTS='[{"name":"plan-light","theme":"light","height":940}]' //        node backend/scripts/capture_screenshots.mjs http://127.0.0.1:5055/ docs/screenshots
+//   3) SHOTS='[{"name":"plan-light","theme":"light","height":940}]' //        node tools/capture_screenshots.mjs http://127.0.0.1:5055/ docs/screenshots
 //
 // SHOTS 항목: name, theme(light|dark), selector?, pad?, maxHeight?, width?, height?, mobile?
 

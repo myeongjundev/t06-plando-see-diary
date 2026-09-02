@@ -179,8 +179,8 @@ Nothing open. Both items from the token-layer plan have shipped.
 The dev server alone shows the layout but every API call returns 502; plan cards and
 See metrics stay empty. Start the backend against a seeded database before judging
 anything data-driven — that gap is why four expectations went unverified during the
-token-layer work (`docs/HANDOFF-DESIGN-REVIEW.md` section 5).
+token-layer work (`docs/process/HANDOFF-DESIGN-REVIEW.md` section 5).
 
-Related: `docs/REVIEW-CSS-TOKEN-LAYER.md` (Codex review of the token layer),
-`docs/HANDOFF-DESIGN-REVIEW.md` (what was and was not verified), D-023 and D-024 in
+Related: `docs/process/REVIEW-CSS-TOKEN-LAYER.md` (Codex review of the token layer),
+`docs/process/HANDOFF-DESIGN-REVIEW.md` (what was and was not verified), D-023 and D-024 in
 `docs/DECISIONS.md`.

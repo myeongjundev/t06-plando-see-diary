@@ -12,7 +12,7 @@ These rules apply to Codex and any other coding agent working in this repository
 5. Do not weaken, remove, or rewrite a fixed acceptance expectation to make code pass.
 6. Import must be atomic; migration must preserve values and be idempotent; weekly
    aggregation follows the documented Asia/Seoul rule.
-7. Before handoff, update `docs/STATUS.md` and use `docs/HANDOFF-TEMPLATE.md`.
+7. Before handoff, update `docs/STATUS.md` and use `docs/process/HANDOFF-TEMPLATE.md`.
 8. Do not commit chat transcripts, secrets, generated dependency folders, private
    exports, or real diary data.
 

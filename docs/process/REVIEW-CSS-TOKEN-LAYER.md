@@ -92,4 +92,4 @@ Temporary local harness is ignored; no production data or credentials used.
 
 Reviewed HEAD: `2ebb7bb`, branch `design/css-token-layer`. Main remains `929fb43`.
 No merge, commit, push or deployment performed. Uncommitted review files:
-`docs/STATUS.md`, `docs/REVIEW-CSS-TOKEN-LAYER.md`.
+`docs/STATUS.md`, `docs/process/REVIEW-CSS-TOKEN-LAYER.md`.
