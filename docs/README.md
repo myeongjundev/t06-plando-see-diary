@@ -10,6 +10,7 @@
 |---|---|
 | [REQUIREMENTS.md](REQUIREMENTS.md) | 공식 과제에서 확정한 요구사항 |
 | [T06-ACCEPTANCE-MATRIX.md](T06-ACCEPTANCE-MATRIX.md) | 고정 검사 44개. 통과시키려고 낮추지 않습니다 |
+| [T06-VERIFICATION.md](T06-VERIFICATION.md) | 그 44개가 각각 어떻게 확인됐는지. 매트릭스에서 생성합니다 |
 | [DECISIONS.md](DECISIONS.md) | 결정과 이유. 옛 결정은 고치지 않고 뒤집는 행을 더합니다 |
 | [DESIGN.md](DESIGN.md) | 방향 선택 근거, 토큰, 건드리면 안 되는 화면 요소 |
 | [FLASK-ARCHITECTURE.md](FLASK-ARCHITECTURE.md) | 서비스 경계, 표 구조, API 개요, 정렬·집계 규칙 |
@@ -21,6 +22,9 @@
 
 원문과 자료: [`source/`](source) 공식 과제 원문 · [`screenshots/`](screenshots) README용 합성 화면
 (생성기는 [`tools/capture_screenshots.mjs`](../tools/capture_screenshots.mjs))
+
+`docs/T06-VERIFICATION.md`는 손으로 고치지 않습니다. 기준이 바뀌면
+`python tools/generate_verification.py`로 다시 만듭니다.
 
 ## 작업 기록 (`docs/process/`)
 
