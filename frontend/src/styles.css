@@ -436,11 +436,54 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 /* ── 계획 카드 ───────────────────────────────────────────────────────── */
 
-.plan-list {
+/* 선택된 계획 하나만 카드로 펼친다. 예전에는 모든 계획을 카드로 그려서 계획이
+   늘수록 Do와 See가 아래로 밀려났다. */
+.plan-list { margin-top: 0; }
+
+/* 나머지 계획은 한 줄로. 목록이 길어져도 높이가 묶이도록 상한을 두고 안에서 스크롤한다. */
+.plan-others { margin-top: var(--s5); }
+
+.plan-others > h3 {
+  margin: 0 0 var(--s2);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.plan-other-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  max-height: 19rem;
+  overflow-y: auto;
+}
+
+.plan-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
   gap: var(--s3);
-  margin-top: 0;
+  width: 100%;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--t-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--ease), background var(--ease);
+}
+
+.plan-row:hover { border-color: var(--accent-line); background: var(--surface-2); }
+.plan-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.plan-row-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plan-row-dates, .plan-row-est { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .plan-row { grid-template-columns: auto minmax(0, 1fr); row-gap: var(--s1); }
+  .plan-row-dates, .plan-row-est { grid-column: 2; }
 }
 
 .plan-card {
@@ -550,6 +593,67 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 /* ── 할 일 ───────────────────────────────────────────────────────────── */
 
 .task-panel { margin-top: 0; }
+
+/* 빠른 추가: 제목 한 줄과 버튼만 늘 보이고, 나머지 필드는 «자세히»로 편다.
+   폼이 항상 펼쳐져 있으면 할 일 목록을 보려는 방문마다 폼을 지나쳐야 한다. */
+.task-quick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.task-quick-input { width: 100%; }
+
+.task-detail-toggle {
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+
+.task-quick-hint {
+  margin: var(--s2) 0 0;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.task-form.open .task-quick-hint { display: none; }
+
+.task-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin-top: var(--s3);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+
+/* 태그를 자유 입력으로만 두면 같은 뜻이 표기 차이로 갈라진다. 쓰던 것을 다시 고르게 한다. */
+.tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.tag-picker > span { font-size: var(--t-xs); color: var(--ink-3); }
+
+.tag-chip {
+  padding: 2px var(--s2);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: var(--t-xs);
+  cursor: pointer;
+  transition: border-color var(--ease), color var(--ease);
+}
+
+.tag-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 640px) {
+  .task-quick { grid-template-columns: 1fr; }
+}
 
 .task-form {
   margin: 0 0 var(--s5);
@@ -841,7 +945,7 @@ summary:hover { color: var(--accent); }
   color: var(--accent-ink);
 }
 .step-nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.flow-section, .plan-card { scroll-margin-top: 148px; }
+.flow-section, .plan-card, .plan-row { scroll-margin-top: 148px; }
 .flow-section:focus { outline: none; }
 .new-plan-action { margin-top: var(--s5); }
 .new-plan-form { margin-top: var(--s5); }
@@ -865,7 +969,7 @@ summary:hover { color: var(--accent); }
 
 @media (max-width: 720px) {
   main { padding-top: var(--s6); gap: var(--s4); }
-  .grid.two, .grid.three, .plan-list, .task-tools { grid-template-columns: 1fr; }
+  .grid.two, .grid.three, .task-tools { grid-template-columns: 1fr; }
   .section-heading { display: block; }
   .section-heading > p { margin-top: var(--s3); }
   .task-row { padding: var(--s4); }

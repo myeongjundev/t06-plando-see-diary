@@ -37,6 +37,8 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [form, setForm] = useState<TaskInput>(EMPTY_TASK);
   const [tagText, setTagText] = useState("");
+  // 대부분의 방문은 '적기'가 아니라 '보기'다. 제목 한 줄만 늘 보이고 나머지는 접어 둔다.
+  const [detailOpen, setDetailOpen] = useState(false);
   const [filters, setFilters] = useState<TaskFilters>({ q: "", status: "", priority: "", tag: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
@@ -69,6 +71,14 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
     const timer = window.setTimeout(() => void refresh(planId, filters), 180);
     return () => window.clearTimeout(timer);
   }, [planId, filters.q, filters.status, filters.priority, filters.tag]);
+
+  const knownTags = [...new Set(tasks.flatMap((task) => task.tags))].sort();
+
+  function addTag(tag: string) {
+    const current = tagText.split(",").map((t) => t.trim()).filter(Boolean);
+    if (current.includes(tag)) return;
+    setTagText([...current, tag].join(", "));
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -155,15 +165,43 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
         <>
           <p className="selected-plan-name">현재 계획: <strong>{plan.title}</strong></p>
 
-          <form className="task-form" onSubmit={submit}>
-            <label>할 일<input value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} placeholder="실제로 할 일을 입력하세요" required /></label>
-            <div className="grid three">
-              <label>마감일<input type="date" value={form.dueDate} onChange={(event) => setForm({ ...form, dueDate: event.target.value })} required /></label>
-              <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
-              <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
+          <form className={`task-form${detailOpen ? " open" : ""}`} onSubmit={submit}>
+            <div className="task-quick">
+              <input
+                className="task-quick-input"
+                value={form.content}
+                onChange={(event) => setForm({ ...form, content: event.target.value })}
+                placeholder="할 일을 적고 Enter"
+                aria-label="할 일"
+                required
+              />
+              <button className="primary" disabled={busy}>{busy ? "추가 중…" : "추가"}</button>
+              <button type="button" className="task-detail-toggle" aria-expanded={detailOpen}
+                      onClick={() => setDetailOpen(!detailOpen)}>
+                {detailOpen ? "자세히 닫기" : "자세히"}
+              </button>
             </div>
-            <label>태그<input value={tagText} onChange={(event) => setTagText(event.target.value)} placeholder="backend, test처럼 쉼표로 구분" /></label>
-            <button className="primary" disabled={busy}>{busy ? "추가 중…" : "할 일 추가"}</button>
+            <p className="task-quick-hint">
+              그냥 추가하면 마감일 {form.dueDate} · 우선순위 보통 · 예상 {form.estimatedMinutes}분으로 저장됩니다.
+            </p>
+            {detailOpen && (
+              <div className="task-detail">
+                <div className="grid three">
+                  <label>마감일<input type="date" value={form.dueDate} onChange={(event) => setForm({ ...form, dueDate: event.target.value })} required /></label>
+                  <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+                  <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
+                </div>
+                <label>태그<input value={tagText} onChange={(event) => setTagText(event.target.value)} placeholder="backend, test처럼 쉼표로 구분" /></label>
+                {knownTags.length > 0 && (
+                  <div className="tag-picker">
+                    <span>이 계획에서 쓴 태그</span>
+                    {knownTags.map((tag) => (
+                      <button type="button" key={tag} className="tag-chip" onClick={() => addTag(tag)}>#{tag}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </form>
 
           <div className="task-tools" aria-label="할 일 검색과 필터">

@@ -2,6 +2,34 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 plan list and task form stop crowding the page
+
+- The user asked what happens as plans accumulate. Measured: every plan was drawn
+  as a full card in a two-column grid with no cap, so each pair added about 330px.
+  With 12 plans the list ran roughly 1,980px and Do began past 2,600px — plan
+  history nobody revisits was pushing Do and See, the two screens used daily, off
+  the page. The list was also ordered oldest-first, so the newest plan sat last.
+- Now the selected plan keeps its full card with the gauge, and the rest collapse
+  into one-line rows (priority, title, dates, estimate) in a list capped at 19rem
+  with internal scrolling, newest first. Measured again with 12 plans: the list is
+  304px and Do begins at 1,256px, and the height no longer grows with plan count.
+- The one-line rows keep `id="plan-<id>"`, because SeePanel's "다음 계획 보기" link
+  jumps to that anchor; dropping it for unselected plans would have broken the jump
+  for exactly the plan that link targets. Verified 12 anchors present.
+- The task form was always fully expanded, so every visit that only wanted to read
+  the list scrolled past four fields. It is now a title field with «추가» and a
+  «자세히» toggle for due date, priority, estimate and tags; a hint states the
+  defaults a bare add will use. Form height 143px collapsed against 346px expanded.
+- Tags were free text only, which lets one tag split across spellings. The detail
+  panel now lists the tags already used in the plan as chips; clicking one appends
+  it and clicking it again does not duplicate it. Verified through the UI.
+- Quick add verified end to end through the UI: typing a title and submitting
+  created the task, it appeared in the list, and the field cleared.
+- Acceptance-critical elements re-checked at 1280px and 375px: public warning fully
+  on the first screen, sort rule present, priority literals `high`/`medium`/`low`
+  with `text-transform: none`, no document or element overflow. 53 tests and the
+  frontend build pass.
+
 ## 2026-09-02 documentation and tooling filed by lifecycle
 
 - `docs/` had grown to 19 flat files with nothing distinguishing a standing rule from

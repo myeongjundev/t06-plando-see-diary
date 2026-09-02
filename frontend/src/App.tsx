@@ -42,6 +42,9 @@ function App() {
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
   const [planSummary, setPlanSummary] = useState<Summary | null>(null);
+  // 계획이 쌓여도 Plan 구획이 Do·See를 아래로 밀지 않도록, 선택된 하나만 카드로 펼치고
+  // 나머지는 한 줄로 접는다. 최근에 만든 것이 위로 오게 뒤집는다.
+  const otherPlans = plans.filter((plan) => plan.id !== selectedPlan?.id).reverse();
   const activeStep = useActiveStep(STEP_IDS);
 
   // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
@@ -180,20 +183,36 @@ function App() {
         </div>
         {message && <p className="message" role="status">{message}</p>}
         <section className="plan-list" aria-label="저장된 계획">
-          {plans.map((plan) => (
-            <article className={`plan-card ${selectedPlan?.id === plan.id ? "selected" : ""}`} id={`plan-${plan.id}`} key={plan.id}>
-              <div className="plan-top"><span className={`priority ${plan.priority}`}>{plan.priority}</span><span>{plan.startDate} — {plan.endDate}</span></div>
-              <h3>{plan.title}</h3>
-              <p>{plan.successCriterion}</p>
-              <strong>계획 예상 {plan.estimatedMinutes}분</strong>
-              {selectedPlan?.id === plan.id && planSummary && <PlanGauge summary={planSummary} />}
-              {plan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{plan.carriedImprovement}</strong></p>}
-              <div className="actions"><button className="use-plan" onClick={() => { setSelectedPlanId(plan.id); goToStep("do-step"); }}>이 계획으로 실행</button><button onClick={() => beginRevise(plan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(plan.id)}>수정 이력</button></div>
-              {editingPlanId === plan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, plan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}
-              {history[plan.id] && <div className="history"><h4>처음 계획 기록</h4>{history[plan.id].length === 0 ? <p>아직 수정 이력이 없습니다.</p> : history[plan.id].map((item) => <p key={item.revisionId}>#{item.revisionNumber} · {item.estimatedMinutes}분 · {item.successCriterion}</p>)}</div>}
+          {selectedPlan && (
+            <article className="plan-card selected" id={`plan-${selectedPlan.id}`} key={selectedPlan.id}>
+              <div className="plan-top"><span className={`priority ${selectedPlan.priority}`}>{selectedPlan.priority}</span><span>{selectedPlan.startDate} — {selectedPlan.endDate}</span></div>
+              <h3>{selectedPlan.title}</h3>
+              <p>{selectedPlan.successCriterion}</p>
+              <strong>계획 예상 {selectedPlan.estimatedMinutes}분</strong>
+              {planSummary && <PlanGauge summary={planSummary} />}
+              {selectedPlan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{selectedPlan.carriedImprovement}</strong></p>}
+              <div className="actions"><button className="use-plan" onClick={() => goToStep("do-step")}>이 계획으로 실행</button><button onClick={() => beginRevise(selectedPlan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(selectedPlan.id)}>수정 이력</button></div>
+              {editingPlanId === selectedPlan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, selectedPlan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}
+              {history[selectedPlan.id] && <div className="history"><h4>처음 계획 기록</h4>{history[selectedPlan.id].length === 0 ? <p>아직 수정 이력이 없습니다.</p> : history[selectedPlan.id].map((item) => <p key={item.revisionId}>#{item.revisionNumber} · {item.estimatedMinutes}분 · {item.successCriterion}</p>)}</div>}
             </article>
-          ))}
+          )}
         </section>
+
+        {otherPlans.length > 0 && (
+          <section className="plan-others" aria-label="다른 계획">
+            <h3>다른 계획 {otherPlans.length}개</h3>
+            <div className="plan-other-list">
+              {otherPlans.map((plan) => (
+                <button type="button" className="plan-row" id={`plan-${plan.id}`} key={plan.id} onClick={() => setSelectedPlanId(plan.id)}>
+                  <span className={`priority ${plan.priority}`}>{plan.priority}</span>
+                  <span className="plan-row-title">{plan.title}</span>
+                  <span className="plan-row-dates">{plan.startDate} — {plan.endDate}</span>
+                  <span className="plan-row-est">계획 예상 {plan.estimatedMinutes}분</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {!loading && plans.length === 0 && <p className="empty">첫 계획을 세워 보세요. 저장하면 할 일을 입력할 수 있습니다.</p>}
         {plans.length > 0 && <div className="actions new-plan-action">
