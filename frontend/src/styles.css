@@ -43,7 +43,6 @@
   --good: #0f9d7a;
   --good-soft: #e7f7f2;
   --good-soft-2: #d5efe6;
-  --good-soft-2: #d5efe6;
   --warn: #b26b00;
   --warn-mark: #e8890c;
   --warn-soft: #fff4e0;
@@ -125,7 +124,6 @@
 
   --good: #4fc3a1;
   --good-soft: #102b25;
-  --good-soft-2: #16382f;
   --good-soft-2: #16382f;
   --warn: #dfa458;
   --warn-mark: #dfa458;
@@ -542,7 +540,7 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
    한 줄에 있을 때는 flex의 stretch가 덮어 주지만, 좁은 화면에서 정렬이 혼자 다음 줄로
    내려가면 그 줄에는 맞출 상대가 없다. */
 .plan-search,
-.plan-sort {
+.plan-sort .select-button {
   width: auto;
   max-width: 100%;
   min-height: 36px;
@@ -838,6 +836,7 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   border: 1px solid var(--line);
   border-radius: var(--r-card);
 }
+
 .task-list .empty { border: 0; border-radius: 0; }
 
 /* 한 줄에 상태 · 우선순위 · 내용 · 액션. 예전에는 항목마다 카드였고, 카드 18장이
@@ -1188,7 +1187,9 @@ summary:hover { color: var(--accent); }
   gap: var(--s2);
 }
 .plan-picker { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
-.plan-picker select { padding: 8px 12px; }
+/* 단추는 select와 달리 line-height를 따르므로 같은 패딩에서 5px 더 높다. 그만큼
+   고정 바가 두꺼지고, 이 바는 스크롤할 때마다 화면을 먹는다. 옆줄의 단계 버튼(37px)에 맞춘다. */
+.plan-picker .select-button { padding: 6px 12px; }
 .step-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
 .step-nav a {
   display: flex;
@@ -1349,7 +1350,9 @@ summary:hover { color: var(--accent); }
 
 .date-cell:hover { background: var(--surface-3); }
 .date-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.date-cell.outside { color: var(--ink-3); opacity: .55; }
+/* 옆 달의 날도 누를 수 있는 버튼이라 4.5:1이 필요하다. 처음에 --ink-3 위에 opacity를
+   .55로 얹었더니 라이트에서 2.14:1, 다크에서 3.02:1로 떨어졌다. 흐리기는 색으로만 한다. */
+.date-cell.outside { color: var(--ink-3); }
 
 /* 오늘은 테두리로, 고른 날은 채움으로. 둘이 같은 날이면 채움이 이긴다. */
 .date-cell.today { border-color: var(--accent-line); font-weight: 700; }
@@ -1416,3 +1419,93 @@ summary:hover { color: var(--accent); }
 
 /* 오른쪽 열의 칸에서 열면 팝업이 화면 밖으로 나간다. 그 열은 오른쪽에 맞춰 편다. */
 .grid > .date-field:last-child .date-pop { left: auto; right: 0; }
+
+/* ── 고르기 ──────────────────────────────────────────────────────────────
+   select의 펼친 목록도 브라우저가 그리는 위젯이라 CSS가 닿지 않는다. 닫힌 상자만 우리
+   토큰을 따르고 펼친 목록은 OS 것이어서, 직접 그린 달력 옆에 OS 드롭다운이 서 있었다.
+   여기서부터 목록도 화면의 나머지와 같은 색·반경·간격을 쓴다. */
+
+.select-field { display: grid; gap: var(--s2); min-width: 0; }
+.select-control { position: relative; }
+
+/* 입력 칸과 같은 상자로 보여야 한다. 옆에 놓인 input과 높이·테두리가 어긋나면
+   둘이 다른 종류의 컨트롤로 읽힌다. */
+.select-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  width: 100%;
+  min-width: 0;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--t-body);
+  font-weight: 400;
+  text-align: left;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.select-button:hover { border-color: var(--line-2); }
+.select-button:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.select-button > svg { flex: 0 0 auto; color: var(--ink-3); }
+.select-button[aria-expanded="true"] > svg { transform: rotate(180deg); }
+
+/* 계획 이름은 길다. 상자를 늘리는 대신 한 줄로 자른다 — 상자가 늘면 그 줄의
+   단계 이동 버튼들이 밀린다. */
+.select-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.select-pop {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--s1));
+  left: 0;
+  right: 0;
+  min-width: 12rem;
+  padding: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.select-search {
+  margin-bottom: var(--s1);
+  padding: 7px 12px;
+  font-size: var(--t-sm);
+}
+
+/* 계획 목록·할 일 목록과 같은 19rem에서 안으로 스크롤한다. 화면에 목록이 넷인데
+   하나만 다른 높이에서 끊기면 그 하나가 다른 물건으로 보인다. */
+.select-list {
+  margin: 0;
+  padding: 0;
+  max-height: 19rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.select-option {
+  padding: 9px 12px;
+  border-radius: var(--r-ctl);
+  color: var(--ink);
+  font-size: var(--t-sm);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+/* 마우스가 얹힌 항목과 키보드 초점이 놓인 항목은 같은 것이다 — 둘을 다르게 칠하면
+   화살표로 훑는 중에 마우스가 놓인 자리가 함께 빛나 어느 쪽이 선택될지 흐려진다. */
+.select-option[data-active="true"] { background: var(--surface-3); }
+.select-option.selected { color: var(--accent); font-weight: 700; }
+.select-option.selected[data-active="true"] { background: var(--accent-soft); }
+
+.select-none { padding: 9px 12px; color: var(--ink-3); font-size: var(--t-sm); }
+
+/* 네이티브 select를 버리면서 OS 시트의 큰 타깃도 같이 잃었다. 좁은 화면에서는
+   항목을 손가락에 맞는 높이로 키운다 — 달력 칸을 40px로 키운 것과 같은 이유다. */
+@media (max-width: 720px) {
+  .select-option { padding: 12px; }
+}

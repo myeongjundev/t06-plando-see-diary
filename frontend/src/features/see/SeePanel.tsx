@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import type { Plan } from "../../api/plans";
 import { createNextPlan, getSummary, listReflections, Metric, NextPlanInput, Period, Reflection, saveReflection, Summary } from "../../api/reflections";
 import DateField from "../../components/DateField";
+import Select from "../../components/Select";
 
 const METRICS: { key: Metric; label: string; unit: string }[] = [
   { key: "taskCount", label: "할 일", unit: "개" },
@@ -64,7 +65,7 @@ function NextPlanForm({ plan, reflection, onCreated }: { plan: Plan; reflection:
     <div className="grid two">
       <DateField label="다음 계획 시작일" required value={input.startDate} onChange={(startDate) => setInput({ ...input, startDate })} />
       <DateField label="다음 계획 종료일" required value={input.endDate} onChange={(endDate) => setInput({ ...input, endDate })} />
-      <label>다음 계획 우선순위<select value={input.priority} onChange={(e) => setInput({ ...input, priority: e.target.value as Plan["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+      <Select label="다음 계획 우선순위" value={input.priority} options={[{ value: "high", label: "높음" }, { value: "medium", label: "보통" }, { value: "low", label: "낮음" }]} onChange={(priority) => setInput({ ...input, priority: priority as Plan["priority"] })} />
       <label>다음 계획 예상 시간(분)<input type="number" min={0} max={1000000} step={1} required value={input.estimatedMinutes} onChange={(e) => setInput({ ...input, estimatedMinutes: Number(e.target.value) })} /></label>
     </div>
     <label>다음 계획 성공 기준<input required maxLength={500} value={input.successCriterion} onChange={(e) => setInput({ ...input, successCriterion: e.target.value })} /></label>

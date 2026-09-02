@@ -16,6 +16,7 @@ import PlanGauge from "./features/plans/PlanGauge";
 import { getSummary, Summary } from "./api/reflections";
 import useActiveStep from "./useActiveStep";
 import DateField from "./components/DateField";
+import Select from "./components/Select";
 
 const STEP_IDS = ["plan-step", "do-step", "see-step"] as const;
 
@@ -210,11 +211,16 @@ function App() {
       </aside>
 
       <div className="workflow-bar">
-        {selectedPlan && <label className="plan-picker">현재 계획
-          <select value={selectedPlan.id} onChange={(event) => setSelectedPlanId(event.target.value)}>
-            {plans.map((plan) => <option key={plan.id} value={plan.id}>{plan.title}</option>)}
-          </select>
-        </label>}
+        {selectedPlan && (
+          <Select
+            className="plan-picker"
+            label="현재 계획"
+            searchable
+            value={selectedPlan.id}
+            options={plans.map((plan) => ({ value: plan.id, label: plan.title }))}
+            onChange={setSelectedPlanId}
+          />
+        )}
         <nav className="step-nav" aria-label="Plan Do See 단계 이동">
           <a href="#plan-step" aria-current={activeStep === "plan-step" ? "step" : undefined} aria-label="01 Plan · 계획"><span>01 Plan</span><span>계획</span></a>
           <a href="#do-step" aria-current={activeStep === "do-step" ? "step" : undefined} aria-label="02 Do · 실행"><span>02 Do</span><span>실행</span></a>
@@ -262,16 +268,13 @@ function App() {
                     placeholder="계획 이름 검색"
                     aria-label="계획 이름 검색"
                   />
-                  <select
+                  <Select
                     className="plan-sort"
+                    ariaLabel="계획 정렬 기준"
                     value={planSort}
-                    onChange={(event) => setPlanSort(event.target.value as PlanSort)}
-                    aria-label="계획 정렬 기준"
-                  >
-                    <option value="recent">최신순</option>
-                    <option value="priority">중요도순</option>
-                    <option value="due">마감 임박순</option>
-                  </select>
+                    options={[{ value: "recent", label: "최신순" }, { value: "priority", label: "중요도순" }, { value: "due", label: "마감 임박순" }]}
+                    onChange={(next) => setPlanSort(next as PlanSort)}
+                  />
                 </div>
               )}
             </div>
@@ -302,7 +305,7 @@ function App() {
               <DateField label="종료일" value={form.endDate} onChange={(endDate) => setForm({ ...form, endDate })} required />
             </div>
             <div className="grid two">
-              <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as PlanInput["priority"] })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+              <Select label="우선순위" value={form.priority} options={[{ value: "high", label: "높음" }, { value: "medium", label: "보통" }, { value: "low", label: "낮음" }]} onChange={(priority) => setForm({ ...form, priority: priority as PlanInput["priority"] })} />
               <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
             </div>
             <label>성공 기준<textarea value={form.successCriterion} onChange={(event) => setForm({ ...form, successCriterion: event.target.value })} required /></label>

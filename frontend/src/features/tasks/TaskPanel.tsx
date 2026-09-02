@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import DateField from "../../components/DateField";
+import Select from "../../components/Select";
 import { seoulToday } from "../../lib/date";
 import ExecutionPanel from "./ExecutionPanel";
 import type { Plan, Priority } from "../../api/plans";
@@ -269,7 +270,7 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
               <div className="task-detail">
                 <div className="grid three">
                   <DateField label="마감일" value={form.dueDate} onChange={(dueDate) => setForm({ ...form, dueDate })} required />
-                  <label>우선순위<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })}><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+                  <Select label="우선순위" value={form.priority} options={[{ value: "high", label: "높음" }, { value: "medium", label: "보통" }, { value: "low", label: "낮음" }]} onChange={(priority) => setForm({ ...form, priority: priority as Priority })} />
                   <label>예상 시간(분)<input type="number" min="0" value={form.estimatedMinutes} onChange={(event) => setForm({ ...form, estimatedMinutes: Number(event.target.value) })} required /></label>
                 </div>
                 <label>태그<input value={tagText} onChange={(event) => setTagText(event.target.value)} placeholder="backend, test처럼 쉼표로 구분" /></label>
@@ -287,8 +288,8 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
 
           <div className="task-tools" aria-label="할 일 검색과 필터">
             <label>검색<input value={filters.q} onChange={(event) => setFilters({ ...filters, q: event.target.value })} placeholder="내용 또는 태그 검색" /></label>
-            <label>상태<select value={filters.status} onChange={(event) => setFilters({ ...filters, status: event.target.value as TaskFilters["status"] })}><option value="">전체</option><option value="active">진행 중</option><option value="completed">완료</option></select></label>
-            <label>우선순위<select value={filters.priority} onChange={(event) => setFilters({ ...filters, priority: event.target.value as TaskFilters["priority"] })}><option value="">전체</option><option value="high">높음</option><option value="medium">보통</option><option value="low">낮음</option></select></label>
+            <Select label="상태" value={filters.status ?? ""} options={[{ value: "", label: "전체" }, { value: "active", label: "진행 중" }, { value: "completed", label: "완료" }]} onChange={(status) => setFilters({ ...filters, status: status as TaskFilters["status"] })} />
+            <Select label="우선순위" value={filters.priority ?? ""} options={[{ value: "", label: "전체" }, { value: "high", label: "높음" }, { value: "medium", label: "보통" }, { value: "low", label: "낮음" }]} onChange={(priority) => setFilters({ ...filters, priority: priority as TaskFilters["priority"] })} />
             <label>태그<input value={filters.tag} onChange={(event) => setFilters({ ...filters, tag: event.target.value })} placeholder="정확한 태그" /></label>
           </div>
           <p className="sort-rule">정렬 기준: 우선순위(높음→보통→낮음) → 마감일 → 생성 시각 → ID</p>
