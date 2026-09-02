@@ -2,6 +2,29 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 light/dark toggle
+
+- Header toggle switches the theme manually (D-026). Two states, starting from the
+  system preference; the choice persists in `localStorage` (`t06-theme`) and then
+  overrides the system. Storage access is wrapped in try/catch for private windows.
+- The strict CSP (`script-src 'self'`) rules out the usual inline pre-paint script,
+  so `main.tsx` applies the stored choice before the first render and the
+  `prefers-color-scheme` block is reduced to `--ground`/`--ink` under
+  `:root:not([data-theme])` purely as a pre-mount fallback. The CSP was not changed.
+- The dark palette now lives in one block, `:root[data-theme="dark"]`, because JS
+  always writes a concrete value. `color-scheme` is set per theme so native date
+  inputs follow.
+- Verified on the built frontend served by Flask (production shape, port 5055):
+  system light with no stored value starts light; the button switches to dark and
+  stores `dark`; a reload keeps dark against a light system; the reverse case
+  (system dark, stored `light`) also holds. `color-scheme` tracked the theme both
+  ways. At 1280px no overflow, toggle at the top right. At 375px no document or
+  element overflow, the toggle wraps below the title, and the public warning stays
+  fully within the first screen (T06-C82, bottom 294 of 812). Priority still renders
+  the literal `high` with `text-transform: none` (T06-C05, C15), the sort rule and
+  the signed variance with its evidence counts are unchanged in both themes.
+- 53 backend tests, `npm run build` and `git diff --check` passed. Presentation only.
+
 ## 2026-09-02 submission source URL correction
 
 - The submitted Source URL pointed at application commit `1d0e0f7`. That tree's

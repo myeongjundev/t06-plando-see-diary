@@ -12,7 +12,7 @@
    ========================================================================== */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* 면과 선 */
   --ground: #ffffff;
@@ -78,36 +78,50 @@
   font-synthesis: none;
 }
 
+/* 마운트 전 대비값. CSP가 인라인 스크립트를 막아(T06-C58) 저장된 선택은 main.tsx가
+   적용한다. 그 전까지 보이는 것은 body 배경뿐이므로 두 값만 시스템 설정으로 받아
+   다크 사용자의 흰 화면 번쩍임을 막는다. 팔레트 원본은 아래 한 곳뿐이다. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
+    color-scheme: dark;
     --ground: #0f1216;
-    --surface: #171b21;
-    --surface-2: #1d222a;
-    --surface-3: #252b34;
-    --line: #2a3038;
-    --line-2: #3a424c;
-
     --ink: #e8ecf1;
-    --ink-2: #a3adba;
-    --ink-3: #9aa6b5;
-
-    --accent: #6f9cf0;
-    --accent-ink: #0f1216;
-    --accent-strong: #8fb3f5;
-    --accent-soft: #1a2440;
-    --accent-line: #33456f;
-
-    --good: #4fc3a1;
-    --good-soft: #102b25;
-    --warn: #dfa458;
-    --warn-mark: #dfa458;
-    --warn-soft: #2e2418;
-    --crit: #ef8279;
-    --crit-soft: #33201f;
-
-    --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 12px 32px -20px rgba(0, 0, 0, .8);
   }
 }
+
+/* 다크 팔레트 원본. JS가 항상 light|dark 중 하나를 data-theme에 쓰므로
+   이 블록 하나가 시스템 다크와 수동 다크를 모두 담당한다. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #0f1216;
+  --surface: #171b21;
+  --surface-2: #1d222a;
+  --surface-3: #252b34;
+  --line: #2a3038;
+  --line-2: #3a424c;
+
+  --ink: #e8ecf1;
+  --ink-2: #a3adba;
+  --ink-3: #9aa6b5;
+
+  --accent: #6f9cf0;
+  --accent-ink: #0f1216;
+  --accent-strong: #8fb3f5;
+  --accent-soft: #1a2440;
+  --accent-line: #33456f;
+
+  --good: #4fc3a1;
+  --good-soft: #102b25;
+  --warn: #dfa458;
+  --warn-mark: #dfa458;
+  --warn-soft: #2e2418;
+  --crit: #ef8279;
+  --crit-soft: #33201f;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 12px 32px -20px rgba(0, 0, 0, .8);
+
+}
+
 
 /* ── 기본 ────────────────────────────────────────────────────────────── */
 
@@ -141,6 +155,39 @@ h1, h2, h3, h4 { margin: 0; text-wrap: balance; line-height: 1.25; }
 p { margin-top: 0; }
 
 /* ── 머리말 ──────────────────────────────────────────────────────────── */
+
+/* 헤더 줄: 제목 왼쪽, 테마 버튼 오른쪽. 좁은 화면에서는 버튼이 아래로 내려간다. */
+.page-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+
+.page-top .hero { flex: 1 1 20rem; }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  flex: 0 0 auto;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: var(--t-xs);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--ease), background var(--ease), color var(--ease);
+}
+
+.theme-toggle:hover { border-color: var(--accent-line); background: var(--surface-2); color: var(--ink); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle svg { flex: 0 0 auto; }
 
 .hero {
   display: flex;

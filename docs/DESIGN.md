@@ -106,6 +106,19 @@ Through `113d02f`:
 - Plan/Do/See step navigation, saved plans first, App-owned plan selection, sections
   kept mounted across steps (D-024).
 - Empty state for the plan list.
+- Light/dark toggle in the header (D-026). Two states, initialised from the system
+  preference; the choice is stored in `localStorage` under `t06-theme` and then wins
+  over the system until cleared. Wrapped in try/catch so a private window that
+  refuses storage still toggles for the session.
+  The deployment's CSP is `script-src 'self'`, so the usual inline pre-paint script
+  is not available. `main.tsx` applies the stored choice before the first render;
+  until that module runs, only the body background is visible, and a reduced
+  `prefers-color-scheme` block sets just `--ground` and `--ink` under
+  `:root:not([data-theme])` so a dark-system visitor does not get a white flash.
+  Because JS always writes a concrete `light`/`dark`, the dark palette lives in one
+  block (`:root[data-theme="dark"]`) instead of being duplicated across a media
+  query and an attribute selector. `color-scheme` is set per theme so native date
+  inputs follow.
 - See metric cards carry a signed variance and a per-kind evidence count (D-025).
   `varianceMinutes` is the only metric whose sign means something, so it is the only
   one that takes a semantic colour: `--crit` when actual exceeded the estimate,
