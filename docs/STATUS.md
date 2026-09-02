@@ -2,6 +2,320 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 the dropdowns are ours too
+
+- Same situation as the calendar: a `select`'s open list is browser chrome, so the
+  closed box followed our tokens while the open list stayed an OS widget. All seven
+  are now `Select`, and `document.querySelectorAll('select').length` is 0 (D-054).
+- The list is capped at 19rem, the same height as the plan list, the task lists and
+  the plan picker's own siblings. With ten plans it holds 304px of a 388px list and
+  scrolls inside.
+- The plan picker gets a search field, which is the thing native could not do — its
+  type-ahead matches a first letter only. Typing 마이그레이션 narrowed ten plans to one;
+  a query matching nothing gives 이름이 맞는 항목이 없습니다.
+- Verified: opens with ArrowDown/Enter/Space from the button, ArrowUp/Down move,
+  Home/End jump, Enter picks, Escape closes and returns focus to the button, outside
+  click closes, the selected option is scrolled into view, and `aria-activedescendant`
+  tracks the focused row. On a list without a search field, typing 완 moved to 완료 —
+  the native type-ahead behaviour, kept.
+- End to end: picking 완료 on the 상태 filter left one task row, and 전체 restored the
+  list, so T06-C19 still holds through the new control.
+- Found and fixed in this change's own code, then found again in `DateField`: both
+  computed the next focused item from the `active` value of the current render, so
+  three fast arrow presses batched into one move. Both now use the updater form —
+  three ArrowDowns move three rows, three ArrowRights move three days.
+- Heights match their neighbours: 48px next to the task-tool inputs, 37px next to the
+  plan search. The workflow bar grew 106px → 113px because a button follows
+  `line-height` where a `select` does not; trimming the picker's padding put it at
+  38px against the step nav's 37px and the bar back to 109px. That bar is sticky, so
+  the height is not free.
+- Contrast, both themes: option text 16.56:1 / 14.57:1, the selected option on
+  `--accent-soft` 4.77:1 / 5.61:1, button text 16.56:1 / 14.57:1. No horizontal
+  overflow at 1280px or 375px, and the popup stays inside the viewport at both.
+- The mobile cost is real and was accepted knowingly: a native `select` opens the OS
+  sheet with large touch targets. Option rows take 12px padding under 720px, which
+  brings them from 39px to about 45px, but that is mitigation, not parity.
+- 53 backend tests pass and the frontend production build passes.
+
+## 2026-09-02 the gauge baseline is a seam, not a tick
+
+- The user asked for something better than the black tick. Two faults, not one: the
+  tick was `--ink` and 18px tall over an 8px track, the strongest contrast on the
+  card; and the whole bar was `--crit` when over, so 계획대로 쓴 90분 was painted the
+  same red as the 75분 that overran.
+- The bar is now three segments on one scale — 계획 (`--ink-3`), 초과 (`--crit`) past
+  the baseline, and 아낀 자리 as a `--good` hatch between the fill and the baseline.
+  The baseline is where two of them meet, so the tick element is gone rather than
+  restyled (D-053). A `--line-2` hairline underneath shows through only where no
+  segment covers it.
+- Observed across four plans, all percentages of the track:
+
+  | plan | 예상 / 실제 | 계획 | 초과 | 아낀 자리 | hairline |
+  |---|---|---|---|---|---|
+  | 합성 카드 3 | 90 / 165 | 0–60% | 60–100%, clipped | — | covered |
+  | 합성 카드 4 | 300 / 260 | 0–52% | — | 52–60% hatched | at the hatch's edge |
+  | 합성 카드 4 · 다음 | 270 / 0 | — | — | — | visible alone at 59.9% |
+  | 합성 계획 A | no data | — | — | — | empty state |
+
+  The third row is the case the hairline was kept for: nothing is drawn yet, and
+  without it the plan's position would vanish from the track.
+- No hatch when 실제 is 0. It is not a saving — the plan has not started, and green
+  hatching would have the screen congratulate it.
+- Colours confirmed in both themes: planned `#667382` / `#9aa6b5`, over `#d6473c` /
+  `#ef8279`, seam a 2px border in the card colour, hairline `--line-2`. Every segment
+  is 8px, the same height as the track, so nothing protrudes any more. The heading's
+  left swatch changed from the black tick shape to an `--ink-3` square to match the
+  segment it now names.
+- 53 backend tests pass and the frontend production build passes.
+
+## 2026-09-02 old reflections fold away
+
+- Chose folding over a height cap, as the user picked from the three options
+  recorded in the entry below (D-052). The three most recent stay on screen and the
+  rest sit behind 「이전 회고 N건 더 보기」, the same `.done-toggle` the completed-task
+  group uses — one gesture, one control.
+- Measured with five reflections on 합성 카드 3, two of them added locally to get
+  past three:
+
+  | | shown | section | 내보내기 starts at | document |
+  |---|---|---|---|---|
+  | collapsed | 3 | 505px | 3,389px | 3,676px |
+  | expanded | 5 | 791px | 3,676px | 3,963px |
+  | collapsed again | 3 | 505px | 3,389px | 3,676px |
+
+  `aria-expanded` flips with it.
+- The reason a cap was refused holds up on screen: opening 이 회고로 다음 계획 만들기
+  grows the section to 1,014px with `overflow-y: visible` and `max-height: none`, so
+  the form is never trapped in a scroll box.
+- That also closed the last unverified `DateField` usage — 다음 계획 시작일 and
+  종료일 render as our component inside that form.
+- Found and fixed while testing, in this change's own code: `hiddenReflections` was
+  computed as `allReflections ? 0 : …`, so the button vanished once expanded and the
+  list could not be folded again. The count is now independent of the expanded flag.
+- Collapsing resets when the plan changes but not on 집계 새로고침 — a list that
+  re-folded on every refresh would be worse than the length.
+- 53 backend tests pass and the frontend production build passes.
+- Local-only synthetic rows added while verifying: two reflections (합성 회고 4·5) on
+  합성 카드 3. Gitignored database.
+
+## 2026-09-02 the plan gauge gets a fixed baseline
+
+- The user said the gauge read unnaturally. It did, and the cause was the scale:
+  `span = Math.max(estimated, actual)` gave the larger value 100% of the track.
+  Two consequences, both bad, both invisible until you compare two plans:
+  the tick sat at 54.5% when over and at 100% when under, so the reference line
+  moved; and any overrun filled the bar completely, so magnitude lived only in the
+  tick position, whose relation to the overrun is `예상/실제` — an inverse.
+- The tick now stands at a fixed 60% and the fill is `실제 / 예상 × 60%`, so the
+  fill length is «how many times the plan», read linearly (D-051). Beyond 1.67× the
+  bar clamps at 100% and takes a torn right edge, because a silently clipped bar
+  reads as one that happens to be full.
+- No tick when the estimate is zero. Drawing one would have the screen assert a
+  reference that is not there.
+- Observed across four plans, tick at 59.9% in every one:
+
+  | plan | 예상 / 실제 | fill | note |
+  |---|---|---|---|
+  | 합성 카드 3 | 90 / 165 | 100%, clipped | +75분 더 걸렸습니다 |
+  | 합성 카드 4 | 300 / 260 | 52% | -40분 덜 걸렸습니다 |
+  | 합성 카드 4 · 다음 | 270 / 0 | 0.2% (2px floor) | 아직 실행 기록이 없습니다 |
+  | 합성 계획 A | no data | — | empty state |
+
+  Under the old scale the 300 / 260 case filled 86.7% with the tick at 100%; the
+  shortfall was almost invisible. It now reads as a bar stopping short of the line.
+- T06-C32 re-checked: the variance sentence still prints `-40분` with the ASCII hyphen.
+- 53 backend tests pass and the frontend production build passes.
+- Note on the numbers on screen: 실제 165분 on 합성 카드 3 includes the 90-minute
+  execution log saved while verifying the time picker. Local database only.
+
+## 2026-09-02 answered: the reflection list grows without limit too
+
+- Asked what happens to 회고 기록 as entries accumulate. Same shape as the task list
+  before D-048: `.reflection-list` has `max-height: none` and `overflow-y: visible`.
+- Measured with three reflections: each card 135px on a 143px pitch, the section
+  451px, and 내 자료 내보내기 begins at 3,336px. Ten reflections would add about
+  1,000px, and the reflections sit between See and the export panel, so everything
+  below moves down by that much.
+- Not changed yet — it needs a decision the task list did not, because each card can
+  expand into the 다음 계획 form. Capping the section puts that form inside a scroll
+  box, which is worse than the length it fixes. Options worth weighing: cap the list
+  but let the expanded card escape the cap, show the most recent few with a 「더
+  보기」, or leave it and accept the growth since reflections accrue far more slowly
+  than tasks.
+
+## 2026-09-02 execution log times use the same picker
+
+- The last two native controls, the `datetime-local` inputs on the execution-log
+  form, now use `DateField` with a new `withTime` flag (D-050). No native date or
+  datetime input is left anywhere in the app.
+- One component, not two: the same popover gains a 시/분/초 row and its footer button
+  becomes 「지금」 (Seoul now) instead of 「오늘」. Picking a day keeps the time and
+  leaves the popover open, since the time is entered next.
+- The stored value keeps the native shape `YYYY-MM-DDTHH:MM:SS`, so
+  `ExecutionPanel`'s `${value}+09:00` and the D-012 UTC path are untouched. The text
+  box shows a space instead of the `T` because a person reads and edits it.
+- Verified end to end, which is the check that matters here: typed 서울
+  `2026-09-02 09:00:00` → `10:30:00` with 90분, saved, and the list rendered back
+  `2026. 09. 02. 09:00:00 → 2026. 09. 02. 10:30:00 (서울)`. The API stores
+  `2026-09-02T00:00:00+00:00 → 2026-09-02T01:30:00+00:00`, which is exactly those
+  Seoul times in UTC. The record count went 1 → 2 and the form cleared.
+- Also observed: the popover carries the time row and 「지금/닫기」; picking a day
+  leaves it open and sets `2026-09-02 00:00:00`; 시=10, 분=35, 초=7 gives
+  `2026-09-02 10:35:07`; 시=99 clamps to 23; a value typed without seconds is
+  accepted and completed; empty plus `required` reports invalid.
+- Layout and contrast: popup 262×388 at 1280px and 318px wide at 375px, inside the
+  viewport at both, no horizontal overflow. Time row label and separators 4.84:1
+  light / 6.99:1 dark, the number boxes 16.6:1 / 14.6:1.
+- Removed the now-dead `input[type="datetime-local"]` rule from the 480px block.
+- 53 backend tests pass and the frontend production build passes.
+- The verification left one extra synthetic execution log on the local SQLite
+  database. It is local only and gitignored.
+
+## 2026-09-02 the date picker is ours now
+
+- The user asked to redesign the See period calendar. Reported first that the
+  calendar in question is not ours: it is Chrome's popup for `input[type="date"]`
+  and no CSS selector reaches it. Offered three routes; the user chose building our
+  own, applied to all seven date inputs rather than to See alone (D-049).
+- New `frontend/src/components/DateField.tsx` and `frontend/src/lib/date.ts`. All
+  seven `input[type="date"]` are gone — plan start/end, task due date, See period
+  start/end, next-plan start/end. The two `datetime-local` inputs on execution logs
+  are untouched and still native; replacing those means also building a time picker.
+- Typing is kept. The field is a text input with `pattern`, and the value is only
+  pushed upward once the text is a real date.
+- `seoulToday()` moved out of `TaskPanel` into `lib/date.ts`, so the D-008 timezone
+  rule now has one definition that both the due-date marks and the calendar's
+  «today» read from.
+- Verified in the browser, no native picker left on screen:
+
+  | check | result |
+  |---|---|
+  | popup structure | `role="dialog"`, 6 rows × 7 cells, 일–토, one tabbable cell |
+  | keyboard | →+1, ↓+7, PageDown +1 month, Home → week start, Escape closes and returns focus to the toggle |
+  | select | clicking 2026-09-04 sets the field and closes the popup |
+  | typing | `2026-09-06` typed straight in is accepted |
+  | outside click | closes |
+  | end to end | 09-05–09-07 applied gives all-zero aggregates, 계획 전체 보기 restores 할 일 1 / 예상 90분 / 실제 75분 / 차이 -15분 |
+  | layout | popup 262px at 1280px and 318px at 375px, inside the viewport in both, `scrollWidth` 1265 / 375 |
+
+- Two things found and fixed while checking, not cosmetic:
+  - `pattern="\d{4}-\d{2}-\d{2}"` accepted `2026-02-31`; `checkValidity()` returned
+    true for a date that does not exist. `setCustomValidity` now rejects it, and a
+    half-typed `2026-09-3` with it.
+  - Outside-month days were `--ink-3` at `opacity: .55`, which measured 2.14:1 in
+    light and 3.02:1 in dark. They are clickable buttons, so 4.5:1 applies. Dropping
+    the opacity puts them at 4.84:1 and 6.99:1.
+- Rest of the popup measured: day 16.6:1 / 14.6:1, selected day on accent 5.41:1 /
+  6.88:1, weekday header 4.84:1 / 6.99:1, footer 7.11:1 / 7.61:1 (light / dark).
+- T06-C32 re-checked: the variance still prints `-15분` with the ASCII hyphen.
+- 53 backend tests pass and the frontend production build passes.
+
+## 2026-09-02 the task lists scroll instead of growing
+
+- The user asked whether the task list grows without limit. It did: `.task-list`
+  had `max-height: none`, and its `overflow: hidden` was there to clip the rounded
+  corners, not to scroll. At 56px a row, nine tasks added about 506px and twenty
+  about 1,122px, all of it pushing See down.
+- Recommended capping only the completed group and leaving the active list free,
+  on the grounds that the active list is the working surface rather than an archive.
+  The user chose the plan list's treatment for both, for the rhythm of two boxes the
+  same height on one screen. Done that way (D-048).
+- `.task-list` now takes `max-height: 19rem` and `overflow-y: auto`, the same pair
+  `.plan-other-list` has used since D-032. The old `overflow: hidden` is gone —
+  `overflow-y: auto` clips the radius by itself.
+- Observed at 1280px on a plan with nine tasks: the active list holds at 304px with
+  341px of content and a scrollbar, the completed group (three rows, 170px) stays
+  under the cap with none, rows keep their 56–57px height inside the grid, and
+  `scrollWidth` is 1265 at `innerWidth` 1280. 19rem shows five rows and half of the
+  sixth, so the cut row itself says there is more below.
+- Cost accepted rather than hidden: at 375px task rows go to 110px in the two-line
+  layout, so the same 304px box shows about 2.7 task rows where the plan list shows
+  4.2. Raising the cap on narrow screens would fix the count and break the equal
+  heights that motivated the change, so it was left alone and recorded here.
+- 53 backend tests pass and the frontend production build passes.
+
+## 2026-09-02 completed tasks are filled green, not struck through
+
+- The user asked for the strikethrough to go and the row to be coloured instead.
+  Agreed on the reason as well as the look: the struck-out title is the one thing a
+  reader still needs, since reopening a task (T06-C12) and matching execution logs
+  to it both start from its content (D-047).
+- `.task-row.completed` now takes `--good-soft`; the title drops the
+  `text-decoration` and moves from `--ink-3` to `--ink-2`. A new `--good-soft-2` in
+  both palettes carries the hover, because the row already sits on `--good-soft` and
+  the shared `--surface-2` hover would have removed the green.
+- Measured on a completed row, both themes, transitions disabled:
+
+  | | light | dark |
+  |---|---|---|
+  | row background | `#e7f7f2` (active rows `#ffffff`) | `#102b25` (active `#171b21`) |
+  | title on row | 6.43:1 | 6.63:1 |
+  | priority badge, due mark | 5.32:1 | 5.95:1 |
+
+  `text-decoration-line` reads `none` in both.
+- Completion is still not signalled by colour alone: the filled check circle is
+  unchanged, so the row reads as done without relying on the tint.
+- 53 backend tests pass and the frontend production build passes.
+- Tooling note for whoever picks this up: while the Browser pane is hidden,
+  `document.hidden` is true, the page is throttled, and CSS transitions freeze
+  mid-flight — `getComputedStyle` then returns the stale animated colour and
+  screenshots return an old frame. Inject
+  `*{transition:none !important}` before reading colours, or open the pane.
+
+## 2026-09-02 the plan list's priority filter is gone
+
+- Removed at the user's request, right after the sort control landed. 중요도순
+  answers the same question and answers it better: the filter hid every other plan
+  to show one priority, while the sort keeps all nine rows on screen in priority
+  order, so where the «보통» plans sit is still visible (D-046, superseding D-044).
+- The section below this one describes the filter as present. That was true when it
+  was written; this entry is what stands.
+- The empty-list message goes back to `이름이 맞는 계획이 없습니다.` and the heading
+  counts matches against the total only while a search is active.
+- 375px got better rather than worse: the three controls used to wrap onto two lines
+  and the heading ran 100px tall; search and sort now fit one line at 61px, both
+  37px. At 1280px they run 296 + 112px inside the 974px head, `scrollWidth` 1265.
+- Observed: 마감 임박순 with the search on `계획` returned seven rows in due order
+  (09-04, 09-05, 09-06, 09-08, 09-09, 09-10, 09-14) and the heading read
+  `다른 계획 7개 · 전체 9개`; a query matching nothing gave `다른 계획 0개 · 전체 9개`
+  and the name message. No `.plan-priority` node is left in the DOM or the stylesheet.
+- 53 backend tests pass and the frontend production build passes.
+
+## 2026-09-02 the plan list can be ordered, not just filtered
+
+- The user asked what a sort control on the plan list should offer beyond 최신순
+  and 중요도순. Recommended 마감 임박순 as the third and only addition: the row
+  already printed `2026-09-01 — 2026-09-07` and nothing could act on it, and
+  priority is the intent recorded when the plan was written while the deadline is
+  the pressure now. 예상 시간순 and 이름순 were declined — the first drives no
+  decision, the second is what the search field already does. The user agreed.
+- `최신순` is the default and is the previous order unchanged (the reversed API
+  array). The other two sort a copy; sorting in place would have leaked the new
+  order into the next render of 최신순. Both end with Do's tie-break chain —
+  우선순위 → 마감일 → 생성 시각 → ID (D-045).
+- Observed with ten plans in the local database, priority filter cleared:
+  중요도순 gave high(09-04, 09-05, 09-07, 09-07), high(09-14), medium(09-06, 09-09),
+  low(09-08, 09-10) — the two 09-07 highs split by creation time, as the chain says.
+  마감 임박순 gave 09-04, 09-05, 09-06, 09-07, 09-07, 09-08, 09-09, 09-10, 09-14.
+  With the priority filter on `high` the sort applied to the five survivors only and
+  the heading still read `다른 계획 5개 · 전체 9개`.
+- Found while checking by eye: the third control was 6px shorter than the other two
+  at 375px. Flex `stretch` had equalised the first two because they shared a line;
+  the sort control wraps alone under 640px and had nothing to match. `line-height`
+  does not fix it — Chrome ignores it on `select` — so the three now carry a
+  `min-height` floor. All three measure 37px at both widths.
+- Layout: the controls run 291 + 125 + 112px inside a 974px head at 1280px, one
+  line, `scrollWidth` 1265. At 375px search and priority hold the first line and
+  sort takes the second, no horizontal overflow.
+- Locked elements re-checked: the public-data warning verbatim on the first screen,
+  the Do sort-rule string `우선순위(높음→보통→낮음) → 마감일 → 생성 시각 → ID`
+  untouched, `high` rendering as a literal with `text-transform: none`.
+- 53 backend tests pass and the frontend production build passes.
+- The local `backend/instance/t06.db` had dropped to four plans, below the
+  «more than five other plans» gate, which is why the filter looked missing. Six
+  synthetic plans (합성 계획 A–F) were added to bring it to ten. It is gitignored,
+  so another machine still has to seed its own.
+
 ## 2026-09-02 task rows use the width they already had
 
 - Measured the Do section next: each task row ran 249px and six tasks filled
