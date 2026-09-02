@@ -1,6 +1,6 @@
 # T06 design record
 
-Updated: 2026-09-02 KST
+Updated: 2026-09-03 KST
 
 Why this file exists: `docs/STATUS.md` records what was built and verified, and
 `docs/DECISIONS.md` records the ruling. Neither records *why this direction and not
@@ -69,8 +69,8 @@ the whole system. Summary only:
   `frontend/public/assets/fonts/`. Google Fonts was used first and then removed —
   the deployment runs a strict same-origin CSP (D-023).
 - Dark palette under `prefers-color-scheme: dark`, plus `color-scheme: light dark`
-  so native date inputs follow the theme. All 150ms transitions honor
-  `prefers-reduced-motion`.
+  so the browser's own chrome (scrollbars, form focus rings) follows the theme. All
+  150ms transitions honor `prefers-reduced-motion`.
 
 The problems this replaced, for anyone tempted to reintroduce them: eight radii,
 three greens and three oranges with no token, `font-weight: 800` on labels and
@@ -117,8 +117,8 @@ Through `113d02f`:
   `:root:not([data-theme])` so a dark-system visitor does not get a white flash.
   Because JS always writes a concrete `light`/`dark`, the dark palette lives in one
   block (`:root[data-theme="dark"]`) instead of being duplicated across a media
-  query and an attribute selector. `color-scheme` is set per theme so native date
-  inputs follow.
+  query and an attribute selector. `color-scheme` is set per theme so the browser's
+  own chrome follows.
 - Steps are scrolled to, not jumped to (D-029). `scroll-behavior: smooth` on `:root`,
   turned off under `prefers-reduced-motion`. The document is over 4000px, so Plan to
   See was a teleport and the new current-step marker never appeared to travel between
@@ -143,18 +143,43 @@ Through `113d02f`:
   changes, so the captured `#do-step` becomes a detached node whose
   `getBoundingClientRect()` returns zeros, pinning that step as permanently active.
   The elements are looked up on every measurement instead.
-- Plan-card estimate-vs-actual gauge (D-027). Tick at the estimate, fill at the
-  actual, on the selected plan card only. Under fills short of the tick in `--good`,
-  over runs past it in `--crit`, matching the See variance rule.
-  Two things needed care. The tick vanished when the fill ran past it — it read as a
-  seam in the bar — so it carries a `--surface` halo and stands proud of the track.
-  And the card already showed a "N분 예상" line that is the *plan's* estimate, while
+- Plan-card estimate-vs-actual gauge (D-027, D-051, D-053). The baseline stands at a
+  fixed 60% of the track and the fill is `실제 / 예상 × 60%`, so the length means "how
+  many times the plan" and reads linearly. Past 1.67× the bar clamps at 100% and takes
+  a torn right edge, because a silently clipped bar reads as one that happens to be full.
+  The bar is three segments on one scale: 계획 in `--ink-3`, the stretch past the
+  baseline in `--crit`, and an under-run leaving the gap to the baseline as a `--good`
+  hatch. The baseline is where two of them meet — there is no tick element. A
+  `--line-2` hairline underneath shows through only where no segment covers it, which
+  is the case where 실제 is 0 and nothing else is drawn; zero logs gets no hatch,
+  because a plan that has not started has saved nothing.
+  Two earlier scales were wrong and are worth not repeating. Scaling the track to
+  `max(예상, 실제)` moved the baseline — 54.5% when over, 100% when under — so no two
+  plans could be compared, and any overrun filled the bar, which left magnitude only in
+  the tick's position, whose relation to the overrun is `예상/실제`, an inverse. And the
+  tick itself was `--ink` at 18px over an 8px track, the strongest contrast on the card,
+  so the reference line read as a defect; colouring the whole bar `--crit` when over
+  said all of the actual time was wrong when only the part past the plan was.
+  The card already showed a "N분 예상" line that is the *plan's* estimate, while
   the gauge compares the *sum of task estimates* the See screen uses (D-014); those
   are different numbers, so both are now named (`계획 예상` and `할 일 예상`)
   rather than left to look like a contradiction.
   The gauge is on the selected card only because actual minutes come from
   `/api/plans/<id>/see`, one call per plan; drawing it on every card would fan out a
   request per plan on a free tier for every first paint.
+- Date, time and select controls are drawn in-house (D-049, D-050, D-054). The popup
+  of an `input[type="date"]`, a `datetime-local` and a `select` is browser chrome that
+  no selector reaches, so those were the only controls on the screen that could not be
+  designed. `components/DateField.tsx` (with `withTime` for execution logs) and
+  `components/Select.tsx` replace all of them, with no library added. What native did
+  is kept: typing into the field, arrow/Home/End movement, type-ahead on lists without
+  a search field, and Escape. The listbox is capped at the same 19rem as the plan and
+  task lists, and the plan picker gains a search field, which native cannot do — its
+  type-ahead matches a first letter only. The cost is stated rather than hidden: on
+  mobile a native `select` opens the OS sheet with large targets and ours does not, so
+  option rows take 12px padding under 720px as partial mitigation.
+  Do not reintroduce a native `select` or date input for consistency's sake; two kinds
+  of dropdown on one screen is what this replaced.
 - See metric cards carry a signed variance and a per-kind evidence count (D-025).
   `varianceMinutes` is the only metric whose sign means something, so it is the only
   one that takes a semantic colour: `--crit` when actual exceeded the estimate,
