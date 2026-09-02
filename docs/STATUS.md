@@ -563,3 +563,27 @@ remain pending; see `docs/process/HANDOFF.md`.
 
 Design token layer and review fixes were merged from `design/css-token-layer` into
 `main`, pushed, and verified on Render at application commit `d9b23a0`.
+
+## 할 일 목록을 카드에서 줄로 (D-034)
+
+할 일 18개를 로컬에 넣고 실제 화면을 떠서 판단했습니다. 개수보다 행의 생김새가 문제였습니다.
+
+| | 이전 | 지금 |
+|---|---|---|
+| 행 높이 (1280px) | 114px | 56px |
+| Do 구획 (18개) | 2,656px | 1,496px |
+| 문서 전체 | 4,890px | 3,730px |
+| 행 높이 (375px) | 138–155px | 110px |
+| Do 구획 (375px) | 3,230px | 2,829px |
+
+`내용 수정`·`삭제`·`실행 기록 열기` 세 버튼을 아이콘 셋으로 바꿨습니다. hover 뒤에 감추지
+않았습니다 — 터치 기기에는 hover가 없고, 수정·삭제는 T06-C10·C13의 근거입니다. 이름은
+`title`과 `aria-label`이 지킵니다. 아이콘 색은 `--ink-2`(#4e5968)로 흰 바탕 대비 약 7.6:1입니다.
+
+375px에서 4열 그리드를 그대로 두면 제목이 세 줄로 접혔습니다. 측정값은 넘침 0이었고
+화면을 떠 보고서야 발견했습니다. 좁은 화면은 flex 두 줄로 다시 짰습니다.
+
+확인: 53개 검사 통과, 프런트 빌드 통과. 1280px·375px 모두 문서·행 넘침 0. 공개 안내문
+첫 화면(top 167), 정렬 기준 문구, `high`/`medium`/`low` 리터럴과 `text-transform: none`,
+할 일 앵커 18개 유지. 실행 기록 열기 → 줄 전체 너비로 4개 입력칸 마운트, 라벨과
+`aria-expanded` 전환, 닫기 → 언마운트. 수정 폼·삭제 확인도 줄 전체 너비.

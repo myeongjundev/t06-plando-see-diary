@@ -27,6 +27,23 @@ const EMPTY_TASK: TaskInput = {
   estimatedMinutes: 30,
 };
 
+/* 줄 하나에 버튼 글자 세 벌을 반복해 넣으면 목록이 글자 벽이 된다. 아이콘으로 줄이되
+   hover 뒤에 숨기지는 않는다. 터치 기기에는 hover가 없고, 수정·삭제는 T06-C10·C13의
+   근거라 화면에 남아 있어야 한다. 이름은 aria-label과 title이 지킨다. */
+const ICON = { width: 16, height: 16, viewBox: "0 0 16 16", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+function ClockIcon() {
+  return <svg {...ICON} aria-hidden="true"><circle cx="8" cy="8" r="6" /><path d="M8 4.6V8l2.4 1.5" /></svg>;
+}
+
+function PencilIcon() {
+  return <svg {...ICON} aria-hidden="true"><path d="M11.2 2.6a1.6 1.6 0 0 1 2.2 2.2L5.6 12.6l-3 .8.8-3z" /></svg>;
+}
+
+function TrashIcon() {
+  return <svg {...ICON} aria-hidden="true"><path d="M2.8 4.4h10.4M6.4 4.4V3.2a.8.8 0 0 1 .8-.8h1.6a.8.8 0 0 1 .8.8v1.2M4.4 4.4l.6 8a1 1 0 0 0 1 .95h4a1 1 0 0 0 1-.95l.6-8" /></svg>;
+}
+
 interface Props {
   plan?: Plan;
   onDataChange: () => void;
@@ -221,21 +238,25 @@ export default function TaskPanel({ plan, onDataChange }: Props) {
             {tasks.map((task) => (
               <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
                 <button className="status-button" disabled={changingIds.includes(task.id)} onClick={() => void changeStatus(task)} aria-label={task.status === "completed" ? `${task.content} 진행 중으로 되돌리기` : `${task.content} 완료로 바꾸기`}>{task.status === "completed" ? "✓" : "○"}</button>
-                <div className="task-body">
-                  <div className="task-meta"><span className={`priority ${task.priority}`}>{task.priority}</span><span>{task.dueDate}</span><span>{task.estimatedMinutes}분</span></div>
-                  <h3>{task.content}</h3>
-                  <div className="tags">{task.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-                  {editingId === task.id && <form className="inline-edit" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
-                  {pendingDeleteId === task.id && <div className="delete-check" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
+                <span className={`priority ${task.priority}`}>{task.priority}</span>
+                <div className="task-main">
+                  <h3 title={task.content}>{task.content}</h3>
+                  <span className="task-meta">{task.dueDate} · {task.estimatedMinutes}분</span>
+                  {task.tags.length > 0 && <span className="tags">{task.tags.map((tag) => <span key={tag}>#{tag}</span>)}</span>}
                 </div>
                 <div className="task-actions">
-                  <button type="button" className="log-toggle" aria-expanded={openLogId === task.id}
+                  <button type="button" className={`icon-button log-toggle${openLogId === task.id ? " on" : ""}`}
+                          aria-expanded={openLogId === task.id}
+                          title={`Do · 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
+                          aria-label={`${task.content} 실행 기록 ${openLogId === task.id ? "닫기" : "열기"}`}
                           onClick={() => setOpenLogId(openLogId === task.id ? null : task.id)}>
-                    Do · 실행 기록 {openLogId === task.id ? "닫기" : "열기"}
+                    <ClockIcon />
                   </button>
-                  <button onClick={() => beginEdit(task)}>내용 수정</button>
-                  <button className="danger" onClick={() => setPendingDeleteId(task.id)}>삭제</button>
+                  <button type="button" className="icon-button" title="내용 수정" aria-label={`${task.content} 내용 수정`} onClick={() => beginEdit(task)}><PencilIcon /></button>
+                  <button type="button" className="icon-button danger" title="삭제" aria-label={`${task.content} 삭제`} onClick={() => setPendingDeleteId(task.id)}><TrashIcon /></button>
                 </div>
+                {editingId === task.id && <form className="inline-edit row-extra" onSubmit={(event) => void saveEdit(event, task)}><label>새 할 일 내용<input value={editContent} onChange={(event) => setEditContent(event.target.value)} autoFocus required /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingId(null)}>취소</button></div></form>}
+                {pendingDeleteId === task.id && <div className="delete-check row-extra" role="alert"><p>이 할 일만 삭제할까요?</p><div className="actions"><button className="danger solid" onClick={() => void confirmDelete(task)}>삭제 확인</button><button onClick={() => setPendingDeleteId(null)}>취소</button></div></div>}
                 {openLogId === task.id && <ExecutionPanel task={task} onSaved={onDataChange} />}
               </article>
             ))}

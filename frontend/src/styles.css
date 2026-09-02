@@ -680,20 +680,24 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   font-weight: 500;
 }
 
-.task-list { display: grid; gap: var(--s2); }
+.task-list { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; }
+.task-list .empty { border: 0; border-radius: 0; }
 
-/* 세 열: 상태 · 내용 · 액션. 예전에는 두 열이라 액션과 실행 기록 토글이 내용 아래로
-   쌓여 행 하나가 249px이었고, 정작 가로는 70%가 비어 있었다. */
+/* 한 줄에 상태 · 우선순위 · 내용 · 액션. 예전에는 항목마다 카드였고, 카드 18장이
+   쌓이면 테두리와 그림자가 목록보다 눈에 먼저 들어왔다. 이제 목록이 하나의 상자고
+   항목은 그 안의 줄이다. */
 .task-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
   gap: var(--s3);
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
+  border-top: 1px solid var(--line);
   background: var(--surface);
-  padding: var(--s4) var(--s5);
-  transition: border-color var(--ease), background var(--ease);
+  padding: var(--s3) var(--s4);
+  transition: background var(--ease);
 }
+
+.task-row:first-child { border-top: 0; }
 
 .task-row:hover { background: var(--surface-2); }
 .task-row.completed { border-color: var(--line); }
@@ -718,21 +722,32 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 .status-button:active:not(:disabled) { transform: scale(.9); }
 .task-row.completed .status-button { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
 
-.task-body { min-width: 0; display: flex; flex-direction: column; gap: var(--s2); }
+/* 내용이 남는 가로를 전부 먹고, 마감일·예상·태그는 오른쪽 끝에 붙는다. */
+.task-main { min-width: 0; display: flex; align-items: center; gap: var(--s3); }
+
+.task-main h3 {
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .task-meta {
+  flex: 0 0 auto;
   display: flex;
-  flex-wrap: wrap;
   gap: var(--s2);
   align-items: center;
   color: var(--ink-3);
   font-size: var(--t-xs);
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.task-body h3 { margin: 0; font-size: var(--t-body); font-weight: 700; }
-
-.tags { display: flex; flex-wrap: wrap; gap: var(--s1); font-size: var(--t-2xs); }
+.tags { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: var(--s1); font-size: var(--t-2xs); }
 
 .tags > * {
   background: var(--surface-3);
@@ -747,6 +762,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 .task-actions button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
 .danger.solid { border-color: var(--crit); background: var(--crit); color: #fff; }
 .actions button.danger.solid:hover:not(:disabled) { background: var(--crit); border-color: var(--crit); color: #fff; }
+
+.row-extra { grid-column: 1 / -1; min-width: 0; }
 
 .delete-check {
   margin-top: var(--s3);
@@ -780,18 +797,38 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
   align-self: start;
 }
 
-.task-actions button { white-space: nowrap; font-size: var(--t-xs); padding: 6px 10px; }
-
-.log-toggle {
-  border-color: var(--accent-line);
-  color: var(--accent);
+/* 아이콘 버튼. hover는 감추는 데 쓰지 않고 강조에만 쓴다 — 늘 보이고 늘 눌린다.
+   32px는 터치 목표 최소치에 맞춘 값이다. */
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-ctl);
+  background: none;
+  color: var(--ink-3);
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
 }
 
-.log-toggle:hover:not(:disabled) { background: var(--accent-soft); }
+.icon-button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.icon-button.danger { color: var(--ink-3); border-color: transparent; }
+.icon-button.danger:hover:not(:disabled) { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
+.icon-button.log-toggle.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
 
-@media (max-width: 640px) {
-  .task-row { grid-template-columns: auto minmax(0, 1fr); }
-  .task-actions { grid-column: 2; flex-direction: row; flex-wrap: wrap; }
+/* 좁은 화면에서는 한 줄에 다 넣을 수 없다. 그리드를 그대로 두면 제목 칸이 좁아져
+   세 줄로 접히므로 줄 두 개로 다시 짠다.
+     1줄: [상태] [우선순위] ............ [아이콘]
+     2줄: 제목 / 마감일 · 예상 / 태그                                        */
+@media (max-width: 760px) {
+  .task-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); }
+  .task-row > .priority { order: 1; }
+  .task-row > .task-actions { order: 2; margin-left: auto; }
+  .task-main { order: 3; flex: 1 1 100%; flex-wrap: wrap; gap: var(--s2) var(--s3); }
+  .task-main h3 { flex: 1 0 100%; white-space: normal; }
+  .task-row > .row-extra,
+  .task-row > .execution-panel { order: 4; flex: 1 1 100%; }
 }
 
 .execution-panel {
@@ -1000,7 +1037,7 @@ summary:hover { color: var(--accent); }
   .grid.two, .grid.three, .task-tools { grid-template-columns: 1fr; }
   .section-heading { display: block; }
   .section-heading > p { margin-top: var(--s3); }
-  .task-row { padding: var(--s4); }
+  .task-row { padding: var(--s3) var(--s4); }
 }
 
 @media (prefers-reduced-motion: reduce) {
