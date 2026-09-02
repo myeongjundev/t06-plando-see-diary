@@ -1,4 +1,4 @@
-# T06 submission draft — private-browser confirmation pending
+# T06 submission — ready
 
 Product URL: https://t06-plando-see-diary.onrender.com
 
@@ -6,8 +6,8 @@ Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/1d0e0f79fe
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
 saved plans first, mobile input fixes, bundled fonts, signed variance and explicit
-evidence counts. Replace it if later application changes are deployed; verify
-private-browser access before submission.
+evidence counts. Both submitted URLs were verified in Chrome Incognito without
+authentication.
 
 ## Four verification lines (T06-C59)
 
@@ -32,6 +32,8 @@ Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 �
 - A user-provided Chrome Incognito screenshot confirms the product URL opens
   without authentication and displays the public warning, source plan and carried
   next plan.
+- A second Chrome Incognito screenshot confirms the public full-commit source URL
+  opens without authentication and displays the fixed commit and repository files.
 - Public app has one real source plan, five linked tasks, three execution logs,
   three completed tasks, one reflection and one carried next plan.
 - Refresh preserved UUIDs, dates, values and minute units in Neon PostgreSQL.
@@ -43,10 +45,5 @@ Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 �
 - Source, Git history, public client assets and API responses passed the
   common-secret pattern scan.
 - User confirmed the judgment and rejected-advice lines above.
-
-## Evidence still needed
-
-- Open the full-commit source URL in a fresh private browser without authentication
-  and record the final confirmation before submission.
 
 Local evidence is in `HANDOFF.md`; synthetic fixtures are not real-use evidence.

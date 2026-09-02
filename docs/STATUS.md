@@ -32,9 +32,11 @@ Updated: 2026-09-02 KST
   `docs/SUBMISSION.md`.
 
 The user supplied a Chrome Incognito screenshot confirming the product URL,
-public warning, source plan and carried next plan. Remaining submission action:
-open the full-commit source URL in a fresh private browser without authentication
-and record final confirmation.
+public warning, source plan and carried next plan. A second Chrome Incognito
+screenshot confirmed that the public full-commit source URL opens without
+authentication and shows commit `1d0e0f7` with the repository file list. Product,
+database health and source URLs returned HTTP 200 in the final check. No submission
+verification remains.
 
 학원 PC에서 이어갈 때는 `docs/ACADEMY-HANDOFF.md`를 먼저 읽는다.
 최신 main 받기, 새 PC 설치/실행, 완료 작업, 남은 제출 검증과 이어가기 프롬프트를
@@ -42,7 +44,7 @@ and record final confirmation.
 
 ## Phase
 
-**IMPLEMENTATION — Cards 1–4 complete locally; Card 5 implemented locally, public verification pending**
+**COMPLETE — Cards 1–5 implemented, publicly verified and ready to submit**
 
 ## Completed
 
