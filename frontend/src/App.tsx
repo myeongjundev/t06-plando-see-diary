@@ -18,6 +18,29 @@ import useActiveStep from "./useActiveStep";
 
 const STEP_IDS = ["plan-step", "do-step", "see-step"] as const;
 
+// 계획 목록의 정렬 축. 「최신순」은 API가 준 생성 순서를 뒤집은 것이라 비교 함수가
+// 없고, 나머지 둘만 아래에서 정한다.
+type PlanSort = "recent" | "priority" | "due";
+
+const PRIORITY_RANK: Record<Plan["priority"], number> = { high: 0, medium: 1, low: 2 };
+
+// 동점 꼬리는 Do 구획의 고정 정렬 규칙(T06-C20)과 같은 모양으로 둔다 — 우선순위 →
+// 마감일 → 생성 시각 → ID. 목록마다 다른 꼬리를 쓰면 한 화면에 정렬 규칙이 둘이 된다.
+// endDate는 YYYY-MM-DD이고 createdAt은 서버가 언제나 UTC(+00:00)로 직렬화하므로,
+// 문자열 비교가 곧 시간 순서다.
+const PLAN_COMPARATORS: Record<Exclude<PlanSort, "recent">, (a: Plan, b: Plan) => number> = {
+  priority: (a, b) =>
+    PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] ||
+    a.endDate.localeCompare(b.endDate) ||
+    a.createdAt.localeCompare(b.createdAt) ||
+    a.id.localeCompare(b.id),
+  due: (a, b) =>
+    a.endDate.localeCompare(b.endDate) ||
+    PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] ||
+    a.createdAt.localeCompare(b.createdAt) ||
+    a.id.localeCompare(b.id),
+};
+
 const EMPTY_PLAN: PlanInput = {
   title: "T06 프로젝트 완주",
   startDate: "2026-09-01",
@@ -40,7 +63,7 @@ function App() {
   const [selectedPlanId, setSelectedPlanId] = useState("");
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [planQuery, setPlanQuery] = useState("");
-  const [planPriority, setPlanPriority] = useState("");
+  const [planSort, setPlanSort] = useState<PlanSort>("recent");
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
   // 어느 계획의 집계인지 함께 들고 있는다. 받아오는 동안 화면을 비우지 않으려면
@@ -53,10 +76,14 @@ function App() {
   // 스크롤이 시작될 즈음부터 검색을 내놓는다. 줄에 보이는 것이 이름이라
   // 이름만 찾는다 — 안 보이는 값까지 걸리면 왜 걸렸는지 알 수 없다.
   const planNeedle = planQuery.trim().toLowerCase();
-  const planFiltered = planNeedle !== "" || planPriority !== "";
-  const visibleOtherPlans = otherPlans.filter((plan) =>
-    (planNeedle === "" || plan.title.toLowerCase().includes(planNeedle)) &&
-    (planPriority === "" || plan.priority === planPriority));
+  const visibleOtherPlans = planNeedle
+    ? otherPlans.filter((plan) => plan.title.toLowerCase().includes(planNeedle))
+    : otherPlans;
+  // 「최신순」은 이미 뒤집힌 순서 그대로다. 나머지 둘만 복사해서 정렬한다 — 원본을
+  // 제자리에서 정렬하면 다음 렌더의 「최신순」이 그 결과를 물려받는다.
+  const sortedOtherPlans = planSort === "recent"
+    ? visibleOtherPlans
+    : [...visibleOtherPlans].sort(PLAN_COMPARATORS[planSort]);
   const activeStep = useActiveStep(STEP_IDS);
 
   // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
@@ -221,7 +248,7 @@ function App() {
         {otherPlans.length > 0 && (
           <section className="plan-others" aria-label="다른 계획">
             <div className="plan-others-head">
-              <h3>{planFiltered
+              <h3>{planNeedle
                 ? `다른 계획 ${visibleOtherPlans.length}개 · 전체 ${otherPlans.length}개`
                 : `다른 계획 ${otherPlans.length}개`}</h3>
               {otherPlans.length > 5 && (
@@ -235,22 +262,21 @@ function App() {
                     aria-label="계획 이름 검색"
                   />
                   <select
-                    className="plan-priority"
-                    value={planPriority}
-                    onChange={(event) => setPlanPriority(event.target.value)}
-                    aria-label="우선순위로 거르기"
+                    className="plan-sort"
+                    value={planSort}
+                    onChange={(event) => setPlanSort(event.target.value as PlanSort)}
+                    aria-label="계획 정렬 기준"
                   >
-                    <option value="">우선순위 전체</option>
-                    <option value="high">높음</option>
-                    <option value="medium">보통</option>
-                    <option value="low">낮음</option>
+                    <option value="recent">최신순</option>
+                    <option value="priority">중요도순</option>
+                    <option value="due">마감 임박순</option>
                   </select>
                 </div>
               )}
             </div>
             <div className="plan-other-list">
-              {visibleOtherPlans.length === 0 && <p className="plan-none">조건에 맞는 계획이 없습니다.</p>}
-              {visibleOtherPlans.map((plan) => (
+              {visibleOtherPlans.length === 0 && <p className="plan-none">이름이 맞는 계획이 없습니다.</p>}
+              {sortedOtherPlans.map((plan) => (
                 <button type="button" className="plan-row" id={`plan-${plan.id}`} key={plan.id} onClick={() => { setSelectedPlanId(plan.id); setPlanQuery(""); }}>
                   <span className={`priority ${plan.priority}`}>{plan.priority}</span>
                   <span className="plan-row-title">{plan.title}</span>
