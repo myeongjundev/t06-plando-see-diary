@@ -1189,7 +1189,6 @@ summary:hover { color: var(--accent); }
   .plan-card { padding: var(--s4); }
   .task-list .task-row { padding: var(--s3); }
   .task-form { padding: var(--s3); }
-  input[type="datetime-local"] { padding-inline: var(--s2); font-size: var(--t-sm); }
 }
 
 @media (max-width: 820px) {
@@ -1212,7 +1211,7 @@ summary:hover { color: var(--accent); }
 
 
 /* ── 날짜 고르기 ──────────────────────────────────────────────────────────
-   input[type="date"]의 팝업은 브라우저가 그리는 위젯이라 CSS가 닿지 않는다. 화면의
+   input[type="date"]와 datetime-local의 팝업은 브라우저가 그리는 위젯이라 CSS가 닿지 않는다. 화면의
    나머지가 전부 토큰 위에 있는데 달력 하나만 크롬 기본 모양이었다. 직접 그린 팝업이라
    여기서부터는 나머지 화면과 같은 색·반경·간격을 쓴다. */
 
@@ -1339,6 +1338,36 @@ summary:hover { color: var(--accent); }
 }
 
 .date-pop-foot button:hover { background: var(--surface-3); color: var(--ink); }
+
+
+/* 시각 칸. 달력 아래에 한 줄로 붙어 «날 + 시각»이 한 덩어리로 읽히게 한다. */
+.date-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-top: var(--s2);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--line);
+}
+
+.date-time-label { font-size: var(--t-2xs); font-weight: 700; color: var(--ink-3); }
+.date-time-parts { display: flex; align-items: center; gap: var(--s1); color: var(--ink-3); }
+
+/* 스피너 화살표를 지운다. 세 칸이 나란히 있는데 칸마다 화살표가 붙으면 숫자보다
+   화살표가 넓다. 값은 타자와 위아래 화살표 키로 넣는다. */
+.date-time-parts input {
+  width: 44px;
+  padding: 5px 6px;
+  text-align: center;
+  font-size: var(--t-sm);
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.date-time-parts input::-webkit-outer-spin-button,
+.date-time-parts input::-webkit-inner-spin-button { appearance: none; margin: 0; }
 
 /* 좁은 화면에서는 칸이 붙어 손가락이 옆 날을 누른다. 폭이 있는 만큼 칸을 키운다. */
 @media (max-width: 720px) {

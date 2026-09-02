@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { CompletionEvent, createExecution, ExecutionLog, listCompletions, listExecutions } from "../../api/executions";
 import type { Task } from "../../api/tasks";
+import DateField from "../../components/DateField";
 
 const seoulTime = new Intl.DateTimeFormat("ko-KR", {
   timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
@@ -59,8 +60,8 @@ export default function ExecutionPanel({ task, onSaved }: { task: Task; onSaved:
       <p className="time-rule">입력·표시 시각: Asia/Seoul (UTC+09:00) · 예상 {task.estimatedMinutes}분</p>
       <form onSubmit={save}>
         <div className="grid two">
-          <label>시작 시각 (서울)<input type="datetime-local" step="1" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
-          <label>종료 시각 (서울)<input type="datetime-local" step="1" value={end} onChange={(e) => setEnd(e.target.value)} required /></label>
+          <DateField label="시작 시각 (서울)" withTime required value={start} onChange={setStart} />
+          <DateField label="종료 시각 (서울)" withTime required value={end} onChange={setEnd} />
         </div>
         <label>실제 시간(분)<input type="number" min="0" max="1000000" step="1" value={minutes} onChange={(e) => setMinutes(Number(e.target.value))} required /></label>
         <label>막혔던 이유<textarea value={blocker} maxLength={500} onChange={(e) => setBlocker(e.target.value)} placeholder="없으면 비워 두세요" /></label>
