@@ -41,7 +41,9 @@ function App() {
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
-  const [planSummary, setPlanSummary] = useState<Summary | null>(null);
+  // 어느 계획의 집계인지 함께 들고 있는다. 받아오는 동안 화면을 비우지 않으려면
+  // 남아 있는 값이 지금 계획의 것인지 구별할 수 있어야 한다.
+  const [planSummary, setPlanSummary] = useState<{ planId: string; data: Summary } | null>(null);
   // 계획이 쌓여도 Plan 구획이 Do·See를 아래로 밀지 않도록, 선택된 하나만 카드로 펼치고
   // 나머지는 한 줄로 접는다. 최근에 만든 것이 위로 오게 뒤집는다.
   const otherPlans = plans.filter((plan) => plan.id !== selectedPlan?.id).reverse();
@@ -50,15 +52,21 @@ function App() {
   // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
   // 공유하지 않는다. 카드는 언제나 계획 전체를 보여줘야 하므로 기간 없는 집계를
   // 따로 가져온다.
+  //
+  // 받아오기 전에 값을 비우면 카드가 무너졌다 다시 선다. 게다가 dataRevision은
+  // TaskPanel이 목록을 새로 읽을 때마다 오르고, 계획을 바꾸면 TaskPanel이 다시
+  // 마운트되며 곧바로 한 번 읽는다. 그래서 클릭 한 번에 이 효과가 두 번 돌았고,
+  // 비우기가 두 번 일어나 카드 높이가 310 → 231 → 264 → 231 → 264로 튀었다.
+  // 이제 비우지 않고, 도착한 값에 계획 ID를 붙여 둔 뒤 지금 계획의 것일 때만 그린다.
   useEffect(() => {
     if (!selectedPlan) {
       setPlanSummary(null);
       return;
     }
+    const planId = selectedPlan.id;
     let cancelled = false;
-    setPlanSummary(null);
-    getSummary(selectedPlan.id, null)
-      .then((data) => { if (!cancelled) setPlanSummary(data); })
+    getSummary(planId, null)
+      .then((data) => { if (!cancelled) setPlanSummary({ planId, data }); })
       .catch(() => { if (!cancelled) setPlanSummary(null); });
     return () => { cancelled = true; };
   }, [selectedPlan?.id, dataRevision]);
@@ -189,7 +197,9 @@ function App() {
               <h3>{selectedPlan.title}</h3>
               <p>{selectedPlan.successCriterion}</p>
               <strong>계획 예상 {selectedPlan.estimatedMinutes}분</strong>
-              {planSummary && <PlanGauge summary={planSummary} />}
+              <div className="plan-gauge-slot">
+                {planSummary?.planId === selectedPlan.id && <PlanGauge summary={planSummary.data} />}
+              </div>
               {selectedPlan.carriedImprovement && <p className="carried-improvement">이전 회고의 개선점: <strong>{selectedPlan.carriedImprovement}</strong></p>}
               <div className="actions"><button className="use-plan" onClick={() => goToStep("do-step")}>이 계획으로 실행</button><button onClick={() => beginRevise(selectedPlan)}>예상 시간 수정</button><button onClick={() => void toggleHistory(selectedPlan.id)}>수정 이력</button></div>
               {editingPlanId === selectedPlan.id && <form className="inline-edit" onSubmit={(event) => void revise(event, selectedPlan)}><label>새 예상 시간(분)<input type="number" min="0" value={editMinutes} onChange={(event) => setEditMinutes(Number(event.target.value))} autoFocus /></label><div className="actions"><button className="primary">수정 저장</button><button type="button" onClick={() => setEditingPlanId(null)}>취소</button></div></form>}

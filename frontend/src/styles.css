@@ -163,6 +163,15 @@ p { margin-top: 0; }
 
 /* 계획 카드의 예상 대비 실제. 눈금이 예상, 채움이 실제.
    색은 See 지표 카드와 같은 규칙을 따른다: 초과는 --crit, 절약은 --good. */
+/* 집계가 도착하기 전에도 카드 높이가 그대로이도록 자리를 미리 잡는다. 게이지가
+   있는 계획과 없는 계획의 카드 높이도 이걸로 같아진다. */
+.plan-gauge-slot {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 5rem;
+}
+
 .plan-gauge {
   display: flex;
   flex-direction: column;
@@ -239,8 +248,16 @@ p { margin-top: 0; }
 .plan-gauge.under .plan-gauge-note strong { color: var(--good); }
 .plan-gauge.over .plan-gauge-note strong { color: var(--crit); }
 
+/* 게이지가 들어올 자리를 비워 두면 안내문이 넓은 여백에 떠 있는 것처럼 보인다.
+   자리를 그대로 채워 «아직 값이 없는 칸»으로 읽히게 한다. */
 .plan-gauge-empty {
-  margin: var(--s1) 0 0;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  min-height: 5rem;
+  padding: 0 var(--s4);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-ctl);
   font-size: var(--t-xs);
   color: var(--ink-3);
 }
@@ -538,8 +555,13 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s2); }
 
+/* 보조 버튼의 생김새는 여기 한 곳에서만 정합니다. 이 선택자 밖에 새 버튼을 만들면
+   테두리·배경이 하나도 없어 브라우저 기본 버튼(검은 outset 테두리)으로 렌더링됩니다.
+   실제로 «내용 수정»·«삭제»에 이어 «자세히»가 같은 이유로 두 번 새어 나갔습니다.
+   새 보조 버튼을 만들면 반드시 이 목록에 더하세요. */
 .actions button,
-.task-actions button {
+.task-actions button,
+.task-detail-toggle {
   border: 1px solid var(--line);
   border-radius: var(--r-ctl);
   background: var(--surface);
@@ -551,7 +573,8 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 }
 
 .actions button:hover:not(:disabled),
-.task-actions button:hover:not(:disabled) {
+.task-actions button:hover:not(:disabled),
+.task-detail-toggle:hover:not(:disabled) {
   background: var(--accent-soft);
   border-color: var(--accent-line);
   color: var(--accent);
@@ -607,9 +630,14 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .task-quick-input { width: 100%; }
 
+/* «추가»가 파란 주버튼이라 그 옆의 «자세히»는 조용해야 합니다. 색은 낮추고
+   높이만 «추가»에 맞춥니다. */
 .task-detail-toggle {
   white-space: nowrap;
-  color: var(--ink-2);
+  align-self: stretch;
+  padding: 12px 18px;
+  color: var(--ink-3);
+  background: none;
 }
 
 .task-quick-hint {
@@ -653,8 +681,11 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .tag-chip:hover { border-color: var(--accent); color: var(--accent); }
 
+/* 좁은 화면에서 셋을 모두 세로로 쌓으면 «자세히»가 전체 폭을 먹어 주버튼인
+   «추가»보다 무거워 보인다. 입력만 한 줄을 통째로 쓰고 버튼 둘은 나란히 둔다. */
 @media (max-width: 640px) {
-  .task-quick { grid-template-columns: 1fr; }
+  .task-quick { grid-template-columns: minmax(0, 1fr) auto; }
+  .task-quick-input { grid-column: 1 / -1; }
 }
 
 .task-form {
