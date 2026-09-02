@@ -8,7 +8,8 @@
 //   2) chrome --headless=new --remote-debugging-port=9222 --user-data-dir=<임시>
 //   3) SHOTS='[{"name":"plan-light","theme":"light","height":940}]' //        node tools/capture_screenshots.mjs http://127.0.0.1:5055/ docs/screenshots
 //
-// SHOTS 항목: name, theme(light|dark), selector?, pad?, maxHeight?, width?, height?, mobile?
+// SHOTS 항목: name, theme(light|dark), selector?, pad?, maxHeight?, width?, height?, mobile?,
+//            prepare?(찍기 전 페이지에서 돌릴 식 — 접힌 것을 펼치거나 팝업을 열 때), settle?(ms)
 
 import { writeFileSync } from "node:fs";
 
@@ -65,6 +66,15 @@ for (const shot of SHOTS) {
   });
   await send("Page.navigate", { url: APP });
   await sleep(2500);
+
+  // 접힌 것을 펼치거나 팝업을 여는 등, 닫힌 모습만으로는 보이지 않는 화면을 찍기 위해.
+  if (shot.prepare) {
+    const { exceptionDetails } = await send("Runtime.evaluate", {
+      expression: shot.prepare, awaitPromise: true, returnByValue: true,
+    });
+    if (exceptionDetails) throw new Error(`prepare failed: ${JSON.stringify(exceptionDetails)}`);
+    await sleep(shot.settle ?? 600);
+  }
 
   let clip;
   if (shot.selector) {
