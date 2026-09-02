@@ -2,6 +2,30 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 README rebuilt as a portfolio front page
+
+- The README was a text-only status page: it opened with an internal handoff link,
+  carried a stray `1` in the title, still said final submission verification was in
+  progress, and showed none of the interface. It is the first thing anyone opening
+  the submitted source URL reads.
+- Rewritten around the screens. Hero, See and Do screenshots; the design direction
+  comparison and why C was chosen; and five implementation notes that link to the
+  code they describe — database-enforced duplicate completion, aggregates that
+  return their own evidence, UTC storage with Seoul judgement, the same-origin CSP
+  and public-data warning, and migrations that run before the server binds.
+- Screenshots are synthetic per AGENTS.md rule 3. A local backend was seeded to the
+  numbers the acceptance matrix documents (5 tasks, 3 completed, 1 overdue, 2
+  blocked, 300 estimated, 260 actual, -40 variance) so the See screen shows the same
+  figures as the fixture, plus a second plan carrying a reflection line.
+- Captured with headless Chrome over CDP at 2x, clipped per section, in both themes;
+  the browser pane cannot save files or paint scrolled content. The generator is kept
+  at `backend/scripts/capture_screenshots.mjs` so the shots can be regenerated.
+  Light and dark pairs are served through `<picture>` so GitHub follows the reader's
+  theme.
+- Every relative link and image path in the README was resolved against the working
+  tree. Coverage quoted from a fresh run: 53 passed, 92%.
+- Documentation only; no application code and no build output change.
+
 ## 2026-09-02 migration deprecation warning removed
 
 - `migrations/env.py` carried Flask-Migrate's stock `get_engine()`, which tries

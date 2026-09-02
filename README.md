@@ -1,47 +1,168 @@
-# T06 · 플랜두씨 다이어리 1
+<div align="center">
 
-상태: **기능 구현·공개 배포 완료 · 최종 제출 검증 진행 중**
+# 플랜두씨 다이어리
 
-학원 PC에서 이어가기: [인수인계와 실행 방법](docs/ACADEMY-HANDOFF.md).
-공개 앱: https://t06-plando-see-diary.onrender.com
+**계획한 나와 실제의 차이를 기록하고, 다음 계획을 더 정확하게 만듭니다.**
 
-계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)를 하나의 흐름으로 연결하는
-공개 다이어리입니다. React 화면, Flask API, PostgreSQL 서버 데이터베이스로
-구성하며 T06에서는 인증을 구현하지 않습니다.
+계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)를 하나의 흐름으로 잇는 공개 다이어리
 
-## 확정 기능
+[**앱 열기**](https://t06-plando-see-diary.onrender.com) · [제출 소스](https://github.com/myeongjundev/t06-plando-see-diary/tree/t06-submission) · [설계 기록](docs/DESIGN.md) · [결정 로그](docs/DECISIONS.md)
 
-- 기간·우선순위·성공 기준·예상 시간이 있는 계획과 수정 이력
-- 계획에 연결된 할 일 CRUD·완료·되돌리기·검색·필터·고정 정렬
-- 시작·종료·실제 시간·막힌 이유를 담는 실행 기록
-- 중복 완료 요청을 데이터베이스 제약으로 한 번만 반영
-- 계획·완료·지연·막힘·예상·실제·차이 집계와 근거 기록 이동
-- 돌아보기의 개선점 한 줄을 다음 계획으로 전달
-- 서버 DB 영구 저장과 전체 JSON 내보내기
-- 공개 안내, XSS 방어, 비밀값 비노출
+`React + TypeScript` `Flask + SQLAlchemy` `PostgreSQL` `Docker` `Render + Neon`
+
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/plan-dark.png">
+  <img alt="Plan 화면. 상단에 로그인 없음 안내, Plan/Do/See 단계 이동, 예상 대비 실제 게이지가 있는 계획 카드" src="docs/screenshots/plan-light.png">
+</picture>
+
+---
+
+## 무엇을 풀었나
+
+계획은 세우는 순간 잊히고, 끝나고 나면 "왜 이렇게 오래 걸렸지"만 남습니다.
+이 앱은 그 사이를 기록으로 잇습니다. 예상 시간을 적고, 실제로 걸린 시간과 막힌
+이유를 남기고, 둘의 **차이를 근거와 함께** 보여준 뒤, 거기서 나온 개선점 한 줄을
+다음 계획으로 옮깁니다.
+
+핵심은 숫자를 보여주는 게 아니라 **숫자를 믿을 수 있게 만드는 것**입니다. 집계
+카드를 누르면 그 숫자를 만든 할 일과 실행 기록의 ID가 그대로 나옵니다.
+
+## 화면
+
+### See · 돌아보고 이어가기
+
+일곱 개 집계와, 각 숫자가 어떤 기록에서 나왔는지. 차이는 부호를 살려
+초과는 빨강, 절약은 초록으로 표시합니다.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/see-dark.png">
+  <img alt="See 화면. 할 일 5개, 완료 3개, 지연 1개, 막힘 2개, 예상 300분, 실제 260분, 차이 -40분" src="docs/screenshots/see-light.png">
+</picture>
+
+### Do · 할 일과 실행
+
+할 일 등록·검색·필터와 고정된 정렬 기준, 그리고 실행 기록 입력.
+
+![Do 화면. 할 일 입력 폼, 검색과 상태·우선순위·태그 필터, 정렬 기준 안내](docs/screenshots/do-light.png)
+
+> 화면의 자료는 전부 합성 예시입니다. 실제 기록은 저장소에 넣지 않습니다.
+
+## 설계에서 신경 쓴 것
+
+**중복 완료를 화면이 아니라 데이터베이스가 막습니다.**
+완료 버튼을 빠르게 두 번 누르거나 요청이 재전송돼도 완료 이력은 한 건만 남아야
+합니다. 버튼 비활성화는 경합을 막지 못하므로, 클라이언트가 보낸 멱등 키에 유니크
+제약을 걸고 상태 전이와 이력 기록을 한 트랜잭션에 묶었습니다. 되돌린 뒤 옛 키가
+다시 도착해도 원래 이력을 돌려줄 뿐 다시 완료되지 않습니다.
+→ [`services/executions.py`](backend/app/services/executions.py) · D-009, D-011
+
+**집계는 숫자만 주지 않고 근거를 함께 돌려줍니다.**
+일곱 개 지표를 하나의 조인 결과에서 계산해, 합계와 근거 목록이 어긋날 수 없게
+했습니다. 화면의 각 카드는 자기 숫자를 만든 할 일·실행 기록 ID를 그대로 보여줍니다.
+→ [`services/reflections.py`](backend/app/services/reflections.py) · D-014, D-015
+
+**시간은 UTC로 저장하고 서울 기준으로 판단합니다.**
+실행 기록은 오프셋이 있는 시각으로만 받고 UTC로 저장하며, 화면에는
+`Asia/Seoul`로 표시합니다. 지연 여부도 서울 날짜로 판정합니다. 실제로 일한 시간은
+경과 시간과 다를 수 있어서(중간에 쉬면) 분 단위로 따로 입력받습니다.
+→ [`app/time.py`](backend/app/time.py) · D-008, D-012
+
+**로그인이 없다는 사실을 화면이 먼저 말합니다.**
+T06 범위에 인증이 없으므로 첫 화면에 공개 안내를 두고, 응답에는 같은 출처만
+허용하는 CSP를 붙였습니다. 글꼴도 외부 CDN 대신 번들해 이 정책을 지킵니다.
+사용자가 넣은 문자열은 스크립트로 실행되지 않고 글자 그대로 렌더링됩니다.
+→ [`app/__init__.py`](backend/app/__init__.py) · D-023
+
+**마이그레이션은 값을 보존하고 반복해도 안전합니다.**
+카드가 넘어갈 때마다 스키마가 늘었지만 기존 값은 그대로 남습니다. 배포는 서버가
+뜨기 전에 마이그레이션을 먼저 돌리므로, 실패하면 조용히 잘못된 상태로 서비스되는
+대신 아예 기동하지 않습니다.
+→ [`migrations/`](backend/migrations) · [`deploy/start.sh`](deploy/start.sh)
+
+## 디자인
+
+네 방향을 같은 데이터로 스케치해 성격만 다르게 두고 비교한 뒤, **"흐름"**을
+골랐습니다. 제품 자체가 세 단계 반복이고, 화면의 구조가 그 구조를 말해 주는 건
+그 안이 유일했기 때문입니다. 고른 이유와 버린 이유, 스케치 원본은
+[`docs/DESIGN.md`](docs/DESIGN.md)에 있습니다.
+
+| 방향 | 성격 | 비용 |
+|---|---|---|
+| A · 계측 | 고정폭 숫자, 기준선 대비 막대. 계기처럼 읽힘 | 가장 차갑다 |
+| B · 저널 | 세리프, 숫자보다 문장이 먼저 | 따뜻하지만 서버·집계를 다룬 인상이 약해진다 |
+| **C · 흐름** | **Plan → Do → See가 순서 있는 과정으로 읽힘. 파랑 하나** | **익숙한 만큼 개인의 판단이 덜 드러난다** |
+| D · 운영 | 어두운 관제 보드, 차이를 최상단 지표로 | 밀도는 높지만 일기가 사라진다 |
+
+토큰 한 겹 위에 올렸습니다. 강조색 하나와 상태를 뜻하는 색 셋, 반경 셋, 4px 간격
+스케일, 글자 굵기 넷. **색은 장식이 아니라 상태일 때만** 씁니다 — 일곱 개 집계 중
+부호가 의미를 갖는 "차이" 하나만 색을 가집니다. 라이트·다크 양쪽을 지원하고
+`prefers-reduced-motion`을 존중합니다.
 
 ## 기술 구성
 
-- Frontend: React + Vite + TypeScript
-- Backend: Flask + SQLAlchemy + Alembic
-- Database: PostgreSQL
-- Test: Pytest, frontend build, browser acceptance checks
-- Timezone: UTC 저장, `Asia/Seoul` 표시·날짜 판정
-- Duration unit: minutes
+| 영역 | 선택 |
+|---|---|
+| Frontend | React · Vite · TypeScript |
+| Backend | Flask · SQLAlchemy · Alembic |
+| Database | PostgreSQL (테스트는 인메모리 SQLite) |
+| 배포 | Docker · Waitress(비루트) · Render + Neon |
+| 시간 | UTC 저장, `Asia/Seoul` 표시·날짜 판정 |
+| 단위 | 분(minutes) |
 
-## 기준 문서
+## 검증
 
-- `docs/source/T06-OFFICIAL-ASSIGNMENT.md` — 공식 과제 원문
-- `docs/REQUIREMENTS.md` — 확정 요구사항
-- `docs/T06-ACCEPTANCE-MATRIX.md` — 고정 검사 44개
-- `docs/FLASK-ARCHITECTURE.md` — 구현 구조
-- `contracts/pds-schema-v2.json` — 데이터 계약
-- `docs/STATUS.md` — 현재 상태와 다음 행동
-- `docs/DEVELOPMENT.md` — 로컬 실행과 검사 명령
-- `docs/HANDOFF.md` — Claude·Codex 인수인계 상태
+- 백엔드 자동 테스트 **53개 통과, 커버리지 92%**
+- 고정 검사 **44개** — 공식 과제에서 뽑아 관찰 가능한 입력과 기대값으로 확정.
+  통과시키려고 기대값을 낮추지 않는 것을 규칙으로 두었습니다.
+  ([`docs/T06-ACCEPTANCE-MATRIX.md`](docs/T06-ACCEPTANCE-MATRIX.md))
+- API 수준 검사로 덮이는 항목과, 배포본에서 눈으로 확인해야 하는 항목을 구분해
+  기록합니다. 자동 검사는 DOM을 검증하지 않으므로 화면 회귀는 눈으로 잡습니다.
+
+```powershell
+backend/.venv/Scripts/python.exe -m pytest backend/tests
+npm --prefix frontend run build
+```
+
+## 로컬 실행
+
+```powershell
+# 백엔드
+cd backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+$env:REQUIRE_POSTGRES = "0"
+.\.venv\Scripts\flask.exe --app app:create_app db upgrade
+.\.venv\Scripts\flask.exe --app app:create_app run --host 127.0.0.1 --port 5000
+
+# 프런트엔드 (다른 터미널)
+cd frontend
+npm ci
+npm run dev -- --host 127.0.0.1
+```
+
+5000번을 다른 앱이 쓰고 있으면 백엔드 포트를 바꾸고 `$env:T06_API_TARGET`으로
+그 주소를 알려 주면 됩니다. 자세한 내용은
+[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
+
+## 문서
+
+| 문서 | 내용 |
+|---|---|
+| [`docs/DESIGN.md`](docs/DESIGN.md) | 방향 선택 근거, 토큰, 건드리면 안 되는 화면 요소 |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | 결정과 이유. 옛 결정은 고치지 않고 뒤집는 행을 더합니다 |
+| [`docs/STATUS.md`](docs/STATUS.md) | 현재 상태, 근거, 남은 일 |
+| [`docs/T06-ACCEPTANCE-MATRIX.md`](docs/T06-ACCEPTANCE-MATRIX.md) | 고정 검사 44개 |
+| [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 확정 요구사항 |
+| [`docs/FLASK-ARCHITECTURE.md`](docs/FLASK-ARCHITECTURE.md) | 구현 구조 |
+| [`contracts/pds-schema-v2.json`](contracts/pds-schema-v2.json) | 데이터 계약 |
+| [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) | 로컬 실행과 검사 명령 |
+| [`docs/RENDER-NEON.md`](docs/RENDER-NEON.md) | 배포 방법 |
 
 ## 공개 데이터 주의
 
-T06에는 로그인이 없습니다. 배포 화면에는 남이 봐도 괜찮은 실제 작업 기록만
-입력하고, 저장소·테스트·제출 증거에는 합성 자료만 사용합니다. 인증은 T07에서
-추가합니다.
+T06에는 로그인이 없습니다. 링크를 아는 사람은 누구나 볼 수 있습니다.
+배포 화면에는 남이 봐도 괜찮은 기록만 넣고, 저장소·테스트·스크린샷·제출 증거에는
+합성 자료만 사용합니다. 인증은 T07에서 추가하며, 지금은 그 확장 지점을 깨끗하게
+남겨 두는 것까지가 범위입니다.
