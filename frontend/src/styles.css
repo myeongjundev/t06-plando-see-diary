@@ -42,6 +42,8 @@
   /* 판정색 — 장식이 아니라 상태 */
   --good: #0f9d7a;
   --good-soft: #e7f7f2;
+  --good-soft-2: #d5efe6;
+  --good-soft-2: #d5efe6;
   --warn: #b26b00;
   --warn-mark: #e8890c;
   --warn-soft: #fff4e0;
@@ -123,6 +125,8 @@
 
   --good: #4fc3a1;
   --good-soft: #102b25;
+  --good-soft-2: #16382f;
+  --good-soft-2: #16382f;
   --warn: #dfa458;
   --warn-mark: #dfa458;
   --warn-soft: #2e2418;
@@ -806,8 +810,13 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 .task-row:first-child { border-top: 0; }
 
 .task-row:hover { background: var(--surface-2); }
-.task-row.completed { border-color: var(--line); }
-.task-row.completed h3 { text-decoration: line-through; color: var(--ink-3); }
+/* 완료는 줄을 긋는 대신 줄 전체를 초록으로 칠한다. 취소선은 끝난 일의 내용을
+   읽기 어렵게 만드는데, 그 내용은 되돌리기(T06-C12)와 실행 기록을 찾을 때 여전히
+   읽어야 한다. 색은 상태일 때만 쓴다는 규칙 그대로다 — 완료는 상태다. 색만으로
+   구별되는 것도 아니다: 채워진 체크 동그라미가 그대로 남는다. */
+.task-row.completed { border-color: var(--line); background: var(--good-soft); }
+.task-row.completed:hover { background: var(--good-soft-2); }
+.task-row.completed h3 { color: var(--ink-2); }
 
 .status-button {
   width: 30px;
