@@ -42,9 +42,9 @@ The submission form asks for these two blocks in a fixed shape. Paste them verba
 ### AI와 내 판단 3줄
 
 ```text
-AI에게 맡긴 일: Flask와 React의 Plan→Do→See 흐름 구현, 중복 완료 방지, JSON 내보내기, Docker와 PostgreSQL 배포, 자동 검사와 공개 검증.
-내가 판단한 일: Render Free와 Neon PostgreSQL 조합을 골랐고, 디자인과 Plan·Do·See 사용 흐름을 직접 검토한 뒤 공개 검증 결과를 기준으로 채택했다.
-AI 말을 안 들은 일: 집계 숫자를 자연어로 풀어 주는 기능은 넣지 않았다. 음수 차이를 무조건 «시간을 아꼈다»로 읽히게 만드는데, 미완료 때문에 적게 걸린 경우와 구분되지 않기 때문이다.
+AI에게 맡긴 일: Flask와 React의 Plan→Do→See 흐름 구현, 중복 완료 방지, JSON 내보내기, Docker와 PostgreSQL 배포, 자동 검사와 공개 검증, 그리고 직접 만든 달력·시각·드롭다운 컨트롤의 구현과 대비·치수 측정.
+내가 판단한 일: Render Free와 Neon PostgreSQL 조합을 골랐고, 디자인과 Plan·Do·See 사용 흐름을 직접 검토한 뒤 공개 검증 결과를 기준으로 채택했다. 화면의 취사선택도 직접 정했다 — 계획 목록의 정렬 축은 «마감 임박순»(우선순위는 세울 때의 의도, 마감은 지금의 압박이라 서로 다른 질문에 답한다), 게이지 기준선은 검은 눈금 대신 두 색이 만나는 이음매, 회고 목록은 스크롤 뚜껑 대신 접기, 드롭다운은 화면 일관성을 위해 7개 전부 교체하되 모바일에서 OS 시트를 잃는 손해는 감수.
+AI 말을 안 들은 일: 할 일 목록의 높이 상한을 두고 AI는 «완료 그룹만 접고 진행 중 목록은 그대로 두라»고 권했지만, 계획 목록과 같은 19rem으로 둘 다 묶었다. 한 화면에 상자가 둘인데 하나만 자라면 두 목록이 서로 다른 물건으로 읽히기 때문이고, 좁은 화면에서 보이는 줄 수가 줄어드는 비용은 알고 받아들였다. 집계 숫자를 자연어로 풀어 주는 기능을 넣지 않은 판단도 그대로다 — 음수 차이를 무조건 «시간을 아꼈다»로 읽히게 만들어 미완료로 적게 걸린 경우와 구분되지 않는다.
 ```
 
 ## Four verification lines (T06-C59)
@@ -59,11 +59,11 @@ Failure appearance: See is zero despite saved real logs, totals/source IDs diffe
 
 ## Three judgment lines (T06-C60)
 
-AI work: Flask/React Plan→Do→See 흐름, 중복 완료 방지, JSON 내보내기, Docker/PostgreSQL 배포와 자동·공개 검증을 맡겼다.
+AI work: Flask/React Plan→Do→See 흐름, 중복 완료 방지, JSON 내보내기, Docker/PostgreSQL 배포와 자동·공개 검증, 그리고 직접 만든 달력·시각·드롭다운 컨트롤의 구현과 대비·치수 측정을 맡겼다.
 
-User judgment: Render Free와 Neon PostgreSQL 조합을 선택하고, 디자인과 Plan·Do·See 사용 흐름을 직접 검토한 뒤 공개 검증 결과를 기준으로 채택했다.
+User judgment: Render Free와 Neon PostgreSQL 조합을 선택하고, 디자인과 Plan·Do·See 사용 흐름을 직접 검토한 뒤 공개 검증 결과를 기준으로 채택했다. 화면의 취사선택도 직접 정했다 — 정렬 축은 «마감 임박순», 게이지 기준선은 검은 눈금이 아닌 이음매, 회고 목록은 스크롤 뚜껑이 아닌 접기, 드롭다운은 일관성을 위해 7개 전부 교체하되 모바일에서 OS 시트를 잃는 손해는 감수.
 
-Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 기능은 음수 차이를 무조건 시간 절약으로 오해할 수 있어 이번 과제에서는 추가하지 않았다.
+Rejected AI advice and reason: 할 일 목록의 높이 상한을 두고 AI는 완료 그룹만 접으라고 권했지만, 한 화면에 놓인 두 목록이 서로 다른 물건으로 읽히지 않도록 계획 목록과 같은 19rem으로 둘 다 묶었다. 집계 숫자를 자연어로 해석해 주는 기능을 넣지 않은 판단도 유지한다 — 음수 차이를 무조건 시간 절약으로 오해할 수 있기 때문이다.
 
 ## Evidence completed
 
@@ -82,6 +82,9 @@ Rejected AI advice and reason: 집계 숫자를 자연어로 해석해 주는 �
 - Script-shaped input rendered literally and was removed after the check.
 - Source, Git history, public client assets and API responses passed the
   common-secret pattern scan.
-- User confirmed the judgment and rejected-advice lines above.
+- User confirmed the judgment and rejected-advice lines above, including the
+  2026-09-02 additions: the sort axis, the gauge baseline, the reflection fold,
+  the dropdown replacement with its mobile cost, and the task-list height cap
+  adopted against the assistant's recommendation.
 
 Local evidence is in `HANDOFF.md`; synthetic fixtures are not real-use evidence.
