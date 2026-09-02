@@ -943,6 +943,10 @@ textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
 
 .task-done .task-list { margin-top: var(--s2); }
 
+/* 회고 목록의 «이전 회고 더 보기»도 같은 단추다. 접었다 펴는 일이 화면에 둘 있는데
+   생김새가 다르면 같은 동작으로 안 읽힌다. */
+.reflection-list > .done-toggle { margin: var(--s2) 0; }
+
 .tags { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: var(--s1); font-size: var(--t-2xs); }
 
 .tags > * {

@@ -13,6 +13,11 @@ const METRICS: { key: Metric; label: string; unit: string }[] = [
   { key: "varianceMinutes", label: "차이 (실제 − 예상)", unit: "분" },
 ];
 const seoul = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "short", timeStyle: "short" });
+// 회고 목록에 늘 펼쳐 두는 최근 건수. 카드 하나가 143px이라 그냥 두면 열 건에
+// 1,000px이 붙고, 회고 아래의 내보내기 구획이 통째로 밀린다. 목록에 뚜껑을 씌우는
+// 대신 접는 이유는 카드가 펼쳐지면 «다음 계획» 폼이 되기 때문이다 — 스크롤 상자
+// 안에 폼을 가두는 건 길이보다 나쁘다.
+const RECENT_REFLECTIONS = 3;
 const errorText = (error: unknown) => error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
 // Variance is the only metric whose sign carries meaning, so it is the only one
 // that takes a semantic colour. Keep the ASCII hyphen for negatives (T06-C32).
@@ -78,8 +83,12 @@ function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan;
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
+  const [allReflections, setAllReflections] = useState(false);
   const [nextId, setNextId] = useState<string | null>(null);
   const inFlight = useRef(false);
+  // 계획을 바꾸면 접힌 상태로 돌아온다. 집계 새로고침에는 반응하지 않는다 —
+  // 펼쳐 둔 목록이 새로고침마다 닫히면 그게 더 성가시다.
+  useEffect(() => { setAllReflections(false); }, [plan.id]);
   useEffect(() => {
     let cancelled = false;
     setSummary(null); setMessage("");
@@ -103,6 +112,14 @@ function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan;
     finally { inFlight.current = false; setBusy(false); }
   }
   const source = selected && summary ? summary.sources[selected] : null;
+  // 목록은 오래된 것이 위, 최근이 아래다(API가 created_at 오름차순). 그래서 «최근
+  // N건»은 뒤에서 N개이고, 이전 것을 여는 단추는 목록 위에 놓인다.
+  // 접힐 수 있는 건수는 펼침 여부와 무관하게 센다. 펼쳤을 때 0으로 만들면 단추가
+  // 사라져 다시 접을 방법이 없어진다.
+  const hiddenReflections = Math.max(0, reflections.length - RECENT_REFLECTIONS);
+  const visibleReflections = allReflections || hiddenReflections === 0
+    ? reflections
+    : reflections.slice(-RECENT_REFLECTIONS);
   return <>
     <form className="period-form" onSubmit={applyPeriod}>
       <div className="grid two">
@@ -140,7 +157,13 @@ function PlanReview({ plan, revision, onPlanCreated, onOpenPlan }: { plan: Plan;
     </>}
     <section className="reflection-list" aria-label="저장된 회고">
       <h3>회고 기록</h3>{reflections.length === 0 && <p>아직 저장된 회고가 없습니다.</p>}
-      {reflections.map((row) => <article key={row.id}>
+      {hiddenReflections > 0 && (
+        <button type="button" className="done-toggle" aria-expanded={allReflections}
+                onClick={() => setAllReflections(!allReflections)}>
+          {allReflections ? "이전 회고 접기" : `이전 회고 ${hiddenReflections}건 더 보기`}
+        </button>
+      )}
+      {visibleReflections.map((row) => <article key={row.id}>
         <p>{row.periodStart} — {row.periodEnd}</p><strong>{row.improvement}</strong>
         {row.nextPlanId ? <p><a href={`#plan-${row.nextPlanId}`} onClick={() => onOpenPlan(row.nextPlanId!)}>개선점을 담은 다음 계획 보기</a></p> : <div className="actions"><button onClick={() => setNextId(nextId === row.id ? null : row.id)}>{nextId === row.id ? "다음 계획 입력 닫기" : "이 회고로 다음 계획 만들기"}</button></div>}
         {nextId === row.id && !row.nextPlanId && <NextPlanForm plan={plan} reflection={row} onCreated={(next, updated) => {
