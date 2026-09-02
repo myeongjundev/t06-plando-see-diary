@@ -2,6 +2,27 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 migration deprecation warning removed
+
+- `migrations/env.py` carried Flask-Migrate's stock `get_engine()`, which tries
+  `db.get_engine()` first for Flask-SQLAlchemy<3. That call still resolves on 3.x, so
+  the fallback never ran and each migration emitted a DeprecationWarning instead —
+  the 12 warnings the suite had been reporting. The method is due for removal in
+  Flask-SQLAlchemy 3.2, and `deploy/start.sh` runs `flask db upgrade` under `set -eu`
+  before serving, so its removal would stop the service from starting rather than
+  fail quietly. pyproject pins Flask-SQLAlchemy>=3.1,<4, so the legacy branch was
+  unreachable by the project's own constraint (D-031).
+- Now calls `db.engine` directly. The suite reports 53 passed and no warnings at all,
+  down from 12.
+- Migration behaviour re-checked because this file is on the deployment's startup
+  path: a fresh SQLite database upgraded through all four revisions, a repeated
+  upgrade was a no-op, `db check` reported no new operations, and `db current` showed
+  the head revision. Offline mode (`db upgrade --sql`) still emits all eight tables,
+  which exercises the same function through `get_engine_url`. Running the migration
+  commands under `-W error::DeprecationWarning` raised nothing.
+- PostgreSQL is covered by the deployment itself: startup migrations run before
+  Waitress serves, so a broken `env.py` would prevent the service from coming up.
+
 ## 2026-09-02 dev proxy target is configurable
 
 - `frontend/vite.config.ts` hard-coded the dev proxy to `http://127.0.0.1:5000`, so

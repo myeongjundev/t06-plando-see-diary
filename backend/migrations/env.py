@@ -16,12 +16,13 @@ logger = logging.getLogger('alembic.env')
 
 
 def get_engine():
-    try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
-        return current_app.extensions['migrate'].db.get_engine()
-    except (TypeError, AttributeError):
-        # this works with Flask-SQLAlchemy>=3
-        return current_app.extensions['migrate'].db.engine
+    # Flask-Migrate's stock template tries db.get_engine() first, for
+    # Flask-SQLAlchemy<3 and Alchemical. That call still resolves on 3.x, so the
+    # fallback never runs and every migration emits a DeprecationWarning instead;
+    # the method is due to be removed in Flask-SQLAlchemy 3.2, which would break
+    # migrations outright. pyproject pins Flask-SQLAlchemy>=3.1,<4, so the legacy
+    # branch was unreachable by this project's own constraint.
+    return current_app.extensions['migrate'].db.engine
 
 
 def get_engine_url():
