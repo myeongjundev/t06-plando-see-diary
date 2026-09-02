@@ -2,6 +2,41 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 step bar marks the section being read
+
+- Considered porting the T05 floating section rail and decided against it (D-028).
+  T06 has three sections and a sticky step bar that also carries the plan picker, so
+  a rail would duplicate navigation and compete with the public warning for the first
+  screen. The scroll spy inside it was worth taking: the three links looked identical
+  and `aria-current` appeared nowhere in the codebase, so nothing on screen or in a
+  screen reader said which section was being read.
+- Bug found while building it, not present in T05. The T05 rail captures its section
+  elements once in the effect. `TaskPanel` here is keyed on the plan id and remounts
+  whenever the plan changes, so the captured `#do-step` becomes a detached node whose
+  `getBoundingClientRect()` returns zeros — which reads as "already past the marker"
+  and pins Do as permanently active. Found by instrumenting the hook and seeing that
+  one section's measured top was `0` at every scroll position. Fixed by looking the
+  elements up on every measurement; the instrumentation was removed afterwards.
+- Verification was constrained. The browser pane fires no `scroll` events, no
+  IntersectionObserver and no ResizeObserver callbacks at all, including the initial
+  ones, and the real browser cannot reach the sandboxed local server. So the decision
+  rule was extracted into a pure function and exercised directly under node against
+  the measured layout (viewport 900, document 4458, section tops 374/1147/3152): all
+  nine boundary cases pass, and the bottom guard is shown to be load-bearing —
+  without it a short last section never activates. The wiring was then driven by
+  dispatching `scroll` after each programmatic scroll, which exercises listener,
+  measurement, state and DOM together.
+- Results: 0/500/886 give Plan, 887 gives Do exactly at the boundary, 1500/2891 give
+  Do, 3400 and the document end give See, and after switching plans `#do-step`
+  measures 1147 rather than 0 with judgement correct again. Active link is
+  `#1b64da` on white in light and `#6f9cf0` on `#0f1216` in dark. At 375px no
+  overflow and scrolling down then back to the top returns to Plan. Public warning
+  still on the first screen; priority still renders the literal `high`.
+- Not verified here: that the browser itself emits `scroll` and ResizeObserver
+  callbacks. That is browser-guaranteed rather than application code, but it means
+  the feature should be scrolled once on the deployed site to confirm.
+- 53 backend tests, the frontend build and `git diff --check` pass. Presentation only.
+
 ## 2026-09-02 plan-card estimate-vs-actual gauge
 
 - The last open design item shipped (D-027). The selected plan card now carries a

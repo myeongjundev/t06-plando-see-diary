@@ -14,6 +14,9 @@ import ExportPanel from "./features/export/ExportPanel";
 import ThemeToggle from "./ThemeToggle";
 import PlanGauge from "./features/plans/PlanGauge";
 import { getSummary, Summary } from "./api/reflections";
+import useActiveStep from "./useActiveStep";
+
+const STEP_IDS = ["plan-step", "do-step", "see-step"] as const;
 
 const EMPTY_PLAN: PlanInput = {
   title: "T06 프로젝트 완주",
@@ -39,6 +42,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const selectedPlan = plans.find((plan) => plan.id === selectedPlanId) ?? plans[0];
   const [planSummary, setPlanSummary] = useState<Summary | null>(null);
+  const activeStep = useActiveStep(STEP_IDS);
 
   // 선택한 계획의 예상 대비 실제. See는 기간 필터가 걸린 집계를 따로 들고 있어서
   // 공유하지 않는다. 카드는 언제나 계획 전체를 보여줘야 하므로 기간 없는 집계를
@@ -163,9 +167,9 @@ function App() {
           </select>
         </label>}
         <nav className="step-nav" aria-label="Plan Do See 단계 이동">
-          <a href="#plan-step" aria-label="01 Plan · 계획"><span>01 Plan</span><span>계획</span></a>
-          <a href="#do-step" aria-label="02 Do · 실행"><span>02 Do</span><span>실행</span></a>
-          <a href="#see-step" aria-label="03 See · 회고"><span>03 See</span><span>회고</span></a>
+          <a href="#plan-step" aria-current={activeStep === "plan-step" ? "step" : undefined} aria-label="01 Plan · 계획"><span>01 Plan</span><span>계획</span></a>
+          <a href="#do-step" aria-current={activeStep === "do-step" ? "step" : undefined} aria-label="02 Do · 실행"><span>02 Do</span><span>실행</span></a>
+          <a href="#see-step" aria-current={activeStep === "see-step" ? "step" : undefined} aria-label="03 See · 회고"><span>03 See</span><span>회고</span></a>
         </nav>
       </div>
 

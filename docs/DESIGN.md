@@ -119,6 +119,19 @@ Through `113d02f`:
   block (`:root[data-theme="dark"]`) instead of being duplicated across a media
   query and an attribute selector. `color-scheme` is set per theme so native date
   inputs follow.
+- Step bar marks the section being read (D-028). The user asked whether the T05
+  floating section rail (`t05-ai-handoff`, `src/components/SectionRail.jsx`) belonged
+  here. It does not: that rail carries a long single page with six sections and no
+  other navigation, while T06 has three sections and a sticky bar that also holds the
+  plan picker. A rail would duplicate navigation and add a second thing competing
+  with the public warning for the first screen. What transferred is the scroll spy —
+  the three links were identical and `aria-current` appeared nowhere in the codebase.
+  Now the active link takes `aria-current="step"` and a filled accent background.
+  The T05 implementation captures its section elements once. Copied straight across
+  that is a bug here: `TaskPanel` is keyed on the plan id and remounts when the plan
+  changes, so the captured `#do-step` becomes a detached node whose
+  `getBoundingClientRect()` returns zeros, pinning that step as permanently active.
+  The elements are looked up on every measurement instead.
 - Plan-card estimate-vs-actual gauge (D-027). Tick at the estimate, fill at the
   actual, on the selected plan card only. Under fills short of the tick in `--good`,
   over runs past it in `--crit`, matching the See variance rule.
