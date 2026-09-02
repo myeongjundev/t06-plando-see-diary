@@ -2,6 +2,21 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 submission tag moved onto the deployed toggle build
+
+- Deploying the light/dark toggle left the `t06-submission` tag on the previous
+  build, so the submitted source no longer matched the running product: a reader
+  building from the tag would have got a screen with no theme button. T06-C01 itself
+  only requires the URLs to open without authentication, but this project's own rule
+  is that the submitted source is the code being served.
+- The user confirmed the assignment is not yet submitted, so the tag was moved onto
+  the deployed commit rather than leaving the mismatch. The claim that the tagged
+  tree is byte-identical to `1d0e0f7` was removed — it stopped being true when the
+  toggle shipped. The document now records the deployed asset names instead.
+- Verified after the move: the tag resolves to the commit whose build Render serves
+  (`index-CemQlsng.js`, `index-DZQlTvwW.css`), the tag tree opens without
+  authentication, and its `docs/SUBMISSION.md` carries no placeholders.
+
 ## 2026-09-02 light/dark toggle
 
 - Header toggle switches the theme manually (D-026). Two states, starting from the

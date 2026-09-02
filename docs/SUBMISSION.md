@@ -5,17 +5,21 @@ Product URL: https://t06-plando-see-diary.onrender.com
 Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/t06-submission
 
 `t06-submission` is a fixed tag on the submitted commit, so the URL resolves to one
-immutable tree and stays consistent with this file. The earlier draft pointed at
-application commit `1d0e0f7`, whose copy of this document still read "not ready to
-submit" and still held the two judgment placeholders — a reader opening the
-submitted source would have read those instead of the finished text. The tagged
-commit adds documentation only; `frontend/` and `backend/` are byte-identical to
-`1d0e0f7`, which is the code Render built and is serving.
+immutable tree and stays consistent with this file. An earlier draft pointed at a
+raw commit hash, whose copy of this document still read "not ready to submit" and
+still held the two judgment placeholders — a reader opening the submitted source
+would have read those instead of the finished text. A hash cannot be written into
+the document that the commit contains; a tag name can, which is why the URL names
+the tag.
+
+The tag tracks the deployed code: Render builds `main` automatically, and the tag is
+moved onto the commit Render is serving. At the time of writing that build emits
+`index-CemQlsng.js` and `index-DZQlTvwW.css`, which is what the public app returns.
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
-saved plans first, mobile input fixes, bundled fonts, signed variance and explicit
-evidence counts. Both submitted URLs were verified in Chrome Incognito without
-authentication.
+saved plans first, mobile input fixes, bundled fonts, signed variance with explicit
+evidence counts, and a light/dark toggle. Both submitted URLs were verified in
+Chrome Incognito without authentication.
 
 ## Four verification lines (T06-C59)
 
