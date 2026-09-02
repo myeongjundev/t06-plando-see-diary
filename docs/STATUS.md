@@ -2,6 +2,27 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 submission source URL correction
+
+- The submitted Source URL pointed at application commit `1d0e0f7`. That tree's
+  `docs/SUBMISSION.md` still read "not ready to submit", named an older commit as its
+  own source, and carried both T06-C60 judgment lines as placeholders. A reader
+  opening the submitted source would have read the placeholders, so T06-C59 and
+  T06-C60 were not actually satisfied at the submitted URL.
+- Fixed by tagging the submitted commit `t06-submission` and pointing the Source URL
+  at the tag. A tag name can be written into the document before the commit exists,
+  so the URL and the file it lives in stay consistent; a hash cannot.
+- The tagged commit changes documentation only. `frontend/` and `backend/` are
+  byte-identical to `1d0e0f7`, the code Render built and is serving as
+  `index-Dc4X5YZr.js` and `index-BLGnwQPS.css`.
+- Review of the Codex submission work also re-checked its recorded numbers against
+  the live API: See `5 / 3 / 0 / 1 / 600 / 390 / -210`, the export's seven record
+  counts, the retained `600` plan revision, and the reflection line carried into the
+  next plan byte-for-byte. All matched. An earlier local reading of `6 / 601 / -211`
+  was the transient state while the script-shaped verification task existed.
+- The T06-C60 judgment and rejected-advice lines were raised with the user, who
+  confirmed them as written.
+
 ## 2026-09-02 public completion verification
 
 - Public Neon data now contains the real safe plan `T06 프로젝트 완주`, five

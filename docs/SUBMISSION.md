@@ -2,7 +2,15 @@
 
 Product URL: https://t06-plando-see-diary.onrender.com
 
-Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/1d0e0f79fe2f8a57d0f5a21e9ae4102bcbb36a38
+Source URL: https://github.com/myeongjundev/t06-plando-see-diary/tree/t06-submission
+
+`t06-submission` is a fixed tag on the submitted commit, so the URL resolves to one
+immutable tree and stays consistent with this file. The earlier draft pointed at
+application commit `1d0e0f7`, whose copy of this document still read "not ready to
+submit" and still held the two judgment placeholders — a reader opening the
+submitted source would have read those instead of the finished text. The tagged
+commit adds documentation only; `frontend/` and `backend/` are byte-identical to
+`1d0e0f7`, which is the code Render built and is serving.
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
 saved plans first, mobile input fixes, bundled fonts, signed variance and explicit
