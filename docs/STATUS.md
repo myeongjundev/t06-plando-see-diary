@@ -2,6 +2,26 @@
 
 Updated: 2026-09-02 KST
 
+## 2026-09-02 dev proxy target is configurable
+
+- `frontend/vite.config.ts` hard-coded the dev proxy to `http://127.0.0.1:5000`, so
+  when another app holds port 5000 there was no way to move the backend: following
+  the documented local run steps sent `/api` to whatever else was listening. This is
+  live on this machine, where `flask-board` occupies 5000.
+- `T06_API_TARGET` now overrides the target, defaulting to the previous value. Read
+  through Vite's `loadEnv` with a `T06_` prefix rather than `process.env`, which
+  avoids adding `@types/node` for one lookup; `loadEnv` picks up both shell variables
+  and `.env` files.
+- Verified both paths against a backend on 5055 while `flask-board` held 5000. With
+  the variable set, `/api/live` through the dev server returned the T06 payload and
+  `/api/plans` returned T06 plans. Without it, the same request returned exactly what
+  port 5000 returns directly, confirming the default is unchanged.
+- Build output is byte-identical (`index-CpPmN_2E.js`, `index-B6MuCkAg.css`): the
+  change affects only the dev server, and the deployment has no proxy at all because
+  Flask serves the API and the built frontend from one origin.
+- `docs/DEVELOPMENT.md` and `docs/ACADEMY-HANDOFF.md` now show the port-conflict path.
+- 53 backend tests, the frontend build and `git diff --check` pass.
+
 ## 2026-09-02 smooth step navigation
 
 - Step navigation animated instead of jumping (D-029). Both paths were instant: the
@@ -18,10 +38,12 @@ Updated: 2026-09-02 KST
   wins whenever the query matches. Anchor landings clear the sticky bar in both
   layouts — desktop puts the section top at 148 against a 106px bar (42px spare),
   375px against a 131px bar (16px spare), with every section heading visible.
-- Not verified here: the animation running. The browser pane cannot perform scroll
+- The animation could not be observed here: the browser pane cannot perform scroll
   animations, and there is no reduced-motion emulation, so the cascade order is the
-  evidence for the second half. Notably `scrollTo` stopped taking effect in the pane
-  once smooth was set, which is itself a sign the declaration applies.
+  evidence for the reduced-motion half. Notably `scrollTo` stopped taking effect in
+  the pane once smooth was set, which is itself a sign the declaration applies.
+  The user confirmed on the deployed app that the scroll animates and the step marker
+  travels, which also closes the earlier open item on the scroll spy firing.
 - 53 backend tests and the frontend build pass. CSS only; no TypeScript changed.
 
 ## 2026-09-02 step bar marks the section being read

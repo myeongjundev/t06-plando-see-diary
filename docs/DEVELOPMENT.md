@@ -43,6 +43,20 @@ npm run dev -- --host 127.0.0.1
 
 Open `http://127.0.0.1:5173`. Vite forwards `/api` requests to Flask on port 5000.
 
+If port 5000 is already taken, start Flask elsewhere and point the proxy at it:
+
+```powershell
+# backend
+.\.venv\Scripts\flask.exe --app app:create_app run --host 127.0.0.1 --port 5055
+
+# frontend, in its own terminal
+$env:T06_API_TARGET = "http://127.0.0.1:5055"
+npm run dev -- --host 127.0.0.1
+```
+
+`T06_API_TARGET` affects the dev server only. The deployed app has no proxy: Flask
+serves the API and the built frontend from one origin.
+
 ## Checks
 
 ```powershell
