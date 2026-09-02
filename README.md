@@ -81,6 +81,24 @@ T06 범위에 인증이 없으므로 첫 화면에 공개 안내를 두고, 응�
 대신 아예 기동하지 않습니다.
 → [`migrations/`](backend/migrations) · [`deploy/start.sh`](deploy/start.sh)
 
+**날짜·시각·드롭다운은 브라우저가 아니라 우리가 그립니다.**
+`input[type="date"]`와 `select`의 펼친 목록은 브라우저가 그리는 위젯이라 CSS가 닿지
+않습니다. 화면의 나머지가 전부 토큰 위에 올라가 있는데 그 둘만 OS 기본 모양이었습니다.
+라이브러리 없이 달력·시각·목록을 직접 만들어, 목록 높이를 계획 목록과 같은 19rem으로
+맞추고 계획 고르기에는 검색을 넣었습니다. 네이티브가 하던 일은 잃지 않았습니다 —
+타자 입력, 화살표·Home/End 이동, 타자 검색, Escape가 그대로 있습니다. 대신 모바일에서
+OS 시트를 잃는 건 값으로 치렀습니다.
+→ [`components/DateField.tsx`](frontend/src/components/DateField.tsx) ·
+[`components/Select.tsx`](frontend/src/components/Select.tsx) · D-049, D-050, D-054
+
+**게이지의 기준선은 표식이 아니라 두 색이 만나는 자리입니다.**
+예상 대비 실제를 그리면서 눈금자를 `max(예상, 실제)`로 잡으면 큰 쪽이 언제나 막대를
+꽉 채웁니다. 그러면 기준선이 초과일 때와 절약일 때 다른 곳에 서서 계획끼리 비교가 안
+되고, 10% 초과와 500% 초과가 같은 그림이 됩니다. 기준선을 한자리에 못 박아 채움 길이가
+«계획 대비 몇 배»가 되게 하고, 계획대로 쓴 구간은 무채색으로, 넘어선 구간만 빨강으로
+갈랐습니다. 색은 여기서도 상태일 때만 씁니다.
+→ [`features/plans/PlanGauge.tsx`](frontend/src/features/plans/PlanGauge.tsx) · D-051, D-053
+
 ## 디자인
 
 네 방향을 같은 데이터로 스케치해 성격만 다르게 두고 비교한 뒤, **"흐름"**을
