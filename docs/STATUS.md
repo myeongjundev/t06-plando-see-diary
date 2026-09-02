@@ -1,6 +1,29 @@
 # T06 project status
 
-Updated: 2026-09-02 KST
+Updated: 2026-09-03 KST
+
+## 2026-09-03 pushed, tag moved, deploy confirmed
+
+- The 2026-09-02 UI pass is on `origin/main` as eight change commits plus one for
+  the documents. Every one of the eight was checked out and built on its own before
+  pushing, and the reconstructed tree was compared against the verified working copy
+  with `diff -r`: 21 source files and both documents identical byte for byte.
+- `main` = `origin/main` = `t06-submission` = `65ac0530ab14458e4d5f636e89f000c83d29b4f8`.
+  The tag was force-updated (`7e72f6d` → `cc76ae4`), which rewrites a published ref;
+  it was moved deliberately because `docs/SUBMISSION.md` defines the tag as pointing
+  at the commit Render is serving.
+- Render had already rebuilt when this was checked. Confirmed on the public app, not
+  just locally: zero native `select`, zero native date or datetime inputs, three
+  `.select-field` and two `.date-field` present, the gauge drawing segments with no
+  `.plan-gauge-tick` left, and the public-data warning verbatim on the first screen.
+  Served assets `index-MZVl8FZ4.js` and `index-CGU0rIJc.css` match the local build.
+- `docs/SUBMISSION.md` named the previous build's asset filenames as evidence for the
+  claim that the tag tracks the deployed code, so it contradicted itself after the
+  deploy. Corrected, along with the feature summary. Editing a document does not
+  change the bundle, so those asset hashes stay valid.
+- Still outstanding for an actual submission: `python tools/generate_verification.py`
+  has not been re-run, so the verification record and the submission PDF's asset
+  names remain at the `ae9510c` state.
 
 ## 2026-09-02 the dropdowns are ours too
 

@@ -14,13 +14,17 @@ this file: it would change the moment this file is edited.
 
 The tag tracks the deployed code: Render builds `main` automatically, and the tag is
 moved onto the commit Render is serving. At the time of writing that build emits
-`index-CpPmN_2E.js` and `index-B6MuCkAg.css`, which is what the public app returns.
+`index-MZVl8FZ4.js` and `index-CGU0rIJc.css`, which is what the public app returns.
 
 This is the published app including shared plan selection, Plan/Do/See navigation,
 saved plans first, mobile input fixes, bundled fonts, signed variance with explicit
 evidence counts, a light/dark toggle, an estimate-vs-actual gauge on the selected
-plan card and a step bar that marks the section being read. Both submitted URLs were
-verified in Chrome Incognito without authentication.
+plan card and a step bar that marks the section being read. It also carries the
+2026-09-02 pass: the plan list is sorted rather than filtered by priority, both task
+lists and the plan list share one 19rem ceiling, completed rows are filled instead of
+struck through, every date, time and dropdown control is drawn from the token layer
+rather than by the browser, and the plan gauge stands on a fixed baseline. Both
+submitted URLs were verified in Chrome Incognito without authentication.
 
 ## 제출 폼에 붙여 넣을 문구
 
